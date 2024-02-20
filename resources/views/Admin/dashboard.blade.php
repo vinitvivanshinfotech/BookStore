@@ -18,7 +18,7 @@
         Likewise, demo content can live up to its name by helping you demonstrate various processes. Things like training videos or documentation can use bits and pieces to show users how a certain feature works.
 
         Overall, it’s something that can be quite handy to have around. And there are several resources out there to fill your specific needs. Below is a selection of some of the coolest demo content generators on the web. Enjoy!</h5>
-    @include('Admin.layoutAdmin.footer')
+    <!-- @include('Admin.layoutAdmin.footer') -->
 </body>
 
 </html>

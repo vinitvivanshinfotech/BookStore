@@ -19,7 +19,7 @@
             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
           </form>
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="">{{__('adminview.navabar_home')}}</a>
+            <a class="nav-link active" aria-current="page" href="{{route('admin.dashboard')}}">{{__('adminview.navabar_home')}}</a>
           </li>
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="">{{__('adminview.navabar_gifting_orders')}}</a>

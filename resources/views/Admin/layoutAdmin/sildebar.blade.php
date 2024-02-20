@@ -16,23 +16,21 @@
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
   <div class="offcanvas-body">
-    <!-- <div>
-      Some text as placeholder. In real life you can have the elements you have chosen. Like, text, images, lists, etc.
-    </div> -->
+  
     <div>
-        <button type="button" class="btn btn-secondary mb-2">{{__('adminview.siderbar_books_list')}}</button>
+        <a type="button" class="btn btn-secondary mb-2" href="{{route('showAll.books')}}">{{__('adminview.siderbar_books_list')}}</a>
     </div>
     <div>
-        <button type="button" class="btn btn-secondary mb-2">{{__('adminview.siderbar_books_order')}}</button>
+        <a type="button" class="btn btn-secondary mb-2">{{__('adminview.siderbar_books_order')}}</a>
     </div>
     <div>
-        <button type="button" class="btn btn-secondary mb-2">{{__('adminview.siderbar_books_categories')}}</button>
+        <a type="button" class="btn btn-secondary mb-2">{{__('adminview.siderbar_books_categories')}}</a>
     </div>
     <div>
-        <button type="button" class="btn btn-secondary mb-2">{{__('adminview.siderbar_add_new_book')}}</button>
+        <a type="button" class="btn btn-secondary mb-2" href="{{route('add.books')}}">{{__('adminview.siderbar_add_new_book')}}</a>
     </div>
     <div>
-        <button type="button" class="btn btn-secondary mb-2">{{__('adminview.siderbar_best_seller')}}</button>
+        <a type="button" class="btn btn-secondary mb-2">{{__('adminview.siderbar_best_seller')}}</a>
     </div>
 
   </div>

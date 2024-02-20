@@ -4,6 +4,7 @@ return [
 
     'dashboardtitle' => 'admin dashboard',
     'add_new_book' => 'Add Book',
+    'edit_book'=>'Edit Book',
 
     // navbar admin
     'navabar_title' => 'BOOK STORE',
@@ -16,8 +17,8 @@ return [
 
     // sidebars admin .
     'siderbar_title' => 'BOOK STORE',
-    'siderbar_books_list' => 'Book',
-    'siderbar_books_order' => 'Orders',
+    'siderbar_books_list' => 'All Books',
+    'siderbar_books_order' => 'All Orders',
     'siderbar_users' => 'Users',
     'siderbar_books_categories' => 'Book Categories',
     'siderbar_add_new_book' => 'Add New Book',
