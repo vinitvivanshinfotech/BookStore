@@ -28,4 +28,10 @@ class AdminAuthController extends Controller
             return back()->with('error', 'Invalid Email or Password!');
         }
     }
+
+    public function adminLogout(){
+        Auth::logout();
+        Session::flush();
+        return redirect()->route('admin.loginForm');
+    }
 }

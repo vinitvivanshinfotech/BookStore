@@ -22,17 +22,26 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/login',[UserAuthController::class,'showLoginForm'])->name( 'login' );
-Route::post('/login',[UserAuthController::class,'userLoginPost'])->name('user.login');
-Route::get('/register',[UserAuthController::class,'showRegisterForm'])->name( 'register' );
-Route::post('/register',[UserAuthController::class,'userRegistrationPost'])->name( 'user.register' );
+Route::get('/login',[UserAuthController::class,'showLoginForm'])->name( 'login' ); //return login view
+
+Route::post('/login',[UserAuthController::class,'userLoginPost'])->name('user.login'); //Authenticate user
+
+Route::get('/register',[UserAuthController::class,'showRegisterForm'])->name( 'register' ); //return register  view
+
+Route::post('/register',[UserAuthController::class,'userRegistrationPost'])->name( 'user.register' ); //register new user
+
+Route::get('user/logout',[UserAuthController::class,'userLogout'])->name( 'user.logout' ); //logout user
+
+
 
 Route::middleware(['auth'])->prefix( 'user' )->group(function(){  // admin panel route
     Route::get('dashboard', [ UserController::class, 'dashboard' ] )->name( 'user.dashboard') ;
+    Route::get('dashboard/allBooks', [ UserController::class, 'displayAllBooks' ] )->name( 'user.showBooks') ;
 });
 
-Route::get('/admin/login',[AdminAuthController::class,'showLoginForm'])->name('admin.loginForm');
-Route::post('/admin/loginPost',[AdminAuthController::class,'adminLoginPost'])->name('admin.login');
+Route::get('/admin/login',[AdminAuthController::class,'showLoginForm'])->name('admin.loginForm'); //admin login view
+Route::post('/admin/loginPost',[AdminAuthController::class,'adminLoginPost'])->name('admin.login'); // admin authentication
+Route::get('/admin/loginPost',[AdminAuthController::class,'adminLogout'])->name('admin.logout'); // admin Logout
 
 Route::middleware(['admin'])->prefix( 'admin' )->group(function(){  // admin panel route
     Route::get('dashboard', [ UserController::class, 'dashboard' ] )->name( 'admin.dashboard') ;

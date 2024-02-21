@@ -23,6 +23,11 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
     </script>
 
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <title>User</title>
 
 
@@ -84,9 +89,9 @@
                         </li>
 
                         <li class="nav-item">
-                            <a href="" class="nav-link align-middle px-0">
-                                <i class="fs-4 bi-clipboard-check"></i> <span class="ms-1 d-none d-sm-inline">Learn
-                                    Photography</span>
+                            <a href="{{ route('user.showBooks') }}" class="nav-link align-middle px-0">
+                                <i class="fs-4 bi-clipboard-check"></i> <span
+                                    class="ms-1 d-none d-sm-inline">{{ __('labels.see_books') }}</span>
                             </a>
                         </li>
 
@@ -161,7 +166,8 @@
                             <hr>
                             <a class="dropdown-item text-primary" href="">Profile</a>
                             <hr>
-                            <a class="dropdown-item text-primary" onclick="retun con()" href="">Sign out</a>
+                            <a class="dropdown-item text-primary" onclick="retun showConfirmButton()"
+                                href="{{ route('user.logout') }}">Sign out</a>
                         </button>
 
                         </a>
@@ -179,7 +185,90 @@
         </div>
     </div>
 
+    <script>
+        function showConfirmButton() {
+            
+            let con = alert('Are you sure to LogOut?');
+            if (con == true) {
+                return true;
+            }
 
+        }
+
+
+        jQuery(document).ready(function($) {
+            $('.addToWishlistButton').click(function() {
+                // Get the value of the book ID
+                var bookId = $(this).val();
+                // Get the value of the authenticated user's ID
+                var userId = {{ auth()->id() }};
+                // Log the values to the console (you can do further processing here)
+
+                $.ajax({
+                    type: 'get',
+                    url: 'http://localhost:8000/api/addToWishlist/' + userId + '/' + bookId,
+                    data: {
+                        'book_id': bookId,
+                        'user_id': userId
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "success",
+                            title: "{{ __('messages.added_to_wishlist') }}",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    },
+                    error: function(err) {
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "error",
+                            title: "{{ __('messages.added_to_wishlist_error') }}",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+                });
+            });
+            $('.addToCartButton').click(function() {
+                // Get the value of the book ID
+                var bookId = $(this).val();
+                // Get the value of the authenticated user's ID
+                var userId = {{ auth()->id() }};
+                // Log the values to the console (you can do further processing here)
+
+                $.ajax({
+                    type: 'get',
+                    url: 'http://localhost:8000/api/addToCart/' + userId + '/' + bookId,
+                    data: {
+                        'book_id': bookId,
+                        'user_id': userId
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "success",
+                            title: "{{ __('messages.added_to_cart') }}",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    },
+                    error: function(err) {
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "error",
+                            title: "{{ __('messages.added_to_cart_error') }}",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 
 
     <!-- Optional JavaScript -->

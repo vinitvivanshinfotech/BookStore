@@ -3,6 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+// controller
+use App\Http\Controllers\User\UserApiController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -17,3 +20,6 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('/addToWishlist/{user_id}/{book_id}',[UserApiController::class,'addToWishlist']);
+Route::get('/addToCart/{user_id}/{book_id}',[UserApiController::class,'addToCart']);

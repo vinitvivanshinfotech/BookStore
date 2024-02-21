@@ -22,6 +22,9 @@
         @endif
 
         <button type="submit">{{__('labels.login')}}</button>
+
+        <a class="mt-1" href="{{route('register')}}">{{__('register')}}</a>
+
         <div class="social">
             <div class="go"><i class="fab fa-google"></i> Google</div>
             <div class="fb"><i class="fab fa-facebook"></i> Facebook</div>
