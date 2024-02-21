@@ -34,6 +34,10 @@ Route::middleware(['auth'])->prefix( 'user' )->group(function(){  // admin panel
 Route::get('/admin/login',[AdminAuthController::class,'showLoginForm'])->name('admin.loginForm');
 Route::post('/admin/loginPost',[AdminAuthController::class,'adminLoginPost'])->name('admin.login');
 
+Route::middleware(['admin'])->prefix( 'admin' )->group(function(){  // admin panel route
+    Route::get('dashboard', [ UserController::class, 'dashboard' ] )->name( 'admin.dashboard') ;
+});
+
 // Route::get('/login',[])
 
 
