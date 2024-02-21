@@ -38,6 +38,5 @@ Route::middleware(['admin'])->prefix( 'admin' )->group(function(){  // admin pan
     Route::get('dashboard', [ UserController::class, 'dashboard' ] )->name( 'admin.dashboard') ;
 });
 
-// Route::get('/login',[])
 
 
