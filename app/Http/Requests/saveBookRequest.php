@@ -26,7 +26,7 @@ class saveBookRequest extends FormRequest
             'book_title' => 'required',
             'author_name' => 'required',
             'author_email' => 'required',
-            'book_edition' => 'required|unique:book_details',
+            'book_edition' => 'required',
             'description' => 'required',
             'book_cover' => 'required|mimes:jpg,jpeg,png|max:5120', // 5MB Max
             'book_price' => 'required',

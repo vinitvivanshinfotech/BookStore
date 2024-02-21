@@ -35,9 +35,23 @@ Route::get('/admin/login',[AdminAuthController::class,'showLoginForm'])->name('a
 Route::post('/admin/loginPost',[AdminAuthController::class,'adminLoginPost'])->name('admin.login');
 
 Route::middleware(['admin'])->prefix( 'admin' )->group(function(){  // admin panel route
-    Route::get('dashboard', [ UserController::class, 'dashboard' ] )->name( 'admin.dashboard') ;
+
+    Route::view('/admindashboard', 'Admin.dashboard')->name('admin.dashboard'); // route to show dashboard of admin.
+
+    Route::view('/addbook', 'Admin.add_book')->name('add.books'); // route that show add book form  .
+    
+    Route::post('/save-book', [BookContoller::class, 'bookAdd'])->name('save.books'); // route to save book.
+
+    Route::get('/showallbooks', [BookContoller::class, 'showAllBookBook'])->name('showAll.books'); // route of show edit book form.
+
+    Route::get('/bookedit/{id}', [BookContoller::class, 'bookEditShow'])->name('edit.book'); // route that edit book .
+
+    Route::post('/bookUpdate', [BookContoller::class, 'bookUpdate'])->name('update.book'); // route to update the book.
+    
+    Route::get('/deletebook/{id}', [BookContoller::class, 'bookDelete'])->name('delete.book'); // route to delete the book.
 });
 
+// Route::get('dashboard', [ UserController::class, 'dashboard' ] )->name( 'admin.dashboard') ;
 // Route::get('/login',[])
 
 
@@ -45,16 +59,8 @@ Route::middleware(['admin'])->prefix( 'admin' )->group(function(){  // admin pan
 
 
 
-Route::view('/admindashboard', 'Admin.dashboard')->name('admin.dashboard'); // route to show dashboard of admin.
 
-Route::view('/addbook', 'Admin.add_book')->name('add.books'); // route that show add book form  .
 
-Route::post('/save-book', [BookContoller::class, 'bookAdd'])->name('save.books'); // route to save book.
 
-Route::get('/showallbooks', [BookContoller::class, 'showAllBookBook'])->name('showAll.books'); // route of show edit book form.
 
-Route::get('/bookedit/{id}', [BookContoller::class, 'bookEditShow'])->name('edit.book'); // route that edit book .
 
-Route::post('/bookUpdate', [BookContoller::class, 'bookUpdate'])->name('update.book'); // route to update the book.
-
-Route::get('/deletebook/{id}', [BookContoller::class, 'bookDelete'])->name('delete.book'); // route to delete the book.

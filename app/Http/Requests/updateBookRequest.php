@@ -28,7 +28,7 @@ class updateBookRequest extends FormRequest
             'author_email' => 'required',
             'book_edition' => 'required',
             'description' => 'required',
-            'book_cover' => 'required|mimes:jpg,jpeg,png|max:5120', // 5MB Max
+            'book_cover' => 'mimes:jpg,jpeg,png|max:5120', // 5MB Max
             'book_price' => 'required',
             'book_language' => 'required',
             'book_type' => 'required',

@@ -5,6 +5,8 @@ return [
     'dashboardtitle' => 'admin dashboard',
     'add_new_book' => 'Add Book',
     'edit_book'=>'Edit Book',
+    'admin'=>'Admin',
+    'logout'=>'Logout',
 
     // navbar admin
     'navabar_title' => 'BOOK STORE',
@@ -20,8 +22,8 @@ return [
     'siderbar_books_list' => 'All Books',
     'siderbar_books_order' => 'All Orders',
     'siderbar_users' => 'Users',
-    'siderbar_books_categories' => 'Book Categories',
-    'siderbar_add_new_book' => 'Add New Book',
+    'siderbar_categories' => 'Categories',
+    'siderbar_add_new_book' => 'Add Book',
     'siderbar_best_seller' => 'Best Books Sales',
 
 
