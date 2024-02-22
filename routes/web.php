@@ -22,24 +22,37 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/login',[UserAuthController::class,'showLoginForm'])->name( 'login' );
-Route::post('/login',[UserAuthController::class,'userLoginPost'])->name('user.login');
-Route::get('/register',[UserAuthController::class,'showRegisterForm'])->name( 'register' );
-Route::post('/register',[UserAuthController::class,'userRegistrationPost'])->name( 'user.register' );
+Route::get('/login', [UserAuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [UserAuthController::class, 'userLoginPost'])->name('user.login');
+Route::get('/register', [UserAuthController::class, 'showRegisterForm'])->name('register');
+Route::post('/register', [UserAuthController::class, 'userRegistrationPost'])->name('user.register');
 
-Route::middleware(['auth'])->prefix( 'user' )->group(function(){  // admin panel route
-    Route::get('dashboard', [ UserController::class, 'dashboard' ] )->name( 'user.dashboard') ;
+Route::middleware(['auth'])->prefix('user')->group(function () {  // user panel route
+
+    Route::get('dashboard', [UserController::class, 'dashboard'])->name('user.dashboard'); //return user dashboard
+
+    Route::get('dashboard/allBooks', [UserController::class, 'displayAllBooks'])->name('user.showBooks'); // return all books which is selling by the 
+
+    Route::post('dashboard/allBooks/bookDetails', [UserController::class, 'bookDetails'])->name('user.bookDetails'); //return book details view
+
+    Route::get('dashboard/myWatchlist', [UserController::class, 'myWatchlist'])->name('user.watchlist'); // show user book watchlist
+
+    Route::post('dashboard/myWatchlist/removebook',[UserController::class,'removeFromWatchlist'])->name('user.removeFromWatchlist'); // remove book from watchlist
+
+    Route::post('dashboard/myWatchlist/removebookFromcart',[UserController::class,'removeFromCart'])->name('user.removeFromCart'); // remove book from cart
+
+    Route::get('dashboard/myCart', [UserController::class, 'myCart'])->name('user.cart');   // show my cart page
 });
 
-Route::get('/admin/login',[AdminAuthController::class,'showLoginForm'])->name('admin.loginForm');
-Route::post('/admin/loginPost',[AdminAuthController::class,'adminLoginPost'])->name('admin.login');
+Route::get('/admin/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.loginForm');
+Route::post('/admin/loginPost', [AdminAuthController::class, 'adminLoginPost'])->name('admin.login');
 
-Route::middleware(['admin'])->prefix( 'admin' )->group(function(){  // admin panel route
+Route::middleware(['admin'])->prefix('admin')->group(function () {  // admin panel route
 
     Route::view('/admindashboard', 'Admin.dashboard')->name('admin.dashboard'); // route to show dashboard of admin.
 
     Route::view('/addbook', 'Admin.add_book')->name('add.books'); // route that show add book form  .
-    
+
     Route::post('/save-book', [BookContoller::class, 'bookAdd'])->name('save.books'); // route to save book.
 
     Route::get('/showallbooks', [BookContoller::class, 'showAllBookBook'])->name('showAll.books'); // route of show edit book form.
@@ -47,7 +60,7 @@ Route::middleware(['admin'])->prefix( 'admin' )->group(function(){  // admin pan
     Route::get('/bookedit/{id}', [BookContoller::class, 'bookEditShow'])->name('edit.book'); // route that edit book .
 
     Route::post('/bookUpdate', [BookContoller::class, 'bookUpdate'])->name('update.book'); // route to update the book.
-    
+
     Route::get('/deletebook/{id}', [BookContoller::class, 'bookDelete'])->name('delete.book'); // route to delete the book.
 });
 
@@ -89,29 +102,41 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/login',[UserAuthController::class,'showLoginForm'])->name( 'login' ); //return login view
+Route::get('/login', [UserAuthController::class, 'showLoginForm'])->name('login'); //return login view
 
-Route::post('/login',[UserAuthController::class,'userLoginPost'])->name('user.login'); //Authenticate user
+Route::post('/login', [UserAuthController::class, 'userLoginPost'])->name('user.login'); //Authenticate user
 
-Route::get('/register',[UserAuthController::class,'showRegisterForm'])->name( 'register' ); //return register  view
+Route::get('/register', [UserAuthController::class, 'showRegisterForm'])->name('register'); //return register  view
 
-Route::post('/register',[UserAuthController::class,'userRegistrationPost'])->name( 'user.register' ); //register new user
+Route::post('/register', [UserAuthController::class, 'userRegistrationPost'])->name('user.register'); //register new user
 
-Route::get('user/logout',[UserAuthController::class,'userLogout'])->name( 'user.logout' ); //logout user
+Route::get('user/logout', [UserAuthController::class, 'userLogout'])->name('user.logout'); //logout user
 
 
 
-Route::middleware(['auth'])->prefix( 'user' )->group(function(){  // admin panel route
-    Route::get('dashboard', [ UserController::class, 'dashboard' ] )->name( 'user.dashboard') ;
-    Route::get('dashboard/allBooks', [ UserController::class, 'displayAllBooks' ] )->name( 'user.showBooks') ;
+Route::middleware(['auth'])->prefix('user')->group(function () {  // admin panel route
+
+    Route::get('dashboard', [UserController::class, 'dashboard'])->name('user.dashboard'); //return user dashboard
+
+    Route::get('dashboard/allBooks', [UserController::class, 'displayAllBooks'])->name('user.showBooks'); // return all books which is selling by the 
+
+    Route::post('dashboard/allBooks/bookDetails', [UserController::class, 'bookDetails'])->name('user.bookDetails'); //return book details view
+
+    Route::post('dashboard/myWatchlist', [UserController::class, 'myWatchlist'])->name('user.watchlist'); // show user book watchlist
+
+    Route::post('dashboard/myCart', [UserController::class, 'myCart'])->name('user.cart');   // show my cart page
 });
 
-Route::get('/admin/login',[AdminAuthController::class,'showLoginForm'])->name('admin.loginForm'); //admin login view
-Route::post('/admin/loginPost',[AdminAuthController::class,'adminLoginPost'])->name('admin.login'); // admin authentication
-Route::get('/admin/loginPost',[AdminAuthController::class,'adminLogout'])->name('admin.logout'); // admin Logout
+Route::get('/admin/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.loginForm'); //admin login view
 
-Route::middleware(['admin'])->prefix( 'admin' )->group(function(){  // admin panel route
-    Route::get('dashboard', [ UserController::class, 'dashboard' ] )->name( 'admin.dashboard') ;
+Route::post('/admin/loginPost', [AdminAuthController::class, 'adminLoginPost'])->name('admin.login'); // admin authentication
+
+Route::get('/admin/loginPost', [AdminAuthController::class, 'adminLogout'])->name('admin.logout'); // admin Logout
+
+Route::middleware(['admin'])->prefix('admin')->group(function () {  // admin panel route
+
+    Route::get('dashboard', [UserController::class, 'dashboard'])->name('admin.dashboard'); // Admin Dashboard page
+
 });
 
 

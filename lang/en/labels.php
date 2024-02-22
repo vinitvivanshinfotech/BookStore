@@ -20,14 +20,27 @@ return [
    'book_name' => 'Book Name',
    'author_name' => 'Author',
    'book_language' => 'Language',
+   'description'=> 'Description',
    'book_type' => 'Type',
+   'book_edition'=>'Edition',
    'view_details' => 'Details',
    'add_to_cart' => 'Add to Cart',
    'add_to_wishlist' => 'Add to List',
    'book_cover'=>'Cover',
    'book_price' => 'Price',
+   'remover'=>'Remove',
+   'quantity'=>'Quantity',
    
-
+   
+   // Buttons
+   'back'=>'Back',
+   'more'=>'More',
+   'see_wishlist_btn'=>'My watchlist',
+   'see_cart_btn'=>'My cart',
+   'add_to_wishlist_btn'=>'Save',
+   'add_to_cart_btn'=>'Cart',
+   'remove_from_list'=> 'Remove',
+   
 
 
 ];

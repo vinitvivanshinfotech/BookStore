@@ -13,4 +13,8 @@ class WishlistBook extends Model
         'user_id',
         'book_id'
     ];
+
+    public function bookDetails(){
+        return $this->belongsTo(BookDetail::class, 'book_id');
+    }
 }

@@ -43,11 +43,14 @@ class UserAuthController extends Controller
     public function userLoginPost(LoginRequest $request){
         if(Auth::attempt(['email' => $request->input('email'), 'password' => $request->input('password')]))  
         {  
+            // Authentication passed...
+            Session::flash( "success", "You are Successfully Logged In!" ); 
             return redirect()->route('user.dashboard')->with(["Success"=>"You are Logged In Successfully","user"=>Auth::user()]); 
         }  
         else    
         {  
-            return  back()->with("Error", "Please check your email and password"); 
+            Session::flash( 'error', 'Invalid Email or Password!' ); 
+            return  redirect() ->back();
         }
     }
 

@@ -19,14 +19,24 @@
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
     </script>
 
+
+
+    {{-- jQuery CDN --}}
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
         crossorigin="anonymous"></script>
 
+    {{-- sweet alert --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    {{-- Data Tables --}}
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/dataTables.dataTables.min.css">
+    <script src="//cdn.datatables.net/2.0.0/js/dataTables.min.js"></script>
 
     <title>User</title>
 
@@ -65,9 +75,19 @@
                     <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                 </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+
+            <form class="form-inline my-2 mr-3 my-lg-0" method="get" action="{{ route('user.watchlist') }}">
+                @csrf
+                <button class="btn-sm btn-primary " type="submit" id="seeWatchlist" name="seeWatchlist" value="">
+                    <i class="bi bi-bookmark-check-fill mr-1"></i>{{ __('labels.see_wishlist_btn') }}
+                </button>
+            </form>
+
+            <form class="form-inline my-2 my-lg-0" method="get" action="{{ route('user.cart') }}">
+                @csrf
+                <button class="btn-sm btn-warning " type="submit" id="seeCart" name="seeCart" value="">
+                    <i class="bi bi-cart-plus-fill mr-1"></i>{{ __('labels.see_cart_btn') }}
+                </button>
             </form>
         </div>
     </nav>
@@ -100,7 +120,8 @@
 
                         <li>
                             <a href="" class="nav-link px-0 align-middle"> <i
-                                    class="fs-4 bi-cloud-arrow-up-fill"></i><span class="ms-2 d-none d-sm-inline">Upload
+                                    class="fs-4 bi-cloud-arrow-up-fill"></i><span
+                                    class="ms-2 d-none d-sm-inline">Upload
                                     Images</span> </a>
                         </li>
 
@@ -185,126 +206,135 @@
         </div>
     </div>
 
-    <script>
-        function showConfirmButton() {
-            let c = confirm("Are you Sure want to logout...?");
-            if (c) {
-                return true;
-            } else {
-                return false;
-            }
+
+
+
+</body>
+<script>
+    function showConfirmButton() {
+        let c = confirm("Are you Sure want to logout...?");
+        if (c) {
+            return true;
+        } else {
+            return false;
         }
+    }
+
+    function goBack() {
+        window.history.back();
+    }
 
 
-        jQuery(document).ready(function($) {
-            $('.addToWishlistButton').click(function() {
-                // Get the value of the book ID
-                var bookId = $(this).val();
-                // Get the value of the authenticated user's ID
-                var userId = {{ auth()->id() }};
-                // Log the values to the console (you can do further processing here)
+    jQuery(document).ready(function($) {
+        $('.addToWishlistButton').click(function() {
+            // Get the value of the book ID
+            var bookId = $(this).val();
+            // Get the value of the authenticated user's ID
+            var userId = {{ auth()->id() }};
+            // Log the values to the console (you can do further processing here)
 
-                $.ajax({
-                    type: 'get',
-                    url: 'http://localhost:8000/api/addToWishlist/' + userId + '/' + bookId,
-                    data: {
-                        'book_id': bookId,
-                        'user_id': userId
-                    },
-                    dataType: "json",
-                    success: function(data) {
+            $.ajax({
+                type: 'get',
+                url: 'http://localhost:8000/api/addToWishlist/' + userId + '/' + bookId,
+                data: {
+                    'book_id': bookId,
+                    'user_id': userId
+                },
+                dataType: "json",
+                success: function(data) {
 
-                        if (data['status'] == "exists") {
-                            Swal.fire({
-                                position: "top-end",
-                                icon: "warning",
-                                title: "{{ __('messages.exists_in_wishlist') }}",
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
-                        } else {
-                            Swal.fire({
-                                position: "top-end",
-                                icon: "success",
-                                title: "{{ __('messages.added_to_wishlist') }}",
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
-                        }
-
-                    },
-                    error: function(err) {
+                    if (data['status'] == "exists") {
                         Swal.fire({
                             position: "top-end",
-                            icon: "error",
-                            title: "{{ __('messages.added_to_wishlist_error') }}",
+                            icon: "warning",
+                            title: "{{ __('messages.exists_in_wishlist') }}",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else {
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "success",
+                            title: "{{ __('messages.added_to_wishlist') }}",
                             showConfirmButton: false,
                             timer: 1500
                         });
                     }
-                });
-            });
-            $('.addToCartButton').click(function() {
-                // Get the value of the book ID
-                var bookId = $(this).val();
-                // Get the value of the authenticated user's ID
-                var userId = {{ auth()->id() }};
-                // Log the values to the console (you can do further processing here)
 
-                $.ajax({
-                    type: 'get',
-                    url: 'http://localhost:8000/api/addToCart/' + userId + '/' + bookId,
-                    data: {
-                        'book_id': bookId,
-                        'user_id': userId
-                    },
-                    dataType: "json",
-                    success: function(data) {
-
-                        if (data['status'] == "exists") {
-                            Swal.fire({
-                                position: "top-end",
-                                icon: "warning",
-                                title: "{{ __('messages.exists_in_cart') }}",
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
-                        } else {
-                            Swal.fire({
-                                position: "top-end",
-                                icon: "success",
-                                title: "{{ __('messages.added_to_cart') }}",
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
-                        }
-                    },
-                    error: function(err) {
-                        Swal.fire({
-                            position: "top-end",
-                            icon: "error",
-                            title: "{{ __('messages.added_to_cart_error') }}",
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                    }
-                });
+                },
+                error: function(err) {
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "error",
+                        title: "{{ __('messages.added_to_wishlist_error') }}",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
             });
         });
-    </script>
+        $('.addToCartButton').click(function() {
+            // Get the value of the book ID
+            var bookId = $(this).val();
+            // Get the value of the authenticated user's ID
+            var userId = {{ auth()->id() }};
+            // Log the values to the console (you can do further processing here)
 
+            $.ajax({
+                type: 'get',
+                url: 'http://localhost:8000/api/addToCart/' + userId + '/' + bookId,
+                data: {
+                    'book_id': bookId,
+                    'user_id': userId
+                },
+                dataType: "json",
+                success: function(data) {
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
-        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
-    </script>
-</body>
+                    if (data['status'] == "exists") {
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "warning",
+                            title: "{{ __('messages.exists_in_cart') }}",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else {
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "success",
+                            title: "{{ __('messages.added_to_cart') }}",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+                },
+                error: function(err) {
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "error",
+                        title: "{{ __('messages.added_to_cart_error') }}",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
+        });
+    });
+
+    // Data Tables 
+    let myWatchlist = new DataTable('#myWatchlist');
+    let myCart = new DataTable('#myCart');
+</script>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+</script>
 
 </html>
