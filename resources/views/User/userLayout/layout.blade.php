@@ -187,12 +187,12 @@
 
     <script>
         function showConfirmButton() {
-            
-            let con = alert('Are you sure to LogOut?');
-            if (con == true) {
+            let c = confirm("Are you Sure want to logout...?");
+            if (c) {
                 return true;
+            } else {
+                return false;
             }
-
         }
 
 
@@ -213,13 +213,25 @@
                     },
                     dataType: "json",
                     success: function(data) {
-                        Swal.fire({
-                            position: "top-end",
-                            icon: "success",
-                            title: "{{ __('messages.added_to_wishlist') }}",
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
+
+                        if (data['status'] == "exists") {
+                            Swal.fire({
+                                position: "top-end",
+                                icon: "warning",
+                                title: "{{ __('messages.exists_in_wishlist') }}",
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        } else {
+                            Swal.fire({
+                                position: "top-end",
+                                icon: "success",
+                                title: "{{ __('messages.added_to_wishlist') }}",
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        }
+
                     },
                     error: function(err) {
                         Swal.fire({
@@ -248,13 +260,24 @@
                     },
                     dataType: "json",
                     success: function(data) {
-                        Swal.fire({
-                            position: "top-end",
-                            icon: "success",
-                            title: "{{ __('messages.added_to_cart') }}",
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
+
+                        if (data['status'] == "exists") {
+                            Swal.fire({
+                                position: "top-end",
+                                icon: "warning",
+                                title: "{{ __('messages.exists_in_cart') }}",
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        } else {
+                            Swal.fire({
+                                position: "top-end",
+                                icon: "success",
+                                title: "{{ __('messages.added_to_cart') }}",
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        }
                     },
                     error: function(err) {
                         Swal.fire({

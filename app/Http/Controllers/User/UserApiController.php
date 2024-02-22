@@ -36,7 +36,7 @@ class UserApiController extends Controller
                 return  response()->json(['status' => "failed"], 500);
             }
         } else {
-            return  response()->json(['status' => "success"]);
+            return  response()->json(['status' => "exists"]);
         }
     }
 
@@ -63,7 +63,7 @@ class UserApiController extends Controller
                 return  response()->json(['status' => "failed"], 500);
             }
         }else{
-            return  response()->json(['status' => "success"]);
+            return  response()->json(['status' => "exists"]);
         }
     }
 }
