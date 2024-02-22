@@ -50,4 +50,16 @@ class UserAuthController extends Controller
             return  back()->with("Error", "Please check your email and password"); 
         }
     }
+
+    /**
+     * Desciption : 
+     * 
+     * @param : 
+     * @return : 
+     */ 
+    public function userLogout(){
+        Auth::logout();
+        Session::flush();
+        return redirect()->route('login');
+    }
 }
