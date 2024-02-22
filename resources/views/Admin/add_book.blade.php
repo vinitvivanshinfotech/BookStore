@@ -120,9 +120,22 @@
             </div>
 
             <div class="form-floating mb-3">
-                <input type="submit" class="btn btn-info" value="Add Book">
+                <input type="submit" class="btn btn-info" id="addBookForm" name="addBookForm" value="Add Book">
             </div>
     </form>
 </body>
+<script>
+    // $(document).ready(function() {
+    //     $('#addBookForm').click(function() {
+    //         add();
+    //     });
+
+    //     function add() {
+    //         console.log("ok");
+    //         Swal.fire('Hello');
+    //     }
+    // });
+</script>
+
 
 </html>

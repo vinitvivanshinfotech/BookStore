@@ -10,13 +10,13 @@
         <h3>User Login </h3>
 
         <label for="email">{{ __('labels.email') }}</label>
-        <input type="email" placeholder="{{ __('labels.email') }}" id="email" name="email" required>
+        <input type="email" placeholder="{{ __('labels.email') }}" id="email" name="email" >
         @if ($errors->has('email'))
             <span style="color: red;">{{ $errors->first('email') }}</span>
         @endif
 
         <label for="password">{{ __('labels.password') }}</label>
-        <input type="password" placeholder="{{ __('labels.password') }}" id="password" name="password" required>
+        <input type="password" placeholder="{{ __('labels.password') }}" id="password" name="password">
         @if ($errors->has('password'))
             <span style="color: red;">{{ $errors->first('password') }}</span>
         @endif

@@ -54,6 +54,9 @@
                 <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px" name="description">{{$book->description}}</textarea>
                 <label for="floatingTextarea3">{{__('adminlabel.book_description')}}</label>
             </div>
+            <div>
+            <img src="{{ url('storage/uploads/books_covers/'.$book->book_cover) }}" width="120" height="50" />
+            </div>
             <div class="input-group mb-3">
                 <input type="file" class="form-control" id="inputGroupFile02" name="book_cover">
                 <label class="input-group-text" for="inputGroupFile02">{{__('adminlabel.book_cover')}}</label>
