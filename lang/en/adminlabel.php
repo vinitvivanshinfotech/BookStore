@@ -2,6 +2,13 @@
 
 return [
 
+
+    'moreinfo'=>'Order Info',
+    'customer_name'=>' Customer Name',
+    'orderdetails'=>'Order Details',
+    'phone'=>'Phone Number',
+
+
     // label of input feilds.
     'book_name'=>'Book Name',
     'book_title'=>'Book Title',

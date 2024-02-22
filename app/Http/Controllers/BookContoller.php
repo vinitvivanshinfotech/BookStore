@@ -6,6 +6,7 @@ use App\Models\BookDetail;
 use Illuminate\Http\Request;
 use App\Http\Requests\saveBookRequest;
 use App\Http\Requests\updateBookRequest;
+use App\Models\OrderDetail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
@@ -31,22 +32,19 @@ class BookContoller extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Desciption : This function which used to save the book in database.
+     *
+     * @param :request
+     * @return :
      */
     public function bookAdd(saveBookRequest $request)
     {
-
-        // dd($request->all());
-
         // Storing the Book_cover in local storage 
         $file_name = uniqid() . '_' . time() . '.' . $request->book_cover->getClientOriginalExtension();
 
         $file_path = "uploads/books_covers/$file_name";
 
         Storage::disk(config('constant.FILESYSTEM_DISK'))->put($file_path, file_get_contents($request->book_cover));
-
-        // $request->book_cover->storeAs('public/uploads/books_covers', $book_cover_image);
-
 
         // Adding the new books in database 
         $book = BookDetail::create([
@@ -62,15 +60,16 @@ class BookContoller extends Controller
             'book_type' => $request->book_type,
         ]);
 
-
-
         // return to showing all books page  with success message.
         return redirect()->route('showAll.books')->with("success", 'Book added successfully!');
     }
 
 
     /**
-     * Display the specified resource.
+     * Desciption : This function fetch all bookes from the dataabse
+     * and  show them on the show all book page.
+     * @param :
+     * @return : all_books
      */
     public function showAllBookBook()
     {
@@ -82,7 +81,10 @@ class BookContoller extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Desciption : This function fetch the one book from the dataabse
+     * and  show them on the edit book page.
+     * @param : id
+     * @return : book,book_edition,book_language,book_type
      */
     public function bookEditShow(string $id)
     {
@@ -101,21 +103,23 @@ class BookContoller extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Desciption : This function update the book in the database.
+     *
+     * @param : request
+     * @return : 
      */
     public function bookUpdate(updateBookRequest $request)
     {
-
         $book =  BookDetail::find($request->id);
 
         // Storing the Book_cover in local storage 
         if ($request->book_cover != null) {
 
-            if(Storage::disk(config('constant.FILESYSTEM_DISK'))->exists($book->book_cover)){
+            if (Storage::disk(config('constant.FILESYSTEM_DISK'))->exists($book->book_cover)) {
                 Storage::disk(config('constant.FILESYSTEM_DISK'))->delete($book->book_cover);
             }
-            
-            // Storing the Book_cover in local storage 
+
+            // Storing the Book cover in local storage 
             $file_name = uniqid() . '_' . time() . '.' . $request->book_cover->getClientOriginalExtension();
 
             $file_path = "uploads/books_covers/$file_name";
@@ -136,25 +140,54 @@ class BookContoller extends Controller
             'book_type' => $request->book_type,
         ]);
 
-        // finding the  book with request->id and storing it in a variable and update all the data.
-        // $book =  BookDetail::find($request->id);
-        // $book->update($request->all());
-
         // return to showing all books page with succes  message .
         return redirect()->route('showAll.books')->with("success", 'Book Updated Successfully ');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Desciption : This function is used for deleting a specific book from database by its id .
+     *
+     * @param :id
+     * @return : 
      */
     public function bookDelete(string $id)
     {
-        // finding  the book with id and delete it.
+        // finding the book with id and delete it.
         $book = BookDetail::findOrFail($id);
-        unlink("storage/uploads/books_covers/" . $book->book_cover);
+
+        // deleteing the book_cover from storage.
+        if (Storage::disk(config('constant.FILESYSTEM_DISK'))->exists($book->book_cover)) {
+            Storage::disk(config('constant.FILESYSTEM_DISK'))->delete($book->book_cover);
+        }
+
         $book->delete();
 
         // return to showing all books page with success message .
         return  redirect()->route("showAll.books")->with("success", "succesfully delete the book");
+    }
+
+    /**
+     * Desciption : 
+     *
+     * @param :
+     * @return : 
+     */
+    public function orderBook()
+    {
+
+        $orders = OrderDetail::with(['user', 'book'])->get();
+        return view('Admin.order_book')->with('orders',$orders);
+    }
+
+    /**
+    * Desciption : 
+    *
+    * @param :
+    * @return : 
+    */
+    public function  orderDetails(string $id)  {
+        
+        $orderdetasils = OrderDetail::finc($id);
+        return view('Admin.order_details') ->with('orderdetails' , $orderdetasils );
     }
 }

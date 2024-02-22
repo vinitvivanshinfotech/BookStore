@@ -24,7 +24,7 @@ return [
     'siderbar_users' => 'Users',
     'siderbar_categories' => 'Categories',
     'siderbar_add_new_book' => 'Add Book',
-    'siderbar_best_seller' => 'Best Books Sales',
+    'siderbar_best_seller' => 'Best Seller',
 
 
 
