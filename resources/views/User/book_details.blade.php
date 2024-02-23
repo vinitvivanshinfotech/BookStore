@@ -53,6 +53,101 @@
     </div>
 @endsection
 
-function goBack() {
-    window.history.back();
-  }
+@push('scripts')
+    
+jQuery(document).ready(function($) {
+    $('.addToWishlistButton').click(function() {
+        // Get the value of the book ID
+        var bookId = $(this).val();
+        // Get the value of the authenticated user's ID
+        var userId = {{ auth()->id() }};
+        // Log the values to the console (you can do further processing here)
+
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8000/api/addToWishlist/' + userId + '/' + bookId,
+            data: {
+                'book_id': bookId,
+                'user_id': userId
+            },
+            dataType: "json",
+            success: function(data) {
+
+                if (data['status'] == "exists") {
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "warning",
+                        title: "{{ __('messages.exists_in_wishlist') }}",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                } else {
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "{{ __('messages.added_to_wishlist') }}",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+
+            },
+            error: function(err) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "{{ __('messages.added_to_wishlist_error') }}",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        });
+    });
+    $('.addToCartButton').click(function() {
+        // Get the value of the book ID
+        var bookId = $(this).val();
+        // Get the value of the authenticated user's ID
+        var userId = {{ auth()->id() }};
+        // Log the values to the console (you can do further processing here)
+
+        $.ajax({
+            type: 'get',
+            url: 'http://localhost:8000/api/addToCart/' + userId + '/' + bookId,
+            data: {
+                'book_id': bookId,
+                'user_id': userId
+            },
+            dataType: "json",
+            success: function(data) {
+
+                if (data['status'] == "exists") {
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "warning",
+                        title: "{{ __('messages.exists_in_cart') }}",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                } else {
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "{{ __('messages.added_to_cart') }}",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            },
+            error: function(err) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "{{ __('messages.added_to_cart_error') }}",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        });
+    });
+});
+@endpush

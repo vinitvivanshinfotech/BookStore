@@ -1,17 +1,5 @@
 @extends('User.userLayout.layout')
 @section('content')
-    @if (Session::has('success'))
-        <div class="alert alert-success" role="alert">
-            {{ Session::get('success') }}
-        </div>
-    @endif
-
-    @if (Session::has('failure'))
-        <div class="alert alert-danger" role="alert">
-            {{ Session::get('failure') }}
-        </div>
-    @endif
-
     <h1>{{ __('labels.see_cart_btn') }}</h1>
 
     <div class="container-fluid">
@@ -21,12 +9,16 @@
                     <th scope="col">{{ __('labels.book_cover') }}</th>
                     <th scope="col">{{ __('labels.book_name') }}</th>
                     <th scope="col">{{ __('labels.author_name') }}</th>
-                    <th scope="col">{{ __('labels.book_price') }}</th>
                     <th scope="col">{{ __('labels.quantity') }}</th>
+                    <th scope="col">{{ __('labels.book_price') }}</th>
                     <th scope="col">{{ __('labels.remover') }}</th>
                 </tr>
             </thead>
             <tbody>
+                @php
+                    $totalCartItem = 0;
+                    $totalCartPrice = 0;
+                @endphp
                 @foreach ($data as $item)
                     <tr>
 
@@ -35,8 +27,8 @@
                                 alt="Card image cap" height="100px" width="50px"></td>
                         <td>{{ $item['book_details']['book_name'] }}</td>
                         <td>{{ $item['book_details']['author_name'] }}</td>
+                        <td>{{ $item['book_quantity'] }}</td>
                         <td>{{ $item['book_details']['book_price'] }}</td>
-                        <td>1</td>
                         <td>
                             <form action="{{ route('user.removeFromCart') }}" method="POST">
                                 @csrf
@@ -48,9 +40,30 @@
                         </td>
 
                     </tr>
+                    @php
+                        $totalCartItem += $item['book_quantity'];
+                        $totalCartPrice += $item['book_details']['book_price'] * $item['book_quantity'];
+                    @endphp
                 @endforeach
+
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <b>{{ __('labels.total_quantity') }} : </b>{{ $totalCartItem }}
+                </td>
+                <td>
+                    <b>{{ __('labels.total_price') }} : </b>{{ $totalCartPrice }}
+                </td>
 
             </tbody>
         </table>
+    </div>
+
+    <div class="text-center mb-3">
+        <form action="{{ route('user.ShippingDetailsForm') }}" method="get">
+            <button type="submit" class="btn btn-lg btn-primary mr-5">{{ __('labels.add_shipping_details') }}<i
+                    class="bi bi-play-fill ms-1"></i></button>
+        </form>
     </div>
 @endsection

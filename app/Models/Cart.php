@@ -11,7 +11,8 @@ class Cart extends Model
 
     protected $fillable = [
         'user_id',
-        'book_id'
+        'book_id',
+        'book_quantity'
     ];
 
     public function bookDetails(){

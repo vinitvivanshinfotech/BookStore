@@ -40,6 +40,26 @@ return [
    'add_to_wishlist_btn'=>'Save',
    'add_to_cart_btn'=>'Cart',
    'remove_from_list'=> 'Remove',
+   'next'=>'Next',
+   
+
+   // Cart
+   'total_quantity'=>'Total Quantity',
+   'total_price'=>'Total Price',
+
+   // shipping details form
+   'shipping_info'=>'Shipping Information',
+   'add_shipping_details'=>'Add Shipping Details',
+   'address'=>'Address',
+   'pincode'=>'Pincode',
+   'city'=>'City',
+   'state'=>'State',
+   'payment_mode'=>'Payment Mode',
+   'online'=>'Online',
+   'offline'=>'Offline',
+   'place_order'=>'Place Order',
+   'cancel'=>'Cancel',
+
    
 
 
