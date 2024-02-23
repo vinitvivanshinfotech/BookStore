@@ -69,6 +69,8 @@ Route::middleware(['admin'])->group(function () {
         Route::get('/deletebook/{id}',  'bookDelete')->name('delete.book');
         Route::get('/orderbook', 'orderBook')->name('order.book');
         Route::get('/orderdetails/{id}', 'orderDetails')->name('orderdetails.book');
+        Route::post('/updateorderstatus', 'updateOrderStatus')->name('update.order.status');
+        Route::Post('/rejectingorder/{id}', 'deleteOrder')->name('delete.order');
     });
 });
 

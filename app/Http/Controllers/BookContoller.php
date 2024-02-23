@@ -7,9 +7,13 @@ use Illuminate\Http\Request;
 use App\Http\Requests\saveBookRequest;
 use App\Http\Requests\updateBookRequest;
 use App\Models\OrderDetail;
+use App\Models\ShippingDetail;
+use App\Models\ShippingDetails;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
+
 
 
 
@@ -110,6 +114,7 @@ class BookContoller extends Controller
      */
     public function bookUpdate(updateBookRequest $request)
     {
+
         $book =  BookDetail::find($request->id);
 
         // Storing the Book_cover in local storage 
@@ -154,17 +159,22 @@ class BookContoller extends Controller
     {
         // finding the book with id and delete it.
         $book = BookDetail::findOrFail($id);
+        try {
 
-        // deleteing the book_cover from storage.
-        if (Storage::disk(config('constant.FILESYSTEM_DISK'))->exists($book->book_cover)) {
-            Storage::disk(config('constant.FILESYSTEM_DISK'))->delete($book->book_cover);
+            // deleteing the book_cover from storage.
+            if (Storage::disk(config('constant.FILESYSTEM_DISK'))->exists($book->book_cover)) {
+                Storage::disk(config('constant.FILESYSTEM_DISK'))->delete($book->book_cover);
+            }
+            $book->delete();
+            Log::info('delete the book with id: ' . $id . '.');
+            // return to showing all books page with success message .
+            return  redirect()->route("showAll.books")->with("success", "succesfully delete the book");
+        } catch (\Exception $e) {
+            Log::error('Attempt to deleteing  the book with id ' . $id . 'fails  , Error: ' . $e->getMessage());
+            return response()->json(['message' => "Error in deleting this book"], 500);
         }
-
-        $book->delete();
-
-        // return to showing all books page with success message .
-        return  redirect()->route("showAll.books")->with("success", "succesfully delete the book");
     }
+
 
     /**
      * Desciption : 
@@ -174,20 +184,63 @@ class BookContoller extends Controller
      */
     public function orderBook()
     {
+        $orders = OrderDetail::orderBy('created_at', 'desc')->with(['user', 'book'])->get();
 
-        $orders = OrderDetail::with(['user', 'book'])->get();
-        return view('Admin.order_book')->with('orders',$orders);
+    
+        $order_status =  $orders[1]['order_status'];
+        $order_status= explode(',',$orders[1]->order_status );
+        
+        return view('Admin.order_book',['orders' => $orders,'order_status'=> $order_status]);
     }
 
     /**
-    * Desciption : 
-    *
-    * @param :
-    * @return : 
-    */
-    public function  orderDetails(string $id)  {
-        
-        $orderdetasils = OrderDetail::finc($id);
-        return view('Admin.order_details') ->with('orderdetails' , $orderdetasils );
+     * Desciption : 
+     *
+     * @param :
+     * @return : 
+     */
+    public function  orderDetails(string $id)
+    {
+
+        $orderdetasils = ShippingDetail::where('order_id', $id)->first();
+        return view('Admin.order_details')->with('orderdetails', $orderdetasils);
+    }
+
+    /**
+     * Desciption : 
+     *
+     * @param :
+     * @return : 
+     */
+    public function updateOrderStatus(Request $request)
+    {
+        dd($request->toArray());
+    }
+
+    /**
+     * Desciption : 
+     *
+     * @param :
+     * @return : 
+     */
+    public function deleteOrder(int $id)
+    {
+        // dd($id);
+        // finding the book with id and delete it.
+        try {
+
+            $order = OrderDetail::find($id);
+            $cancelledOrder = "Cancelled Order";
+            // dd($order);
+            $order->update([
+                'order_status' => $cancelledOrder,
+            ]);
+            Log::info('delete the order with id: ' . $id . '.');
+            // return to showing all books page with success message .
+            return  redirect()->route('order.book')->with("success", "succesfully delete the order.");
+        } catch (\Exception $e) {
+            Log::error('Attempt to deleteing  the book with id ' . $id . 'fails  , Error: ' . $e->getMessage());
+            return response()->json(['message' => "Error in deleting this order"], 500);
+        }
     }
 }

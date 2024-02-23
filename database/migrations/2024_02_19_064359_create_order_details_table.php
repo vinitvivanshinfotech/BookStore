@@ -14,17 +14,13 @@ return new class extends Migration
         Schema::create('order_details', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->unsigned();
-            $table->unsignedBigInteger('book_id')->unsigned();
-            $table->float('book_price');
-            $table->float('book_quantity');
-            $table->float('book_discount')->nullable();
-            $table->string('book_editon')->nullable();
+            $table->float('book_total_price');
+            $table->integer('book_total_quantity');
             $table->date('book_shipdate')->nullable();
             $table->date('book_billdate');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('book_id')->references('id')->on('book_details')->onDelete('cascade');
 
         });
     }
