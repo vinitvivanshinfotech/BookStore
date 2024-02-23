@@ -7,6 +7,23 @@ return [
     'customer_name'=>' Customer Name',
     'orderdetails'=>'Order Details',
     'phone'=>'Phone Number',
+    'order_id'=>'Order ID',
+    'total_amount'=>'Total Order Amount',
+    'total_quantity'=>'Total Quantity',
+    'order_status'=>'Order Status',
+    'update'=>'Update order status',
+    'delete'=>'Delete Order',
+    
+
+
+    'accept_order'=>'Accepted Order',
+    'placed_order'=>'Placed Order',
+    'procees_order'=>'Process Order',
+    'shipped_order'=>'Shipped Order',
+    'delivered_order'=>'Delivered Order',
+    'cancelled_order'=>'Cancelled Order',
+    'pending_order'=>'Pending Order',
+    'placed_order'=>'Placed Order',
 
 
     // label of input feilds.

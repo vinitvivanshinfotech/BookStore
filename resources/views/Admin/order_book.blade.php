@@ -21,22 +21,52 @@
         <thead>
             <th>{{__('adminlabel.no')}}</th>
             <th>{{__('adminlabel.customer_name')}}</th>
-            <th>{{__('adminlabel.author_name')}}</th>
-            <th>{{__('adminlabel.book_name')}}</th>
-            <th>{{__('adminlabel.book_name')}}</th>
-            <th>{{__('adminlabel.book_name')}}</th>
-            <th>{{__('adminlabel.orderdetails')}}</th>
+            <th>{{__('adminlabel.order_id')}}</th>
+            <th>{{__('adminlabel.total_amount')}}</th>
+            <th>{{__('adminlabel.total_quantity')}}</th>
+            <th>{{__('adminlabel.order_status')}}</th>
+            <th>{{__('adminlabel.action')}}</th>
         </thead>
         <tbody>
             @foreach($orders as $order)
             <tr>
                 <td>{{$order->id}}</td>
                 <td>{{$order['user']['first_name']}} {{$order['user']['last_name']}}</td>
-                <td>{{$order['book']['book_name']}}</td>
-                <td>{{$order['book']['author_name']}}</td>
-                <td>{{$order['book']['book_price']}}</td>
-                <td>{{$order->book_quantity}}</td>
-                <td><a href="{{route('orderdetails.book',$order->id)}}">{{__('adminlabel.moreinfo')}}</a></td>
+                <td>{{$order->id}}</td>
+                <td>{{$order->book_total_price}}</td>
+                <td>{{$order->book_total_quantity}}</td>
+                <td>
+                    {{$order->order_status}}
+                    
+                    <form action="{{route('update.order.status')}}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" value="{{$order->id}}">
+                        <div class="form-floating mb-3">
+                            @php
+                            $order_status[] = $order->order_status;
+                            @endphp
+                            <select class="form-select" id="floatingSelectGrid" name="book_edition">
+                                <option value="{{__('adminlabel.placed_order')}}" @if(in_array('Placed Order',$order_status)) selected @endif>{{__('adminlabel.placed_order')}}</option>
+                                <option value="{{__('adminlabel.procees_order')}}" @if(in_array('Process Order',$order_status)) selected @endif>{{__('adminlabel.accept_order')}}</option>
+                                <option value="{{__('adminlabel.shipped_order')}}" @if(in_array('Shipped Order',$order_status)) selected @endif>{{__('adminlabel.procees_order')}}</option>
+                                <option value="{{__('adminlabel.delivered_order')}}" @if(in_array('Delivered Order',$order_status)) selected @endif>{{__('adminlabel.procees_order')}}</option>
+                                <option value="{{__('adminlabel.shipped_order')}}" @if(in_array('Shipped Order',$order_status)) selected @endif>{{__('adminlabel.shipped_order')}}</option>
+                                <option value="{{__('adminlabel.cancelled_order')}}" @if(in_array('Cancelled Order',$order_status)) selected @endif>{{__('adminlabel.cancelled_order')}}</option>
+                            </select>
+                            @error('book_edition')
+                            <span class="text-danger">{{$message}}</span>
+                            @enderror
+                            <label for="floatingSelectGrid">{{__('adminlabel.order_status')}}</label>
+                        </div>
+                </td>
+                <td><a href="{{route('orderdetails.book',$order->id)}}" class="btn btn-sm btn-info">{{__('adminlabel.moreinfo')}}</a>
+                    <input type="submit" href="{{route('update.order.status')}}" class="btn btn-sm btn-success" value="{{__('adminlabel.update')}}">
+                    </form>
+                    <form action="{{route('delete.order',$order->id)}}" method="POST">
+                        @csrf
+                        <input type="submit" class="btn btn-sm btn-danger" value="{{__('adminlabel.delete')}}">
+                    </form>
+                </td>
             </tr>
             @endforeach
         </tbody>
