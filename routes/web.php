@@ -20,17 +20,19 @@ use App\Http\Controllers\BookContoller;
 
 
 //GUEST ROTES
-Route::controller(UserAuthController::class)->group(function () {
-    Route::get('/', 'showLoginForm')->name('login');
-    Route::get('/login', 'showLoginForm')->name('login');
-    Route::post('/login', 'userLoginPost')->name('user.login');
-    Route::get('/register', 'showRegisterForm')->name('register');
-    Route::post('/register', 'userRegistrationPost')->name('user.register');
-});
+Route::middleware(['guest'])->group(function () {
+    Route::controller(UserAuthController::class)->group(function () {
+        Route::get('/', 'showLoginForm')->name('login');
+        Route::get('/login', 'showLoginForm')->name('login');
+        Route::post('/login', 'userLoginPost')->name('user.login');
+        Route::get('/register', 'showRegisterForm')->name('register');
+        Route::post('/register', 'userRegistrationPost')->name('user.register');
+    });
 
-Route::controller(AdminAuthController::class)->prefix('admin')->group(function () {
-    Route::get('/admin/login',  'showLoginForm')->name('admin.loginForm');
-    Route::post('/admin/loginPost',  'adminLoginPost')->name('admin.login');
+    Route::controller(AdminAuthController::class)->prefix('admin')->group(function () {
+        Route::get('/admin/login',  'showLoginForm')->name('admin.loginForm');
+        Route::post('/admin/loginPost',  'adminLoginPost')->name('admin.login');
+});
 });
 
 
