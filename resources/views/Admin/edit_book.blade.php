@@ -55,7 +55,9 @@
                 <label for="floatingTextarea3">{{__('adminlabel.book_description')}}</label>
             </div>
             <div>
-            <img src="{{ url('storage/uploads/books_covers/'.$book->book_cover) }}" width="120" height="50" />
+                <div class="form-floating mb-3">
+                    <img src="{{ Storage::disk(config('constant.FILESYSTEM_DISK'))->url($book->book_cover) }}" width="120" height="70" />
+                </div>
             </div>
             <div class="input-group mb-3">
                 <input type="file" class="form-control" id="inputGroupFile02" name="book_cover">
