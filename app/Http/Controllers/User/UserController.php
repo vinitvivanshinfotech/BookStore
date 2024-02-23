@@ -119,31 +119,4 @@ class UserController extends Controller
         }
     }
 
-
-    
-
-
-    
-
-
-    /**
-     * 
-     * @param \App\Http\Requests\Task\AddTaskRequest $request
-     * 
-     */
-    // public function addTask(AddTaskRequest $request)
-    // {
-    //     try{
-    //         $currentUserId = auth()->user()->id;
-    //         $postData = $request->except(['_token','tag_id']);
-    //         $task = Task::create($postData);
-    //         $task->tags()->attach($request->input('tag_id'));
-    //         Log::info(__METHOD__." User #{$currentUserId} created tag #{$task->id}");
-    //         return back()->with('success', 'Task added successfully!');
-    //     }catch(\Exception $e){
-    //         Log::error(__METHOD__." Line #".__LINE__." | {$e->getMessage()}");
-    //         return back()->withInput($request->all())->with('error', 'Internal server error!');
-    //     }
-    // }
-
 }

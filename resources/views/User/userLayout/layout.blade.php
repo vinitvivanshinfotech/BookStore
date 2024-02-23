@@ -10,33 +10,7 @@
 
     </style>
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
-        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-
-
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
-    </script>
-
-
-
-    {{-- jQuery CDN --}}
-    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
-        crossorigin="anonymous"></script>
-
-    {{-- sweet alert --}}
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    {{-- Data Tables --}}
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/dataTables.dataTables.min.css">
-    <script src="//cdn.datatables.net/2.0.0/js/dataTables.min.js"></script>
+    @include('User.userLayout.cdn')
 
     <title>User</title>
 
@@ -120,8 +94,7 @@
 
                         <li>
                             <a href="" class="nav-link px-0 align-middle"> <i
-                                    class="fs-4 bi-cloud-arrow-up-fill"></i><span
-                                    class="ms-2 d-none d-sm-inline">Upload
+                                    class="fs-4 bi-cloud-arrow-up-fill"></i><span class="ms-2 d-none d-sm-inline">Upload
                                     Images</span> </a>
                         </li>
 
@@ -199,6 +172,18 @@
             </div>
             <div class="col py-3">
 
+                @if (Session::has('success'))
+                    <div class="alert alert-success" role="alert">
+                        {{ Session::get('success') }}
+                    </div>
+                @endif
+
+                @if (Session::has('failure'))
+                    <div class="alert alert-danger" role="alert">
+                        {{ Session::get('failure') }}
+                    </div>
+                @endif
+
                 @yield('content')
 
 
@@ -210,6 +195,10 @@
 
 
 </body>
+<script>
+    @stack('scripts')
+</script>
+
 <script>
     function showConfirmButton() {
         let c = confirm("Are you Sure want to logout...?");
@@ -224,102 +213,6 @@
         window.history.back();
     }
 
-
-    jQuery(document).ready(function($) {
-        $('.addToWishlistButton').click(function() {
-            // Get the value of the book ID
-            var bookId = $(this).val();
-            // Get the value of the authenticated user's ID
-            var userId = {{ auth()->id() }};
-            // Log the values to the console (you can do further processing here)
-
-            $.ajax({
-                type: 'get',
-                url: 'http://localhost:8000/api/addToWishlist/' + userId + '/' + bookId,
-                data: {
-                    'book_id': bookId,
-                    'user_id': userId
-                },
-                dataType: "json",
-                success: function(data) {
-
-                    if (data['status'] == "exists") {
-                        Swal.fire({
-                            position: "top-end",
-                            icon: "warning",
-                            title: "{{ __('messages.exists_in_wishlist') }}",
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                    } else {
-                        Swal.fire({
-                            position: "top-end",
-                            icon: "success",
-                            title: "{{ __('messages.added_to_wishlist') }}",
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                    }
-
-                },
-                error: function(err) {
-                    Swal.fire({
-                        position: "top-end",
-                        icon: "error",
-                        title: "{{ __('messages.added_to_wishlist_error') }}",
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                }
-            });
-        });
-        $('.addToCartButton').click(function() {
-            // Get the value of the book ID
-            var bookId = $(this).val();
-            // Get the value of the authenticated user's ID
-            var userId = {{ auth()->id() }};
-            // Log the values to the console (you can do further processing here)
-
-            $.ajax({
-                type: 'get',
-                url: 'http://localhost:8000/api/addToCart/' + userId + '/' + bookId,
-                data: {
-                    'book_id': bookId,
-                    'user_id': userId
-                },
-                dataType: "json",
-                success: function(data) {
-
-                    if (data['status'] == "exists") {
-                        Swal.fire({
-                            position: "top-end",
-                            icon: "warning",
-                            title: "{{ __('messages.exists_in_cart') }}",
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                    } else {
-                        Swal.fire({
-                            position: "top-end",
-                            icon: "success",
-                            title: "{{ __('messages.added_to_cart') }}",
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                    }
-                },
-                error: function(err) {
-                    Swal.fire({
-                        position: "top-end",
-                        icon: "error",
-                        title: "{{ __('messages.added_to_cart_error') }}",
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                }
-            });
-        });
-    });
 
     // Data Tables 
     let myWatchlist = new DataTable('#myWatchlist');
