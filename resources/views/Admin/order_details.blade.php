@@ -4,52 +4,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>{{__('adminlabel.orderdetails')}}</title>
     @include('cdn')
 </head>
 
 <body>
     @include('Admin.layoutAdmin.navbar')
     @include('Admin.layoutAdmin.sildebar')
-    {{$orderdetails}}
-
-    <!-- <div class="col-md mb-3">
-        <div class="form-floating">
-            <input type="text" class="form-control" id="floatingInput" placeholder="" name="author_name">
-            <label for="floatingInput">{{__('adminlabel.author_name')}}</label>
+    <section>
+        <div>
+            <div class="card">
+                <h5 class="card-header">{{__('adminlabel.orderdetails')}}</h5>
+                <div class="card-body">
+                    <h5 class="card-title">{{__('adminview.shipingdetails')}}</h5>
+                    <fieldset disabled>
+                        <div class="row g-3">
+                            <div class="col">
+                                <label for="disabledTextInput" class="form-label">{{__('labels.first_name')}}</label>
+                                <input type="text" class="form-control" placeholder="First name" aria-label="First name" value="{{$orderDetails[0]['first_name']}}">
+                            </div>
+                            <div class="col">
+                                <label for="disabledTextInput" class="form-label">{{__('labels.last_name')}}</label>
+                                <input type="text" class="form-control" placeholder="Last name" aria-label="Last name" value="{{$orderDetails[0]['last_name']}}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="disabledTextInput" class="form-label" value="{{$orderDetails[0]['email']}}">{{__('labels.email')}}</label>
+                            <input type="email" class="form-control" id="disabledTextInput" value="{{$orderDetails[0]['email']}}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="disabledTextInput" class="form-label">{{__('labels.phone_number')}}</label>
+                            <input type="text" class="form-control" value="{{$orderDetails[0]['phone_number']}}">
+                        </div>
+                        <div class="col-12">
+                            <label for="disabledTextInput" class="form-label">{{__('labels.address')}}</label>
+                            <input type="text" class="form-control" id="disabledTextInput" value="{{$orderDetails[0]['address']}}">
+                        </div>
+                        <div class="col-12">
+                            <label for="disabledTextInput" class="form-label">Address 2</label>
+                            <input type="text" class="form-control" id="disabledTextInput" value="{{$orderDetails[0]['address']}}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="disabledTextInput" class="form-label">{{__('labels.city')}}</label>
+                            <input type="text" class="form-control" id="disabledTextInput" value="{{$orderDetails[0]['city']}}">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="disabledTextInput" class="form-label">{{__('labels.state')}}</label>
+                            <input type="text" class="form-control" id="disabledTextInput" value="{{$orderDetails[0]['state']}}">
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="disabledTextInput" class="form-label">{{__('labels.pincode')}}</label>
+                            <input type="text" class="form-control" id="disabledTextInput" value="{{$orderDetails[0]['pincode']}}">
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+    </section>
+    </div>
+    <table class="table table-bordered table-hover" id="books_list" name="books_list">
+        @if(session()->has('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
         </div>
-    </div>
-    <div class="col-md-6">
-        <label for="inputEmail4" class="form-label">Email</label>
-        <input type="email" class="form-control" id="inputEmail4">
-    </div>
-    <div class="col-md-6">
-        <label for="inputPassword4" class="form-label">Password</label>
-        <input type="password" class="form-control" id="inputPassword4">
-    </div>
-    <div class="col-12">
-        <label for="inputAddress" class="form-label">Address</label>
-        <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
-    </div>
-    <div class="col-12">
-        <label for="inputAddress2" class="form-label">Address 2</label>
-        <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
-    </div>
-    <div class="col-md-6">
-        <label for="inputCity" class="form-label">City</label>
-        <input type="text" class="form-control" id="inputCity">
-    </div>
-    <div class="col-md-4">
-        <label for="inputState" class="form-label">State</label>
-        <select id="inputState" class="form-select">
-            <option selected>Choose...</option>
-            <option>...</option>
-        </select>
-    </div>
-    <div class="col-md-2">
-        <label for="inputZip" class="form-label">Zip</label>
-        <input type="text" class="form-control" id="inputZip">
-    </div> -->
+        @endif
+        <thead>
+            <th>{{__('adminlabel.no')}}</th>
+            <th>{{__('labels.book_name')}}</th>
+            <th>{{__('labels.book_price')}}</th>
+            <th>{{__('labels.quantity')}}</th>
+            <th>{{__('labels.discount')}}</th>
+            <th>{{__('labels.total_price')}}</th>
+        </thead>
+        <tbody>
+            @foreach ($orderDetails as $orderDetail )    
+            <tr>
+                <td>{{$loop->index+1 }}</td>
+                <td>{{$orderDetail['book_name']}}</td>
+                <td>{{$orderDetail['book_price']}}</td>
+                <td>{{$orderDetail['book_total_quantity']}}</td>
+                <td>{{$orderDetail['book_discount']}}</td>
+                <td>{{  ($orderDetail['book_price'] * $orderDetails[0]['book_total_quantity']) - ($orderDetail['book_discount'] * $orderDetails[0]['book_total_quantity'])  }}</td>
+            </tr>
+            @endforeach
+        </tbody>
+
+    </table>   
+
 
 </body>
 

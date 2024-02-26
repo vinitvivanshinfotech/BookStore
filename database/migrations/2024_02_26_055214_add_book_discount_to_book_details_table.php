@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('order_details', function (Blueprint $table) {
-            $table->unsignedBigInteger('payment_id')->unsigned();
-            $table->foreign('payment_id')->references('id')->on('payment_books')->onDelete('cascade');
-            
+        Schema::table('book_details', function (Blueprint $table) {
+            //
+            $table->float('book_discount')->nullable;
+
         });
     }
 
@@ -23,9 +23,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('order_details', function (Blueprint $table) {
-            $table->dropColumn('payment_id');
-
+        Schema::table('book_details', function (Blueprint $table) {
+            //
+            $table->dropColumn('book_discount');
         });
     }
 };

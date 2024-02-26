@@ -30,6 +30,7 @@ class saveBookRequest extends FormRequest
             'description' => 'required',
             'book_cover' => 'required|mimes:jpg,jpeg,png|max:5120', // 5MB Max
             'book_price' => 'required',
+            'book_discount'=>'required',
             'book_language' => 'required',
             'book_type' => 'required',
         ];

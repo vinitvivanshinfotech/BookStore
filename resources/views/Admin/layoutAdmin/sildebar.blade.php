@@ -23,13 +23,13 @@
     <div class="offcanvas-body">
 
       <div>
+        <a type="button" class="btn btn-secondary mb-2" href="{{route('add.books')}}">{{__('adminview.siderbar_add_new_book')}}</a>
+      </div>
+      <div>
         <a type="button" class="btn btn-secondary mb-2" href="{{route('showAll.books')}}">{{__('adminview.siderbar_books_list')}}</a>
       </div>
       <div>
         <a type="button" class="btn btn-secondary mb-2" href="{{route('order.book')}}">{{__('adminview.siderbar_books_order')}}</a>
-      </div>
-      <div>
-        <a type="button" class="btn btn-secondary mb-2" href="{{route('add.books')}}">{{__('adminview.siderbar_add_new_book')}}</a>
       </div>
       <div>
         <a type="button" class="btn btn-secondary mb-2">{{__('adminview.siderbar_categories')}}</a>

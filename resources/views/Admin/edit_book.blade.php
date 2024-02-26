@@ -43,10 +43,10 @@
         <div class="col-md">
             <div class="form-floating mb-3">
                 <select class="form-select" id="floatingSelectGrid" name="book_edition">
-                    <option @if(in_array('None',$book_edition)) selected @endif>{{__('adminlabel.none')}}</option>
-                    <option value="1" @if(in_array('1',$book_edition)) selected @endif>{{__('adminlabel.book_edition_1')}}</option>
-                    <option value="2" @if(in_array('2',$book_edition)) selected @endif>{{__('adminlabel.book_edition_2')}}</option>
-                    <option value="3" @if(in_array('3',$book_edition)) selected @endif>{{__('adminlabel.book_edition_3')}}</option>
+                    <option @if(in_array('None',$bookEdition)) selected @endif>{{__('adminlabel.none')}}</option>
+                    <option value="1" @if(in_array('1',$bookEdition)) selected @endif>{{__('adminlabel.book_edition_1')}}</option>
+                    <option value="2" @if(in_array('2',$bookEdition)) selected @endif>{{__('adminlabel.book_edition_2')}}</option>
+                    <option value="3" @if(in_array('3',$bookEdition)) selected @endif>{{__('adminlabel.book_edition_3')}}</option>
                 </select>
                 <label for="floatingSelectGrid">{{__('adminlabel.book_edition')}}</label>
             </div>
@@ -69,27 +69,26 @@
             </div>
             <div class="form-floating mb-3">
                 <select class="form-select" id="floatingSelectGrid" name="book_language">
-                    <option @if(in_array('None',$book_language)) selected @endif>{{__('adminlabel.none')}}</option>
-                    <option value="Gujarati" @if(in_array('Gujarati',$book_language)) selected @endif>{{__('adminlabel.book_language_gujarati')}}</option>
-                    <option value="Hindi" @if(in_array('Hindi',$book_language)) selected @endif>{{__('adminlabel.book_language_hindi')}}</option>
-                    <option value="English" @if(in_array('English',$book_language)) selected @endif>{{__('adminlabel.book_language_english')}}</option>
+                    <option @if(in_array('None',$bookLanguage)) selected @endif>{{__('adminlabel.none')}}</option>
+                    <option value="Gujarati" @if(in_array('Gujarati',$bookLanguage)) selected @endif>{{__('adminlabel.book_language_gujarati')}}</option>
+                    <option value="Hindi" @if(in_array('Hindi',$bookLanguage)) selected @endif>{{__('adminlabel.book_language_hindi')}}</option>
+                    <option value="English" @if(in_array('English',$bookLanguage)) selected @endif>{{__('adminlabel.book_language_english')}}</option>
                 </select>
                 <label class="floatingSelectGrid">{{__('adminlabel.book_language')}}</label>
             </div>
             <div class="form-floating mb-3">
                 <select class="form-select" id="floatingSelectGrid" name="book_type">
-                    <option @if(in_array('None',$book_type)) selected @endif>{{__('adminlabel.none')}}</option>
-                    <option value="Potery" @if(in_array('Potery',$book_type)) selected @endif>{{__('adminlabel.book_type_potery')}}</option>
-                    <option value="Drama" @if(in_array('Drama',$book_type)) selected @endif>{{__('adminlabel.book_type_drama')}}</option>
-                    <option value="Mystery" @if(in_array('Mystery',$book_type)) selected @endif>{{__('adminlabel.book_type_mystery')}}</option>
-                    <option value="Thriller" @if(in_array('Thriller',$book_type)) selected @endif>{{__('adminlabel.book_type_thriller')}}</option>
-                    <option value="Comedy" @if(in_array('Comedy',$book_type)) selected @endif>{{__('adminlabel.book_type_comedy')}}</option>
-                    <option value="Religion and Spirituality" @if(in_array('Religion and Spirituality',$book_type)) selected @endif>{{__('adminlabel.book_type_religion_and_spirituality')}}</option>
-                    <option value="Philosophy" @if(in_array('Philosophy',$book_type)) selected @endif>{{__('adminlabel.book_type_philosophy')}}</option>
+                    <option @if(in_array('None',$bookType)) selected @endif>{{__('adminlabel.none')}}</option>
+                    <option value="Potery" @if(in_array('Potery',$bookType)) selected @endif>{{__('adminlabel.book_type_potery')}}</option>
+                    <option value="Drama" @if(in_array('Drama',$bookType)) selected @endif>{{__('adminlabel.book_type_drama')}}</option>
+                    <option value="Mystery" @if(in_array('Mystery',$bookType)) selected @endif>{{__('adminlabel.book_type_mystery')}}</option>
+                    <option value="Thriller" @if(in_array('Thriller',$bookType)) selected @endif>{{__('adminlabel.book_type_thriller')}}</option>
+                    <option value="Comedy" @if(in_array('Comedy',$bookType)) selected @endif>{{__('adminlabel.book_type_comedy')}}</option>
+                    <option value="Religion and Spirituality" @if(in_array('Religion and Spirituality',$bookType)) selected @endif>{{__('adminlabel.book_type_religion_and_spirituality')}}</option>
+                    <option value="Philosophy" @if(in_array('Philosophy',$bookType)) selected @endif>{{__('adminlabel.book_type_philosophy')}}</option>
                 </select>
                 <label class="floatingSelectGrid">{{__('adminlabel.book_type')}}</span>
             </div>
-
             <div class="">
                 <input type="submit" class="btn btn-info" value="Update Book">
             </div>
