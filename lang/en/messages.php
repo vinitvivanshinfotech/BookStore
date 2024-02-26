@@ -13,4 +13,12 @@ return [
    'exists_in_wishlist'=>'Book already exists in list',
    'exists_in_cart'=>'Book already exists in cart',
 
+
+
+   'empty_cart'=> 'Please add something in cart first',
+   'payment_fail'=>'Something went wrong in payment.',
+   'order_fail'=>'Something went wrong in order.',
+   'shipping_details_add_fail'=>'Something went wrong in order.',
+   'order_place_successfull'=>'Order placed successfull',
+
 ];

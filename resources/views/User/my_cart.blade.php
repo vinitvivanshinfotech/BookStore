@@ -9,8 +9,9 @@
                     <th scope="col">{{ __('labels.book_cover') }}</th>
                     <th scope="col">{{ __('labels.book_name') }}</th>
                     <th scope="col">{{ __('labels.author_name') }}</th>
-                    <th scope="col">{{ __('labels.quantity') }}</th>
                     <th scope="col">{{ __('labels.book_price') }}</th>
+                    <th scope="col">{{ __('labels.book_discount') }}</th>
+                    <th scope="col">{{ __('labels.quantity') }}</th>
                     <th scope="col">{{ __('labels.remover') }}</th>
                 </tr>
             </thead>
@@ -27,8 +28,28 @@
                                 alt="Card image cap" height="100px" width="50px"></td>
                         <td>{{ $item['book_details']['book_name'] }}</td>
                         <td>{{ $item['book_details']['author_name'] }}</td>
-                        <td>{{ $item['book_quantity'] }}</td>
                         <td>{{ $item['book_details']['book_price'] }}</td>
+                        <td>{{ $item['book_details']['book_discount'] }}</td>
+                        <td>
+
+                            
+                            <form action="{{route('user.quantityChange')}}" method="post" style="display: inline-block;">
+                                @csrf
+                                <input type="hidden" name="action" value="decrease">
+                                <input type="hidden" name="cart_id" value="{{ $item['id'] }}">
+                                <button type="submit" class="btn-primary"><i class="bi bi-dash"></i></button>
+                            </form>
+
+                            {{ $item['book_quantity'] }}
+
+                            <form action="{{route('user.quantityChange')}}" method="post" style="display: inline-block;">
+                                @csrf
+                                <input type="hidden" name="action" value="increse">
+                                <input type="hidden" name="cart_id" value="{{ $item['id'] }}">
+                                <button type="submit" class="btn-primary"><i class="bi bi-plus-lg"></i></button>
+                            </form>
+
+                        </td>
                         <td>
                             <form action="{{ route('user.removeFromCart') }}" method="POST">
                                 @csrf

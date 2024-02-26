@@ -2,6 +2,8 @@
 
 return [
 
+   'index'=>'Index',
+
    'admin_login'=>'ADMIN LOGIN',
    'email' => 'Email Address',
    'password'=>'Password',
@@ -14,6 +16,7 @@ return [
 
    // NavBar
    'see_books'=> 'Show Books',
+   'my_orders'=>'My Orders',
 
 
    // Booksd details view
@@ -28,6 +31,7 @@ return [
    'add_to_wishlist' => 'Add to List',
    'book_cover'=>'Cover',
    'book_price' => 'Price',
+   'book_discount' => 'Dicount',
    'remover'=>'Remove',
    'quantity'=>'Quantity',
    
@@ -59,6 +63,14 @@ return [
    'offline'=>'Offline',
    'place_order'=>'Place Order',
    'cancel'=>'Cancel',
+
+   // My Orders (User side)
+   'order_id'=>'Order Id',
+   'order_placed_on' => 'Placed on',
+   'more_details'=>'More Details',
+   'total'=>'Total',
+   'status'=>'Status'
+
 
    
 

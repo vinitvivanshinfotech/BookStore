@@ -28,4 +28,8 @@ class OrderDetail extends Model
     public function book(){
         return $this->belongsTo(BookDetail::class);
     }
+
+    public function orderDescription(){
+        return $this->hasMany(OrderDescripition::class,'order_id');
+    }
 }
