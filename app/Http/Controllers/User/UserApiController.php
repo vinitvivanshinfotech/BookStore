@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 // model
 use App\Models\WishlistBook;
@@ -50,19 +51,24 @@ class UserApiController extends Controller
     {
 
         $data = Cart::where(["user_id" => $user_id, "book_id" => $book_id])->first();
-
         if ($data == NULL) {
-            $listItem = Cart::create([
-                'user_id' => $user_id,
-                'book_id' => $book_id
-            ]);
 
-            if ($listItem != NULL) {
-                return  response()->json(['status' => "success"]);
-            } else {
-                return  response()->json(['status' => "failed"], 500);
+            try {
+                $listItem = Cart::create([
+                    'user_id' => $user_id,
+                    'book_id' => $book_id,
+                    'book_quantity' => 1,
+                ]);
+                Log::info('Added book to cart: by ' .$user_id.' book id '.$book_id);
+                if ($listItem != NULL) {
+                    return  response()->json(['status' => "success"]);
+                } else {
+                    return  response()->json(['status' => "failed"], 500);
+                }
+            } catch (\Exception $th) {
+                Log::error(__METHOD__ . ',' . __LINE__ . '-' . $th->getMessage());
             }
-        }else{
+        } else {
             return  response()->json(['status' => "exists"]);
         }
     }
