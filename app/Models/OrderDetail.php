@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class OrderDetail extends Model
 {
     use HasFactory;
-    protected $fillable =['order_status'];
 
     protected $fillable = [
         'user_id',
@@ -18,7 +17,6 @@ class OrderDetail extends Model
         'book_billdate',
         'payment_id',
         'order_status'
-
     ];
 
 
