@@ -17,7 +17,6 @@ class OrderDetail extends Model
         'book_billdate',
         'payment_id',
         'order_status'
-
     ];
 
 

@@ -17,7 +17,7 @@ use App\Models\PaymentBook;
 use App\Models\Cart;
 use App\Models\OrderDetail;
 use App\Models\OrderDescripition;
-use App\Models\ShippingDetails;
+use App\Models\ShippingDetail;
 
 
 class UserOrderController extends Controller
@@ -87,7 +87,7 @@ class UserOrderController extends Controller
 
             Cart::where('user_id', $userId)->delete();
 
-            $shippingDetails=ShippingDetails::create([
+            $shippingDetails=ShippingDetail::create([
                 'order_id' => $orderDetails->id ,
                 'first_name' =>$request->input('first_name'),
                 'last_name' =>$request->input('last_name'),
