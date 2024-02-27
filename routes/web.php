@@ -21,7 +21,7 @@ use App\Http\Controllers\BookContoller;
 
 
 //GUEST ROTES
-Route::controller(UserAuthController::class)->group(function () {
+Route::middleware(['guest'])->controller(UserAuthController::class)->group(function () {
     Route::get('/', 'showLoginForm')->name('login');
     Route::get('/login', 'showLoginForm')->name('login');
     Route::post('/login', 'userLoginPost')->name('user.login');
@@ -49,21 +49,22 @@ Route::middleware(['auth'])->group(function () {
         Route::post('myWatchlist/removebook', 'removeFromWatchlist')->name('removeFromWatchlist');
         Route::post('myWatchlist/removebookFromcart', 'removeFromCart')->name('removeFromCart');
         Route::get('myCart',  'myCart')->name('cart');
-        Route::post('quantityChange','quantityChange')->name('quantityChange');
+        Route::post('quantityChange', 'quantityChange')->name('quantityChange');
     });
 
-    Route::controller(UserOrderController::class)->prefix('order')->name('user.')->group(function(){
-        Route::post( '/placeorder','makeAnOrder' )->name('placeOrder');
-        Route::get('addShippingDetails','ShippingDetailsForm')->name('ShippingDetailsForm');
+    Route::controller(UserOrderController::class)->prefix('order')->name('user.')->group(function () {
+        Route::post('placeorder', 'makeAnOrder')->name('placeOrder');
+        Route::get('addShippingDetails', 'ShippingDetailsForm')->name('ShippingDetailsForm');
         Route::get('myOrders', 'viewMyOrders')->name('myOrders');
-        Route::post('orderMoreInfo','orderMoreInfo')->name('orderMoreInfo');
+        Route::post('orderMoreInfo', 'orderMoreInfo')->name('orderMoreInfo');
     });
+
 });
 
 Route::middleware(['admin'])->group(function () {
 
     Route::get('/admin/logoutPost', [AdminAuthController::class, 'adminLogout'])->name('admin.logout');
-    
+
     Route::view('/admindashboard', 'Admin.dashboard')->name('admin.dashboard');
     Route::view('/addbook', 'Admin.add_book')->name('add.books');
     Route::view('/allorderdisplay', 'Admin.order_book')->name('orders.display');
@@ -82,5 +83,3 @@ Route::middleware(['admin'])->group(function () {
         Route::Post('/rejectingorder/{id}', 'deleteOrder')->name('delete.order');
     });
 });
-
-
