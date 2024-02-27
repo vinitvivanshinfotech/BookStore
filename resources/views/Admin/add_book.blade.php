@@ -89,6 +89,13 @@
             <span class="text-danger">{{$message}}</span>
             @enderror
         </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text">Book Discount</span>
+            <input type="text" class="form-control" aria-label="" name="book_discount">
+            @error('book_price')
+            <span class="text-danger">{{$message}}</span>
+            @enderror
+        </div>
         <div class="form-floating mb-3">
             <select class="form-select" id="floatingSelectGrid" name="book_language">
                 <option selected>{{__('adminlabel.none')}}</option>

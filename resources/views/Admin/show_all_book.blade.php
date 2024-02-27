@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>{{__('adminlabel.showallbook')}}</title>
 
     @include('cdn')
 </head>
@@ -32,27 +32,27 @@
             <th>{{__('adminlabel.action')}}</th>
         </thead>
         <tbody>
-            @foreach ($all_books as $all_book )
+            @foreach ($books as $book )
 
             <tr>
                 <td>{{$loop->index +1}}</td>
-                <td>{{$all_book->book_name}}</td>
-                <td>{{$all_book->book_title}}</td>
-                <td>{{$all_book->author_name}}</td>
-                <td>{{$all_book->author_email}}</td>
-                <td>{{$all_book->book_edition}}</td>
-                @if(empty($all_book->book_cover))
+                <td>{{$book->book_name}}</td>
+                <td>{{$book->book_title}}</td>
+                <td>{{$book->author_name}}</td>
+                <td>{{$book->author_email}}</td>
+                <td>{{$book->book_edition}}</td>
+                @if(empty($book->book_cover))
                 <td>
                     <h6>Image Not Found</h6>
                 </td>
                 @endif
-                <td><img src="{{ Storage::disk(config('constant.FILESYSTEM_DISK'))->url($all_book->book_cover) }}" width="120" height="50" /></td>
-                <td>{{$all_book->book_language}}</td>
-                <td>{{$all_book->book_type}}</td>
-                <td>{{$all_book->book_price}}</td>
+                <td><img src="{{ Storage::disk(config('constant.FILESYSTEM_DISK'))->url($book->book_cover) }}" width="120" height="50" /></td>
+                <td>{{$book->book_language}}</td>
+                <td>{{$book->book_type}}</td>
+                <td>{{$book->book_price}}</td>
                 <td>
-                    <a href="{{route('edit.book',$all_book->id)}}" class="btn btn-sm btn-dark">{{__('adminlabel.edit')}}</a>
-                    <a href="{{route('delete.book',$all_book->id)}}" class="btn btn-sm btn-dark">{{__('adminlabel.delete')}}</a>
+                    <a href="{{route('edit.book',$book->id)}}" class="btn btn-sm btn-dark">{{__('adminlabel.edit')}}</a>
+                    <a href="{{route('delete.book',$book->id)}}" class="btn btn-sm btn-dark">{{__('adminlabel.delete')}}</a>
                 </td>
             </tr>
             @endforeach

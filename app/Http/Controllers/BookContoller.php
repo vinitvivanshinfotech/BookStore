@@ -9,31 +9,15 @@ use App\Http\Requests\updateBookRequest;
 use App\Models\OrderDetail;
 use App\Models\ShippingDetail;
 use App\Models\ShippingDetails;
+use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
-
-
-
+use Symfony\Component\VarDumper\VarDumper;
 
 class BookContoller extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Desciption : This function which used to save the book in database.
@@ -50,19 +34,9 @@ class BookContoller extends Controller
 
         Storage::disk(config('constant.FILESYSTEM_DISK'))->put($file_path, file_get_contents($request->book_cover));
 
-        // Adding the new books in database 
-        $book = BookDetail::create([
-            'book_name' => $request->book_name,
-            'book_title' => $request->book_title,
-            'author_name' => $request->author_name,
-            'author_email' => $request->author_email,
-            'book_edition' => $request->book_edition,
-            'description' => $request->description,
-            'book_cover' => $file_path,
-            'book_price' => $request->book_price,
-            'book_language' => $request->book_language,
-            'book_type' => $request->book_type,
-        ]);
+        $data = $request->except('book_cover');
+        $data['book_cover'] = $file_path;
+        BookDetail::create($data);
 
         // return to showing all books page  with success message.
         return redirect()->route('showAll.books')->with("success", 'Book added successfully!');
@@ -77,11 +51,15 @@ class BookContoller extends Controller
      */
     public function showAllBookBook()
     {
-        // finding all the books from table.
-        $all_books = BookDetail::all();
+        try {
+            $books = BookDetail::all();
 
-        // return to showing all books page with all book data.
-        return view('Admin.show_all_book', ['all_books' => $all_books]);
+            Log::info('Getting all books from dabase by admin ');
+            return view('Admin.show_all_book', compact('books'));
+        } catch (\Exception $e) {
+            Log::error('Error while fetching all book : ' . ': ' . $e->getMessage());
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -92,18 +70,20 @@ class BookContoller extends Controller
      */
     public function bookEditShow(string $id)
     {
-        // finding the book with id.
-        $edit_book = BookDetail::findOrFail($id);
+        try {
 
-        // finding the book_edition , book_language,book_type.
-        $book_edition = explode(',', $edit_book['book_edition']);
+            $book = BookDetail::findOrFail($id);
 
-        $book_language = explode(',', $edit_book['book_language']);
+            $bookEdition = explode(',', $book['book_edition']);
+            $bookLanguage = explode(',', $book['book_language']);
+            $bookType = explode(',', $book['book_type']);
 
-        $book_type = explode(',', $edit_book['book_type']);
-
-        // return to showing the edit page with book data.
-        return view("Admin.edit_book", ["book" => $edit_book, 'book_edition' => $book_edition, 'book_language' => $book_language, 'book_type' => $book_type]);
+            Log::info('Updateing the book details  with id: ' . $id . '.');
+            return view("Admin.edit_book", ["book" => $book, 'bookEdition' => $bookEdition, 'bookLanguage' => $bookLanguage, 'bookType' => $bookType]);
+        } catch (\Exception $e) {
+            Log::error('Error in while showing book details with id : ' . $id . ': ' . $e->getMessage());
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -114,39 +94,35 @@ class BookContoller extends Controller
      */
     public function bookUpdate(updateBookRequest $request)
     {
+        try {
 
-        $book =  BookDetail::find($request->id);
+            $book =  BookDetail::find($request->id);
 
-        // Storing the Book_cover in local storage 
-        if ($request->book_cover != null) {
+            // Storing the Book_cover in local storage 
+            if ($request->book_cover != null) {
 
-            if (Storage::disk(config('constant.FILESYSTEM_DISK'))->exists($book->book_cover)) {
-                Storage::disk(config('constant.FILESYSTEM_DISK'))->delete($book->book_cover);
+                if (Storage::disk(config('constant.FILESYSTEM_DISK'))->exists($book->book_cover)) {
+                    Storage::disk(config('constant.FILESYSTEM_DISK'))->delete($book->book_cover);
+                }
+
+                // Storing the Book cover in local storage 
+                $file_name = uniqid() . '_' . time() . '.' . $request->book_cover->getClientOriginalExtension();
+
+                $file_path = "uploads/books_covers/$file_name";
+                Storage::disk(config('constant.FILESYSTEM_DISK'))->put($file_path, file_get_contents($request->book_cover));
+                $book->book_cover = $file_path;
             }
 
-            // Storing the Book cover in local storage 
-            $file_name = uniqid() . '_' . time() . '.' . $request->book_cover->getClientOriginalExtension();
+            $data = $request->except('book_cover');
+            $data['book_cover'] = $book->book_cover;
+            $book->update($data);
 
-            $file_path = "uploads/books_covers/$file_name";
-            Storage::disk(config('constant.FILESYSTEM_DISK'))->put($file_path, file_get_contents($request->book_cover));
-            $book->book_cover = $file_path;
+            Log::info('Updateing the book details  with id: ' . $request->id . '.');
+            return redirect()->route('showAll.books')->with("success", 'Book Updated Successfully ');
+        } catch (\Exception $e) {
+            Log::error('Error in updating book details with id : ' . $request->id . ': ' . $e->getMessage());
+            return response()->json(['message' => $e->getMessage()], 500);
         }
-
-        $book->update([
-            'book_name' => $request->book_name,
-            'book_title' => $request->book_title,
-            'author_name' => $request->author_name,
-            'author_email' => $request->author_email,
-            'book_edition' => $request->book_edition,
-            'description' => $request->description,
-            'book_cover' => $book->book_cover,
-            'book_price' => $request->book_price,
-            'book_language' => $request->book_language,
-            'book_type' => $request->book_type,
-        ]);
-
-        // return to showing all books page with succes  message .
-        return redirect()->route('showAll.books')->with("success", 'Book Updated Successfully ');
     }
 
     /**
@@ -157,17 +133,14 @@ class BookContoller extends Controller
      */
     public function bookDelete(string $id)
     {
-        // finding the book with id and delete it.
-        $book = BookDetail::findOrFail($id);
         try {
+            $book = BookDetail::findOrFail($id);
 
-            // deleteing the book_cover from storage.
             if (Storage::disk(config('constant.FILESYSTEM_DISK'))->exists($book->book_cover)) {
                 Storage::disk(config('constant.FILESYSTEM_DISK'))->delete($book->book_cover);
             }
             $book->delete();
             Log::info('delete the book with id: ' . $id . '.');
-            // return to showing all books page with success message .
             return  redirect()->route("showAll.books")->with("success", "succesfully delete the book");
         } catch (\Exception $e) {
             Log::error('Attempt to deleteing  the book with id ' . $id . 'fails  , Error: ' . $e->getMessage());
@@ -177,70 +150,95 @@ class BookContoller extends Controller
 
 
     /**
-     * Desciption : 
+     * Desciption : Showing all order list to admin panel latest by timestamp.
      *
      * @param :
      * @return : 
      */
     public function orderBook()
     {
-        $orders = OrderDetail::orderBy('created_at', 'desc')->with(['user', 'book'])->get();
+        try {
 
-    
-        $order_status =  $orders[1]['order_status'];
-        $order_status= explode(',',$orders[1]->order_status );
-        
-        return view('Admin.order_book',['orders' => $orders,'order_status'=> $order_status]);
+            $orders = OrderDetail::orderBy('created_at', 'desc')->with(['user', 'book'])->where('order_status','!=','Cancelled Order')->get();
+            $order_status =  $orders[0]['order_status'];
+            $order_status = explode(',', $orders[0]->order_status);
+
+            Log::info('Fetching the all order  from the database : ');
+            return view('Admin.order_book', ['orders' => $orders, 'order_status' => $order_status]);
+        } catch (\Exception $e) {
+            Log::error('Attempt to fetching all order is fails  , Error: ' . $e->getMessage());
+            return response()->json(['message' => "Error in fetching the order "], 500);
+        }
     }
 
     /**
-     * Desciption : 
+     * Desciption : Showing the all order details  of a specific user.
      *
-     * @param :
+     * @param :id
      * @return : 
      */
-    public function  orderDetails(string $id)
+    public function orderDetails($id)
     {
+        try {
+            $orderDetails = ShippingDetail::join('order_details', 'order_details.id', '=', 'shipping_details.order_id')
+                ->join('order_descripitions', 'order_descripitions.order_id', '=', 'order_details.id')
+                ->join('book_details', 'book_details.id', '=', 'order_descripitions.book_id')->where('shipping_details.order_id', $id)
+                ->get();
 
-        $orderdetasils = ShippingDetail::where('order_id', $id)->first();
-        return view('Admin.order_details')->with('orderdetails', $orderdetasils);
+            Log::info('Fetching the all order details from the database : ');
+            return view('Admin.order_details', compact('orderDetails'));
+        } catch (\Exception $e) {
+            Log::error('Attempt to fetching all order details is failed try again , Error: ' . $e->getMessage());
+            return response()->json(['message' => "Error in fetching the order details "], 500);
+        }
     }
 
     /**
-     * Desciption : 
+     * Desciption : Updateing the order status from admin panel .
      *
-     * @param :
+     * @param :request
      * @return : 
      */
     public function updateOrderStatus(Request $request)
     {
-        dd($request->toArray());
+        try {
+
+            $order = OrderDetail::find($request->order_id);
+            $order->update(['order_status' => $request->Order_Status]);
+
+            Log::info('Updated order with ID ' . $request->order_id . ' to status ' . $request->Order_Status . '.');
+            return redirect()->route('order.book')->with('success', 'Order status updated successfully.');
+        } catch (\Exception $e) {
+            Log::error('Error updating order with ID ' . $request->order_id . ': ' . $e->getMessage());
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
     }
 
     /**
-     * Desciption : 
+     * Desciption : Rejecting/deleting the order from admin side.
      *
-     * @param :
+     * @param :id 
      * @return : 
      */
     public function deleteOrder(int $id)
     {
-        // dd($id);
-        // finding the book with id and delete it.
         try {
+            $order = OrderDetail::findOrFail($id);
 
-            $order = OrderDetail::find($id);
-            $cancelledOrder = "Cancelled Order";
-            // dd($order);
-            $order->update([
-                'order_status' => $cancelledOrder,
-            ]);
-            Log::info('delete the order with id: ' . $id . '.');
-            // return to showing all books page with success message .
-            return  redirect()->route('order.book')->with("success", "succesfully delete the order.");
+            if ($order['order_status'] != "Cancelled Order") {
+
+                $order->order_status = 'Cancelled Order';
+                $order->save();
+
+                Log::info('Deleted order with ID: ' . $id);
+                return redirect()->route('order.book')->with('success', 'Order deleted successfully.');
+            } else {
+                Log::error('Attempt to delete order with ID ' . $id . ' failed. Reason: Record not found.');
+                return response()->json(['message' => 'Order not found.'], 404);
+            }
         } catch (\Exception $e) {
-            Log::error('Attempt to deleteing  the book with id ' . $id . 'fails  , Error: ' . $e->getMessage());
-            return response()->json(['message' => "Error in deleting this order"], 500);
+            Log::error('Attempt to delete order with ID ' . $id . ' failed. Error: ' . $e->getMessage());
+            return response()->json(['message' => 'An error occurred while deleting the order.'], 500);
         }
     }
 }

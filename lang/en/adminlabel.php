@@ -6,6 +6,9 @@ return [
     'moreinfo'=>'Order Info',
     'customer_name'=>' Customer Name',
     'orderdetails'=>'Order Details',
+    'orderbook'=>'Order Book',
+    'showallbook'=> 'Show all book',
+    'shipingdetails'=> ' Shiping Details',
     'phone'=>'Phone Number',
     'order_id'=>'Order ID',
     'total_amount'=>'Total Order Amount',
@@ -13,6 +16,7 @@ return [
     'order_status'=>'Order Status',
     'update'=>'Update order status',
     'delete'=>'Delete Order',
+
     
 
 

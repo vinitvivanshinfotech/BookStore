@@ -34,6 +34,8 @@ return [
    'book_discount' => 'Dicount',
    'remover'=>'Remove',
    'quantity'=>'Quantity',
+   'discount'=>'Discount',
+   'total_price'=>'Total Price',
    
    
    // Buttons

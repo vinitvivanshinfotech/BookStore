@@ -21,4 +21,8 @@ class ShippingDetail extends Model
         'state',
 
     ];
+
+    public function orderDetails(){
+        return $this->belongsToMany(OrderDetail::class);
+    }
 }
