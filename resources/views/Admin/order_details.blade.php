@@ -77,20 +77,70 @@
             <th>{{__('labels.total_price')}}</th>
         </thead>
         <tbody>
-            @foreach ($orderDetails as $orderDetail )    
+            @foreach ($orderDetails as $orderDetail )
             <tr>
                 <td>{{$loop->index+1 }}</td>
                 <td>{{$orderDetail['book_name']}}</td>
                 <td>{{$orderDetail['book_price']}}</td>
                 <td>{{$orderDetail['book_total_quantity']}}</td>
                 <td>{{$orderDetail['book_discount']}}</td>
-                <td>{{  ($orderDetail['book_price'] * $orderDetails[0]['book_total_quantity']) - ($orderDetail['book_discount'] * $orderDetails[0]['book_total_quantity'])  }}</td>
+                <td>@php
+                    $total = ($orderDetail['book_price'] * $orderDetails[0]['book_total_quantity']) - ($orderDetail['book_discount'] * $orderDetails[0]['book_total_quantity'])
+                    @endphp
+                    {{$total}}
+                </td>
             </tr>
             @endforeach
         </tbody>
 
-    </table>   
+    </table>
 
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="invoice-title">
+                <h2>Invoice</h2>
+                <h3 class="pull-right">Order # 12345</h3>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-xs-6">
+                    <address>
+                        <strong>Billed To:</strong><br>
+                        {{$orderDetails[0]['first_name']}} {{$orderDetails[0]['last_name']}}<br>
+                        {{$orderDetails[0]['phone_number']}}<br>
+                        {{$orderDetails[0]['email']}}<br>
+                        {{$orderDetails[0]['city']}}
+                    </address>
+                </div>
+                <div class="col-xs-6 text-right">
+                    <address>
+                        <strong>Shipped To:</strong><br>
+                        {{$orderDetails[0]['first_name']}} {{$orderDetails[0]['last_name']}}<br>
+                        {{$orderDetails[0]['address']}}<br>
+                        {{$orderDetails[0]['pincode']}}<br>
+                        {{$orderDetails[0]['city']}} {{$orderDetails[0]['state']}}
+                    </address>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6">
+                    <address>
+                        <strong>Payment Method:</strong><br>
+                        {{$orderDetails[0]['payment_mode']}}<br>
+                        
+                    </address>
+                </div>
+                <div class="col-xs-6 text-right">
+                    <address>
+                        <strong>Order Date:</strong><br>
+                        {{$orderDetail}}<br><br>
+                    </address>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
 
 </body>
 
