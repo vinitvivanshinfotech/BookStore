@@ -51,7 +51,6 @@ return [
 
    // Cart
    'total_quantity'=>'Total Quantity',
-   'total_price'=>'Total Price',
 
    // shipping details form
    'shipping_info'=>'Shipping Information',
@@ -73,6 +72,13 @@ return [
    'total'=>'Total',
    'status'=>'Status',
    'payable_amount'=>'Amount to be payed',
+
+
+
+   // Order Placed confirmation pdf send
+   'customer_name'=> 'Customer Name',
+   'shipment_address'=>'Shipment Address',
+
 
 
    

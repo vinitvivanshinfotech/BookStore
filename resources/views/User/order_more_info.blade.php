@@ -16,6 +16,7 @@
                 <thead>
                     <tr>
                         <th scope="col">{{ __('labels.book_name') }}</th>
+                        <th scope="col">{{ __('labels.book_edition') }}</th>
                         <th scope="col">{{ __('labels.book_price') }}</th>
                         <th scope="col">{{ __('labels.book_discount') }}</th>
                         <th scope="col">{{ __('labels.quantity') }}</th>
@@ -29,13 +30,14 @@
                     @foreach ($data as $bookInfo)
                         <tr>
                             <td>{{ $bookInfo['book_name'] }}</td>
+                            <td>{{ $bookInfo['book_edition'] }}</td>
                             <td>{{ $bookInfo['book_price'] }}</td>
                             <td>{{ $bookInfo['book_discount'] }}</td>
                             <td>{{ $bookInfo['book_quantity'] }}</td>
                         </tr>
                         @php
                             $totalPrice += $bookInfo['book_price']*$bookInfo['book_quantity']; 
-                            $totalDiscount+=$bookInfo['book_discount'];
+                            $totalDiscount+=$bookInfo['book_discount']* $bookInfo['book_quantity'];
                         @endphp
                     @endforeach
                     <tr>

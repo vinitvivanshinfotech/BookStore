@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\User;
 
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
+use Illuminate\Support\Facades\View;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\ShippingDetailsRequest;
@@ -20,6 +22,11 @@ use App\Models\OrderDetail;
 use App\Models\OrderDescripition;
 use App\Models\ShippingDetail;
 
+// Jobs
+use App\Jobs\OrderPlacedPdfSendJob;
+use App\Mail\OrderPlacedPdf;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class UserOrderController extends Controller
 {
@@ -36,6 +43,14 @@ class UserOrderController extends Controller
         return view('User.add_shipping_details')->with('user', $user);
     }
 
+    /**
+     * Desciption : this function will download generated invoice
+     * 
+     * @param : PDF $pdf
+     * @return : invoice pdf file download
+     */ 
+   
+
 
     /**
      * Desciption : 
@@ -46,7 +61,9 @@ class UserOrderController extends Controller
     public function makeAnOrder(ShippingDetailsRequest $request)
     {
         $userId = Auth::user()->id;
+
         try {
+            DB::beginTransaction();
             $cartitems = Cart::where('user_id', $userId)->get()->toArray();
 
             if ($cartitems == null || count($cartitems) == 0) {
@@ -69,7 +86,7 @@ class UserOrderController extends Controller
             $cart = Cart::where('user_id', $userId)
                 ->join('book_details', 'carts.book_id', '=', 'book_details.id')
                 ->selectRaw('SUM(carts.book_quantity) as total_ordered_book_qty,
-                 SUM(book_details.book_discount) as total_ordered_book_discount,
+                 SUM(carts.book_quantity * book_details.book_discount) as total_ordered_book_discount,
                  SUM(carts.book_quantity * book_details.book_price) as total_ordered_book_price')
                 ->first();
 
@@ -116,18 +133,65 @@ class UserOrderController extends Controller
                 return redirect()->back()->with('failure', __('messages.shipping_details_add_fail'));
             }
 
-            Log::info('Order placed of Order id :');
-
-
+            Log::info('Order placed of Order id :' . $orderDetails->id);
             Cart::where('user_id', $userId)->delete();
 
-            return redirect()->route('user.myOrders')->with('success',__('messages.order_place_successfull'));
+
+            // SEND THE ORDER DETAILS TO THE ADMIN
+            $orderId =  $orderDetails->id;
+            $data = OrderDetail::join('order_descripitions', 'order_details.id', '=', 'order_descripitions.order_id')
+                ->join('book_details', 'book_details.id', '=', 'order_descripitions.book_id')->join('shipping_details', 'shipping_details.order_id', '=', 'order_details.id')
+                ->selectRaw('order_details.*,
+                order_descripitions.book_quantity,
+                book_details.book_name,
+                book_details.book_title,
+                book_details.author_name,
+                book_details.book_edition,
+                book_details.description,
+                book_details.book_cover,
+                book_details.book_price,
+                book_details.book_language,
+                book_details.book_type,
+                book_details.book_discount,
+                shipping_details.first_name,
+                shipping_details.last_name,
+                shipping_details.email,
+                shipping_details.phone_number,
+                shipping_details.address,
+                shipping_details.pincode,
+                shipping_details.city,
+                shipping_details.state
+                ')
+                ->where('order_details.user_id', $userId)->where('order_details.id', $orderId)->distinct('order_descripitions.book_id')->get()->toArray();
+
+            $pdf = PDF::loadView('User.userLayout.invoice_email', compact('data'));
+            $invoiceName = "order-{$orderId}";
+
+            $tempFilePath = tempnam(sys_get_temp_dir(), 'pdf_');
+            file_put_contents($tempFilePath, $pdf->output());
+
+
+            DB::commit();
+
+            Mail::to(env('ORDER_PLACED_MAIL', 'keyur.s@vivanshinfotech.com'))
+            ->send(new OrderPlacedPdf([
+                'data' => $data,
+                'filePath' => $tempFilePath,
+                'invoiceName' => $invoiceName
+            ]));
+
+
+            return $pdf->download();
 
         } catch (\Exception $th) {
-            Log::error(__METHOD__ . 'line' . __LINE__ . "Error in making an order" . $th->getMessage());
+            DB::rollBack();
+            Log::error(__METHOD__ . 'line' . __LINE__ . " Error in making an order" . $th->getMessage());
             Session::flash("failure", 'Something went wrong!');
         }
     }
+
+    
+    
 
     /**
      * Desciption : return  orders view  of Authenticated user
@@ -149,15 +213,16 @@ class UserOrderController extends Controller
      * 
      * @param : 
      * @return : 
-     */ 
+     */
 
-     public function orderMoreInfo(Request $request){
+    public function orderMoreInfo(Request $request)
+    {
 
-       $userId=Auth()->user()->id;
-       $orderId = $request->order_id;
-       $data = OrderDetail::join('order_descripitions','order_details.id','=','order_descripitions.order_id')
-                ->join('book_details','book_details.id','=','order_descripitions.book_id')
-                ->selectRaw('order_details.*,
+        $userId = Auth()->user()->id;
+        $orderId = $request->order_id;
+        $data = OrderDetail::join('order_descripitions', 'order_details.id', '=', 'order_descripitions.order_id')
+            ->join('book_details', 'book_details.id', '=', 'order_descripitions.book_id')
+            ->selectRaw('order_details.*,
                 order_descripitions.book_quantity,
                 book_details.book_name,
                 book_details.book_title,
@@ -170,8 +235,14 @@ class UserOrderController extends Controller
                 book_details.book_type,
                 book_details.book_discount
                 ')
-                ->where('order_details.user_id',$userId)->where('order_details.id',$orderId)->distinct('order_descripitions.book_id')->get()->toArray();
+            ->where('order_details.user_id', $userId)->where('order_details.id', $orderId)->distinct('order_descripitions.book_id')->get()->toArray();
 
-        return view('User.order_more_info')->with(compact('data'));   
-     }
+        return view('User.order_more_info')->with(compact('data'));
+    }
+
+
+    public function invoice()
+    {
+        return view('User.userLayout.invoice_email');
+    }
 }
