@@ -21,19 +21,17 @@ use App\Http\Controllers\BookContoller;
 
 
 //GUEST ROTES
-Route::middleware(['guest'])->group(function () {
-    Route::controller(UserAuthController::class)->group(function () {
-        Route::get('/', 'showLoginForm')->name('login');
-        Route::get('/login', 'showLoginForm')->name('login');
-        Route::post('/login', 'userLoginPost')->name('user.login');
-        Route::get('/register', 'showRegisterForm')->name('register');
-        Route::post('/register', 'userRegistrationPost')->name('user.register');
-    });
+Route::controller(UserAuthController::class)->group(function () {
+    Route::get('/', 'showLoginForm')->name('login');
+    Route::get('/login', 'showLoginForm')->name('login');
+    Route::post('/login', 'userLoginPost')->name('user.login');
+    Route::get('/register', 'showRegisterForm')->name('register');
+    Route::post('/register', 'userRegistrationPost')->name('user.register');
+});
 
-    Route::controller(AdminAuthController::class)->prefix('admin')->group(function () {
-        Route::get('/admin/login',  'showLoginForm')->name('admin.loginForm');
-        Route::post('/admin/loginPost',  'adminLoginPost')->name('admin.login');
-    });
+Route::controller(AdminAuthController::class)->prefix('admin')->group(function () {
+    Route::get('login',  'showLoginForm')->name('admin.loginForm');
+    Route::post('loginPost',  'adminLoginPost')->name('admin.login');
 });
 
 
@@ -46,23 +44,26 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(UserController::class)->prefix('dashboard')->name('user.')->group(function () {
         Route::get('/',  'dashboard')->name('dashboard');
         Route::get('allBooks',  'displayAllBooks')->name('showBooks');
-        Route::post('allBooks/bookDetails',  'bookDetails')->name('bookDetails');
+        Route::get('allBooks/bookDetails',  'bookDetails')->name('bookDetails');
         Route::get('myWatchlist',  'myWatchlist')->name('watchlist');
         Route::post('myWatchlist/removebook', 'removeFromWatchlist')->name('removeFromWatchlist');
         Route::post('myWatchlist/removebookFromcart', 'removeFromCart')->name('removeFromCart');
         Route::get('myCart',  'myCart')->name('cart');
+        Route::post('quantityChange','quantityChange')->name('quantityChange');
     });
 
-    Route::controller(UserOrderController::class)->prefix('order')->name('user.')->group(function () {
-        Route::post('/placeorder', 'makeAnOrder')->name('placeOrder');
-        Route::get('addShippingDetails', 'ShippingDetailsForm')->name('ShippingDetailsForm');
+    Route::controller(UserOrderController::class)->prefix('order')->name('user.')->group(function(){
+        Route::post( '/placeorder','makeAnOrder' )->name('placeOrder');
+        Route::get('addShippingDetails','ShippingDetailsForm')->name('ShippingDetailsForm');
+        Route::get('myOrders', 'viewMyOrders')->name('myOrders');
+        Route::post('orderMoreInfo','orderMoreInfo')->name('orderMoreInfo');
     });
 });
 
 Route::middleware(['admin'])->group(function () {
 
     Route::get('/admin/logoutPost', [AdminAuthController::class, 'adminLogout'])->name('admin.logout');
-
+    
     Route::view('/admindashboard', 'Admin.dashboard')->name('admin.dashboard');
     Route::view('/addbook', 'Admin.add_book')->name('add.books');
     Route::view('/allorderdisplay', 'Admin.order_book')->name('orders.display');
@@ -81,3 +82,5 @@ Route::middleware(['admin'])->group(function () {
         Route::Post('/rejectingorder/{id}', 'deleteOrder')->name('delete.order');
     });
 });
+
+

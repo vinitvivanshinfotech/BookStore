@@ -14,4 +14,8 @@ class OrderDescripition extends Model
         'book_id',
         'book_quantity'
     ];
+
+    public function bookDetails(){
+        $this->belongsTo(BookDetail::class, 'book_id');
+    }
 }

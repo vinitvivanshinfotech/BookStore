@@ -33,10 +33,11 @@
                                         <li class="list-group-item">{{ __('labels.author_name') }} :
                                             {{ $book->author_name }}</li>
                                         <li class="list-group-item">{{ __('labels.book_price') }} : {{ $book->book_price }}
+                                            <li class="list-group-item">{{ __('labels.book_discount') }} : {{ $book->book_discount }}
                                         </li>
                                         <li class="list-group-item">
 
-                                            <form action="{{route('user.bookDetails')}}" method="POST">
+                                            <form action="{{route('user.bookDetails')}}" method="GET">
                                                 @csrf
                                                 <input type="hidden" id="book_id" name="book_id"
                                                     value="{{ $book->id }}">

@@ -17,7 +17,6 @@ class OrderDetail extends Model
         'book_billdate',
         'payment_id',
         'order_status'
-
     ];
 
 
@@ -28,5 +27,9 @@ class OrderDetail extends Model
     }
     public function book(){
         return $this->belongsTo(BookDetail::class);
+    }
+
+    public function orderDescription(){
+        return $this->hasMany(OrderDescripition::class,'order_id');
     }
 }

@@ -12,6 +12,7 @@
                     <th scope="col">{{ __('labels.book_name') }}</th>
                     <th scope="col">{{ __('labels.author_name') }}</th>
                     <th scope="col">{{ __('labels.book_price') }}</th>
+                    <th scope="col">{{ __('labels.book_discount') }}</th>
                     <th scope="col">{{ __('labels.remover') }}</th>
                     <th scope="col">{{ __('labels.add_to_cart') }}</th>
                 </tr>
@@ -26,6 +27,8 @@
                         <td>{{ $item['book_details']['book_name'] }}</td>
                         <td>{{ $item['book_details']['author_name'] }}</td>
                         <td>{{ $item['book_details']['book_price'] }}</td>
+                        <td>{{ $item['book_details']['book_discount'] }}</td>
+                        
                         <td>
                             <form action="{{route('user.removeFromWatchlist')}}" method="POST">
                                 @csrf
