@@ -69,7 +69,8 @@ return [
    'order_placed_on' => 'Placed on',
    'more_details'=>'More Details',
    'total'=>'Total',
-   'status'=>'Status'
+   'status'=>'Status',
+   'payable_amount'=>'Amount to be payed',
 
 
    
