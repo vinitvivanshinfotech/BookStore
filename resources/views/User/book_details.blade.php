@@ -39,6 +39,7 @@
             </blockquote>
             <br>
             <h5>{{ __('labels.book_price') }}: {{ $bookDetails->book_price }}</h5>
+            <h5 class="text-success">{{ __('labels.book_discount') }}: {{ $bookDetails->book_discount }}</h5>
 
             <button class="btn-sm btn-primary mt-2 mr-1 addToWishlistButton" id="addToWishlistButton"
                 name="addToWishlistButton" value="{{ $bookDetails->id }}">

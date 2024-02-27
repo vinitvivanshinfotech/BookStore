@@ -88,6 +88,13 @@
                                     class="ms-1 d-none d-sm-inline">{{ __('labels.see_books') }}</span>
                             </a>
                         </li>
+                        
+                        <li class="nav-item">
+                            <a href="{{ route('user.myOrders') }}" class="nav-link align-middle px-0">
+                                <i class="fs-4 bi-card-list"></i> <span
+                                    class="ms-1 d-none d-sm-inline">{{ __('labels.my_orders') }}</span>
+                            </a>
+                        </li>
 
 
 
