@@ -24,6 +24,7 @@
                 <tbody>
                     @php
                         $totalDiscount = 0;
+                        $totalPrice = 0;
                     @endphp
                     @foreach ($data as $bookInfo)
                         <tr>
@@ -33,12 +34,13 @@
                             <td>{{ $bookInfo['book_quantity'] }}</td>
                         </tr>
                         @php
-                            $totalDiscount+=$bookInfo['book_discount']
+                            $totalPrice += $bookInfo['book_price']*$bookInfo['book_quantity']; 
+                            $totalDiscount+=$bookInfo['book_discount'];
                         @endphp
                     @endforeach
                     <tr>
                         <td><b class="text-primary">{{ __('labels.total') }}</b></td>
-                        <td><b class="text-primary"> {{ $data[0]['book_total_price'] }}</b></td>
+                        <td><b class="text-primary">{{$totalPrice}}</b></td>
                         <td><b class="text-primary">{{ $totalDiscount }}</b></td>
                         <td><b class="text-primary">{{ $data[0]['book_total_quantity'] }}</b></td>
                     </tr>
@@ -48,8 +50,10 @@
             </table>
 
 
-
             <button onclick="goBack()" class="btn btn-lg btn-danger">{{ __('labels.back') }}</button>
+
+            <button type="button" class="btn btn-light text-right" disabled><b>{{__('labels.payable_amount')}} : {{ $data[0]['book_total_price'] }}</b></button>
+
         </div>
         <div class="card-footer text-muted">
             <h3>{{ __('labels.status') }} : {{$data[0]['order_status']}} </h3>
