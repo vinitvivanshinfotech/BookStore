@@ -79,10 +79,10 @@
                 <td>{{$orderDetail['book_name']}}</td>
                 <td>{{$orderDetail['book_price']}}</td>
                 <td>{{$orderDetail['book_discount']}}</td>
-                <td>{{$orderDetail['book_total_quantity']}}</td>
-                <td>{{(($orderDetail['book_price'] * $orderDetails[0]['book_total_quantity']) - ($orderDetail['book_discount'] * $orderDetails[0]['book_total_quantity']))}}
+                <td>{{$orderDetail['book_quantity']}}</td>
+                <td>{{(($orderDetail['book_price'] * $orderDetails[0]['book_quantity']) - ($orderDetail['book_discount'] * $orderDetails[0]['book_quantity']))}}
                 @php
-                $total_amount += ($orderDetail['book_price'] * $orderDetails[0]['book_total_quantity']) - ($orderDetail['book_discount'] * $orderDetails[0]['book_total_quantity'])
+                $total_amount += ($orderDetail['book_price'] * $orderDetails[0]['book_quantity']) - ($orderDetail['book_discount'] * $orderDetails[0]['book_quantity'])
                 @endphp
             </td>
             </tr>
@@ -92,7 +92,7 @@
                 <td class="no-line"></td>
                 <td class="no-line"></td>
                 <td class="no-line"></td>
-                <td class="no-line text-right"><strong>Total Quantity : </strong> {{$orderDetails->sum('book_total_quantity')}}</td>
+                <td class="no-line text-right"><strong>Total Quantity : </strong> {{$orderDetails->sum('book_quantity')}}</td>
                 <td class="no-line text-right"><strong>Total Price : </strong> {{($total_amount)}}</td>
             </tr>
         </tbody>
