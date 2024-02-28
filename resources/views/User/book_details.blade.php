@@ -1,7 +1,6 @@
 @extends('User.userLayout.layout')
 @section('content')
     
-
     <div class="card">
         <div class="card-header">
             <div class="text-right mb-3">
@@ -19,7 +18,7 @@
         <div class="card-body">
             <img class="card-img-top"
                 src="{{ Storage::disk(config('constant.FILESYSTEM_DISK'))->url($bookDetails->book_cover) }}" alt="Book cover"
-                style="border: 1px solid black; height: 200px; width: 100px;">
+                onerror="this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTUUcQuoOAi8EgqOQ6epycAwp8T9WaxN7IkA&usqp=CAU';" style="border: 1px solid black; height: 200px; width: 100px;">
             <br>
             <br>
 

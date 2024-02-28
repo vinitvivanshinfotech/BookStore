@@ -23,7 +23,7 @@
 
                         <td><img class="card-img-top mt-1 mb-1 ms-1 mr-1"
                                 src="{{ Storage::disk(config('constant.FILESYSTEM_DISK'))->url($item['book_details']['book_cover']) }}"
-                                alt="Card image cap" height="100px" width="50px"></td>
+                                onerror="this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTUUcQuoOAi8EgqOQ6epycAwp8T9WaxN7IkA&usqp=CAU';" alt="Card image cap" height="100px" width="50px"></td>
                         <td>{{ $item['book_details']['book_name'] }}</td>
                         <td>{{ $item['book_details']['author_name'] }}</td>
                         <td>{{ $item['book_details']['book_price'] }}</td>

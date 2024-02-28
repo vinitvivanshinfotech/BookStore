@@ -7,26 +7,28 @@ use Illuminate\Support\Facades\View;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\ShippingDetailsRequest;
-use App\Models\BookDetail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 
 // Model
 use App\Models\User;
+use App\Models\BookDetail;
 use App\Models\PaymentBook;
 use App\Models\Cart;
 use App\Models\OrderDetail;
 use App\Models\OrderDescripition;
 use App\Models\ShippingDetail;
+use App\Models\ReviewBook;
 
-// Jobs
-use App\Jobs\OrderPlacedPdfSendJob;
+// Mail
 use App\Mail\OrderPlacedPdf;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
+use PhpParser\Node\Expr\Cast\Bool_;
 
 class UserOrderController extends Controller
 {
@@ -42,15 +44,6 @@ class UserOrderController extends Controller
         $user = Auth()->user();
         return view('User.add_shipping_details')->with('user', $user);
     }
-
-    /**
-     * Desciption : this function will download generated invoice
-     * 
-     * @param : PDF $pdf
-     * @return : invoice pdf file download
-     */ 
-   
-
 
     /**
      * Desciption : 
@@ -83,8 +76,7 @@ class UserOrderController extends Controller
             Log::info('user ' . $userId . " payment book id " . $paymentId . " created");
 
             //Join the book_details and carts table and will return total discount, total sum of cart items , total cart value=sum(book_price * book_quantity) 
-            $cart = Cart::where('user_id', $userId)
-                ->join('book_details', 'carts.book_id', '=', 'book_details.id')
+            $cart = Cart::join('book_details', 'carts.book_id', '=', 'book_details.id')->where('user_id', $userId)
                 ->selectRaw('SUM(carts.book_quantity) as total_ordered_book_qty,
                  SUM(carts.book_quantity * book_details.book_discount) as total_ordered_book_discount,
                  SUM(carts.book_quantity * book_details.book_price) as total_ordered_book_price')
@@ -174,24 +166,21 @@ class UserOrderController extends Controller
             DB::commit();
 
             Mail::to(env('ORDER_PLACED_MAIL', 'keyur.s@vivanshinfotech.com'))
-            ->send(new OrderPlacedPdf([
-                'data' => $data,
-                'filePath' => $tempFilePath,
-                'invoiceName' => $invoiceName
-            ]));
+                ->send(new OrderPlacedPdf([
+                    'data' => $data,
+                    'filePath' => $tempFilePath,
+                    'invoiceName' => $invoiceName
+                ]));
 
 
-            return $pdf->download();
 
+            return redirect()->route('user.myOrders')->with('success', 'Order placed successfully');
         } catch (\Exception $th) {
             DB::rollBack();
             Log::error(__METHOD__ . 'line' . __LINE__ . " Error in making an order" . $th->getMessage());
             Session::flash("failure", 'Something went wrong!');
         }
     }
-
-    
-    
 
     /**
      * Desciption : return  orders view  of Authenticated user
@@ -209,12 +198,12 @@ class UserOrderController extends Controller
     }
 
     /**
-     * Desciption : 
+     * Desciption : Return all information about  a particular order
+     *              and show it to the user who placed that order
      * 
      * @param : 
      * @return : 
      */
-
     public function orderMoreInfo(Request $request)
     {
 
@@ -224,6 +213,7 @@ class UserOrderController extends Controller
             ->join('book_details', 'book_details.id', '=', 'order_descripitions.book_id')
             ->selectRaw('order_details.*,
                 order_descripitions.book_quantity,
+                book_details.id as book_details_id,
                 book_details.book_name,
                 book_details.book_title,
                 book_details.author_name,
@@ -240,9 +230,26 @@ class UserOrderController extends Controller
         return view('User.order_more_info')->with(compact('data'));
     }
 
-
-    public function invoice()
+    /**
+     * Desciption : 
+     * 
+     * @param : 
+     * @return : 
+     */
+    public function addBookReview(Request $request)
     {
-        return view('User.userLayout.invoice_email');
+        // Validate the request
+        $validator = Validator::make($request->all(), [
+            'book_ratings' => ['required'],
+            'book_comments' => ['required', 'string']
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withInput($request->all());
+        }
+
+        // Insert into Review table
+        $data = $request->except('_token');
+        $review = ReviewBook::create($data);
     }
 }
