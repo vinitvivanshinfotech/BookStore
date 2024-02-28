@@ -88,7 +88,7 @@
                                     class="ms-1 d-none d-sm-inline">{{ __('labels.see_books') }}</span>
                             </a>
                         </li>
-                        
+
                         <li class="nav-item">
                             <a href="{{ route('user.myOrders') }}" class="nav-link align-middle px-0">
                                 <i class="fs-4 bi-card-list"></i> <span
@@ -207,6 +207,27 @@
 </script>
 
 <script>
+    jQuery(document).ready(function($) {
+        $.ajax({
+
+            type: 'get',
+            url:'/api/getWatchlistCartData',
+            data : {
+                'user_id':{{auth()->user()->id}}
+            },
+            dataType: "json",
+            success : function(data){
+                var cartItem = data['cartItem'];
+                var wishlistItems = data['wishlistItems'];
+            },
+            error : function(err){
+                console.log(err);
+            }
+
+        })
+    });
+
+
     function showConfirmButton() {
         let c = confirm("Are you Sure want to logout...?");
         if (c) {

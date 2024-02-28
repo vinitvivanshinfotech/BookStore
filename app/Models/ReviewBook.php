@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class ReviewBook extends Model
 {
     use HasFactory;
+
+    protected $guarded = [ 
+        
+    ];
 }

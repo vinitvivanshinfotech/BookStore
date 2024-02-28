@@ -19,13 +19,14 @@
                 @php
                     $totalCartItem = 0;
                     $totalCartPrice = 0;
+                    $totalCartDiscount = 0;
                 @endphp
                 @foreach ($data as $item)
                     <tr>
 
                         <td><img class="card-img-top mt-1 mb-1 ms-1 mr-1"
                                 src="{{ Storage::disk(config('constant.FILESYSTEM_DISK'))->url($item['book_details']['book_cover']) }}"
-                                alt="Card image cap" height="100px" width="50px"></td>
+                                onerror="this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTUUcQuoOAi8EgqOQ6epycAwp8T9WaxN7IkA&usqp=CAU';" alt="Card image cap" height="100px" width="50px"></td>
                         <td>{{ $item['book_details']['book_name'] }}</td>
                         <td>{{ $item['book_details']['author_name'] }}</td>
                         <td>{{ $item['book_details']['book_price'] }}</td>
@@ -64,27 +65,30 @@
                     @php
                         $totalCartItem += $item['book_quantity'];
                         $totalCartPrice += $item['book_details']['book_price'] * $item['book_quantity'];
+                        $totalCartDiscount += $item['book_details']['book_discount'] * $item['book_quantity'];
                     @endphp
                 @endforeach
 
                 <td></td>
                 <td></td>
                 <td></td>
+                <td><b>{{ __('labels.total_price') }} : </b>{{ $totalCartPrice }}</td>
+                <td><b>{{ __('labels.total_discount') }} : </b>{{ $totalCartDiscount }}</td>
                 <td>
                     <b>{{ __('labels.total_quantity') }} : </b>{{ $totalCartItem }}
                 </td>
-                <td>
-                    <b>{{ __('labels.total_price') }} : </b>{{ $totalCartPrice }}
-                </td>
+                
 
             </tbody>
         </table>
     </div>
 
+    @if($totalCartItem !=0)
     <div class="text-center mb-3">
         <form action="{{ route('user.ShippingDetailsForm') }}" method="get">
             <button type="submit" class="btn btn-lg btn-primary mr-5">{{ __('labels.add_shipping_details') }}<i
                     class="bi bi-play-fill ms-1"></i></button>
         </form>
     </div>
+    @endif
 @endsection

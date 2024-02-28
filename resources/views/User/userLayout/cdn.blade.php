@@ -25,3 +25,21 @@
 {{-- Data Tables --}}
 <link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/dataTables.dataTables.min.css">
 <script src="//cdn.datatables.net/2.0.0/js/dataTables.min.js"></script>
+
+<style>
+    .rating {
+  display: inline-block;
+}
+
+.star {
+  font-size: 30px;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.star:hover,
+.star.active {
+  color: #ffdd00;
+}
+
+</style>

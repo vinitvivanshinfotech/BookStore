@@ -23,3 +23,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/addToWishlist/{user_id}/{book_id}',[UserApiController::class,'addToWishlist']);
 Route::get('/addToCart/{user_id}/{book_id}',[UserApiController::class,'addToCart']);
+Route::get('getWatchlistCartData',[UserApiController::class,'getWatchlistCartData']);
+
