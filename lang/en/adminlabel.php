@@ -16,6 +16,7 @@ return [
     'order_status'=>'Order Status',
     'update'=>'Update order status',
     'delete'=>'Delete Order',
+    'invoice'=>'Invoice Details',
 
     
 

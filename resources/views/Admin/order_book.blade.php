@@ -42,8 +42,8 @@
                 <form action="{{route('update.order.status')}}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" value="{{$order->id}}" name="order_id">
-                <td>
-                    {{$order->order_status}}
+                    <td>
+                        {{$order->order_status}}
 
                         <div class="form-floating mb-3">
                             @php
@@ -54,7 +54,6 @@
                                 <option value="{{__('adminlabel.procees_order')}}" @if(in_array('Process Order',$order_status)) selected @endif>{{__('adminlabel.procees_order')}}</option>
                                 <option value="{{__('adminlabel.shipped_order')}}" @if(in_array('Shipped Order',$order_status)) selected @endif>{{__('adminlabel.shipped_order')}}</option>
                                 <option value="{{__('adminlabel.delivered_order')}}" @if(in_array('Delivered Order',$order_status)) selected @endif>{{__('adminlabel.delivered_order')}}</option>
-                                <option value="{{__('adminlabel.shipped_order')}}" @if(in_array('Shipped Order',$order_status)) selected @endif>{{__('adminlabel.shipped_order')}}</option>
                                 <option value="{{__('adminlabel.cancelled_order')}}" @if(in_array('Cancelled Order',$order_status)) selected @endif>{{__('adminlabel.cancelled_order')}}</option>
                             </select>
                             @error('book_edition')
@@ -65,13 +64,15 @@
                     </td>
                     <td><input type="submit" class="btn btn-sm btn-success" value="{{__('adminlabel.update')}}"></td>
                 </form>
-                <td><a href="{{route('orderdetails.book',$order->id)}}" class="btn btn-sm btn-info">{{__('adminlabel.moreinfo')}}</a></td>
+                <td><a href="{{route('orderdetails.book',$order->id)}}" class="btn btn-sm btn-info">{{__('adminlabel.moreinfo')}}</a>
+                    <a href="{{route('pdf',$order->id)}}" class="btn btn-sm btn-info" name="pdf">
+                </td>
                 <td>
                     <form action="{{route('delete.order',$order->id)}}" method="POST">
                         @csrf
                         <input type="submit" class="btn btn-sm btn-danger" value="{{__('adminlabel.delete')}}">
                     </form>
-                 </td>
+                </td>
             </tr>
             @endforeach
         </tbody>
@@ -82,6 +83,7 @@
 
         });
     </script>
+
 </body>
 
 </html>

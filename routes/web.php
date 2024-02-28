@@ -81,5 +81,8 @@ Route::middleware(['admin'])->group(function () {
         Route::get('/orderdetails/{id}', 'orderDetails')->name('orderdetails.book');
         Route::post('/updateorderstatus', 'updateOrderStatus')->name('update.order.status');
         Route::Post('/rejectingorder/{id}', 'deleteOrder')->name('delete.order');
+
+
+        Route::get('/generate-pdf/{id}', 'pdf')->name('pdf');
     });
 });

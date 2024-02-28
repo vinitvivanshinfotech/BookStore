@@ -9,59 +9,52 @@
 </head>
 
 <body>
-    @include('Admin.layoutAdmin.navbar')
-    @include('Admin.layoutAdmin.sildebar')
-    <section>
-        <div>
-            <div class="card">
-                <h5 class="card-header">{{__('adminlabel.orderdetails')}}</h5>
-                <div class="card-body">
-                    <h5 class="card-title">{{__('adminview.shipingdetails')}}</h5>
-                    <fieldset disabled>
-                        <div class="row g-3">
-                            <div class="col">
-                                <label for="disabledTextInput" class="form-label">{{__('labels.first_name')}}</label>
-                                <input type="text" class="form-control" placeholder="First name" aria-label="First name" value="{{$orderDetails[0]['first_name']}}">
-                            </div>
-                            <div class="col">
-                                <label for="disabledTextInput" class="form-label">{{__('labels.last_name')}}</label>
-                                <input type="text" class="form-control" placeholder="Last name" aria-label="Last name" value="{{$orderDetails[0]['last_name']}}">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="disabledTextInput" class="form-label" value="{{$orderDetails[0]['email']}}">{{__('labels.email')}}</label>
-                            <input type="email" class="form-control" id="disabledTextInput" value="{{$orderDetails[0]['email']}}">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="disabledTextInput" class="form-label">{{__('labels.phone_number')}}</label>
-                            <input type="text" class="form-control" value="{{$orderDetails[0]['phone_number']}}">
-                        </div>
-                        <div class="col-12">
-                            <label for="disabledTextInput" class="form-label">{{__('labels.address')}}</label>
-                            <input type="text" class="form-control" id="disabledTextInput" value="{{$orderDetails[0]['address']}}">
-                        </div>
-                        <div class="col-12">
-                            <label for="disabledTextInput" class="form-label">Address 2</label>
-                            <input type="text" class="form-control" id="disabledTextInput" value="{{$orderDetails[0]['address']}}">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="disabledTextInput" class="form-label">{{__('labels.city')}}</label>
-                            <input type="text" class="form-control" id="disabledTextInput" value="{{$orderDetails[0]['city']}}">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="disabledTextInput" class="form-label">{{__('labels.state')}}</label>
-                            <input type="text" class="form-control" id="disabledTextInput" value="{{$orderDetails[0]['state']}}">
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="disabledTextInput" class="form-label">{{__('labels.pincode')}}</label>
-                            <input type="text" class="form-control" id="disabledTextInput" value="{{$orderDetails[0]['pincode']}}">
-                        </div>
-                    </fieldset>
+    <div class="row">
+        <div class="col-xs-10">
+            <div class="invoice-title">
+                <h2>{{__('adminlabel.invoice')}}</h2>
+                <h5 class="pull-right">Order id {{$orderDetails[0]['order_id']}}</h5>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-xs-6">
+                    <address>
+                        <strong>Billed To:</strong><br>
+                        {{$orderDetails[0]['first_name']}} {{$orderDetails[0]['last_name']}}<br>
+                        {{$orderDetails[0]['phone_number']}}<br>
+                        {{$orderDetails[0]['email']}}<br>
+                        {{$orderDetails[0]['city']}}
+                    </address>
+                </div>
+                <div class="col-xs-6 text-right">
+                    <address>
+                        <strong>Shipped To:</strong><br>
+                        {{$orderDetails[0]['first_name']}} {{$orderDetails[0]['last_name']}}<br>
+                        {{$orderDetails[0]['address']}}<br>
+                        {{$orderDetails[0]['pincode']}}<br>
+                        {{$orderDetails[0]['city']}} {{$orderDetails[0]['state']}}
+                    </address>
                 </div>
             </div>
-    </section>
+            <div class="row">
+                <div class="col-xs-6">
+                    <address>
+                        <strong>Payment Method:</strong><br>
+                        {{$orderDetails[0]['payment_mode']}}<br>
+
+                    </address>
+                </div>
+                <div class="col-xs-6 text-right">
+                    <address>
+                        <strong>Order Date:</strong><br>
+                        {{$orderDetails[0]['book_billdate']}}<br><br>
+                    </address>
+                </div>
+            </div>
+        </div>
     </div>
+    </div>
+
     <table class="table table-bordered table-hover" id="books_list" name="books_list">
         @if(session()->has('success'))
         <div class="alert alert-success">
@@ -72,26 +65,40 @@
             <th>{{__('adminlabel.no')}}</th>
             <th>{{__('labels.book_name')}}</th>
             <th>{{__('labels.book_price')}}</th>
-            <th>{{__('labels.quantity')}}</th>
             <th>{{__('labels.discount')}}</th>
+            <th>{{__('labels.quantity')}}</th>
             <th>{{__('labels.total_price')}}</th>
         </thead>
         <tbody>
-            @foreach ($orderDetails as $orderDetail )    
+            @php
+            $total_amount = 0
+            @endphp
+            @foreach ($orderDetails as $orderDetail )
             <tr>
                 <td>{{$loop->index+1 }}</td>
                 <td>{{$orderDetail['book_name']}}</td>
                 <td>{{$orderDetail['book_price']}}</td>
-                <td>{{$orderDetail['book_total_quantity']}}</td>
                 <td>{{$orderDetail['book_discount']}}</td>
-                <td>{{  ($orderDetail['book_price'] * $orderDetails[0]['book_total_quantity']) - ($orderDetail['book_discount'] * $orderDetails[0]['book_total_quantity'])  }}</td>
+                <td>{{$orderDetail['book_total_quantity']}}</td>
+                <td>{{(($orderDetail['book_price'] * $orderDetails[0]['book_total_quantity']) - ($orderDetail['book_discount'] * $orderDetails[0]['book_total_quantity']))}}
+                @php
+                $total_amount += ($orderDetail['book_price'] * $orderDetails[0]['book_total_quantity']) - ($orderDetail['book_discount'] * $orderDetails[0]['book_total_quantity'])
+                @endphp
+            </td>
             </tr>
             @endforeach
+            <tr>
+                <td class="no-line"></td>
+                <td class="no-line"></td>
+                <td class="no-line"></td>
+                <td class="no-line"></td>
+                <td class="no-line text-right"><strong>Total Quantity : </strong> {{$orderDetails->sum('book_total_quantity')}}</td>
+                <td class="no-line text-right"><strong>Total Price : </strong> {{($total_amount)}}</td>
+            </tr>
         </tbody>
 
-    </table>   
 
-
+    </table>
 </body>
 
 </html>

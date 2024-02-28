@@ -6,15 +6,21 @@ use App\Models\BookDetail;
 use Illuminate\Http\Request;
 use App\Http\Requests\saveBookRequest;
 use App\Http\Requests\updateBookRequest;
+use App\Mail\SendInvoiceToUser;
 use App\Models\OrderDetail;
 use App\Models\ShippingDetail;
-use App\Models\ShippingDetails;
+use Illuminate\Support\Facades\Mail;
+
 use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\VarDumper\VarDumper;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
+use Illuminate\Support\Facades\View;
+
+// use App\Traits\InvoiceDetailsTrait;
 
 class BookContoller extends Controller
 {
@@ -34,7 +40,7 @@ class BookContoller extends Controller
 
         Storage::disk(config('constant.FILESYSTEM_DISK'))->put($file_path, file_get_contents($request->book_cover));
 
-        $data = $request->except('book_cover');
+        $data = $request->except('book_cover','_token');
         $data['book_cover'] = $file_path;
         BookDetail::create($data);
 
@@ -159,7 +165,7 @@ class BookContoller extends Controller
     {
         try {
 
-            $orders = OrderDetail::orderBy('created_at', 'desc')->with(['user', 'book'])->where('order_status','!=','Cancelled Order')->get();
+            $orders = OrderDetail::orderBy('created_at', 'desc')->with(['user', 'book'])->where('order_status', '!=', 'Cancelled Order')->get();
             $order_status =  $orders[0]['order_status'];
             $order_status = explode(',', $orders[0]->order_status);
 
@@ -171,6 +177,7 @@ class BookContoller extends Controller
         }
     }
 
+    // use InvoiceDetailsTrait;
     /**
      * Desciption : Showing the all order details  of a specific user.
      *
@@ -181,6 +188,7 @@ class BookContoller extends Controller
     {
         try {
             $orderDetails = ShippingDetail::join('order_details', 'order_details.id', '=', 'shipping_details.order_id')
+                ->join('payment_books', 'payment_books.id', '=', 'order_details.payment_id')
                 ->join('order_descripitions', 'order_descripitions.order_id', '=', 'order_details.id')
                 ->join('book_details', 'book_details.id', '=', 'order_descripitions.book_id')->where('shipping_details.order_id', $id)
                 ->get();
@@ -215,7 +223,7 @@ class BookContoller extends Controller
     }
 
     /**
-     * Desciption : Rejecting/deleting the order from admin side.
+     * Desciption : Rejecting/deleting the order from admin side.php artisan vendor:publish --provider='Fedeisas\LaravelMailCssInliner\LaravelMailCssInlinerServiceProvider'
      *
      * @param :id 
      * @return : 
@@ -240,5 +248,32 @@ class BookContoller extends Controller
             Log::error('Attempt to delete order with ID ' . $id . ' failed. Error: ' . $e->getMessage());
             return response()->json(['message' => 'An error occurred while deleting the order.'], 500);
         }
+    }
+
+    /**
+     * Desciption : 
+     *
+     * @param :
+     * @return : 
+     */
+    public function pdf($id)
+    {
+        $orderDetails = ShippingDetail::join('order_details', 'order_details.id', '=', 'shipping_details.order_id')
+            ->join('payment_books', 'payment_books.id', '=', 'order_details.payment_id')
+            ->join('order_descripitions', 'order_descripitions.order_id', '=', 'order_details.id')
+            ->join('book_details', 'book_details.id', '=', 'order_descripitions.book_id')->where('shipping_details.order_id', $id)
+            ->get();
+        $email = $orderDetails[0]['email'];
+        $customer_name = $orderDetails[0]['first_name'] . '' . $orderDetails[0]['last_name'];
+
+        $html = (string)View::make('Admin.order_details', compact('orderDetails'));
+        $pdf = PDF::loadHTML($html);
+
+        $tempFilePath = tempnam(sys_get_temp_dir(), 'pdf_');
+        file_put_contents($tempFilePath, $pdf->output());
+
+        Mail::to($email)->send(new SendInvoiceToUser(['path' => $tempFilePath], ['customer_name' => $customer_name]));
+        // Mail::to($data["email"])->send(new MailExample($data));
+        return  back()->with('success', 'The invoice has been sent to your email! Please check it out');
     }
 }
