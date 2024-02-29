@@ -9,10 +9,8 @@ class OrderDescripition extends Model
 {
     use HasFactory;
     
-    protected $fillable = [
-        'order_id',
-        'book_id',
-        'book_quantity'
+    protected $guarded = [
+       
     ];
 
     public function bookDetails(){

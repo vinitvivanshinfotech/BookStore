@@ -9,7 +9,7 @@ class BookDetail extends Model
 {
     use HasFactory;
     protected $table = 'book_details';
-    protected $gaurded = [
+    protected $guarded = [
         
     ];
 }

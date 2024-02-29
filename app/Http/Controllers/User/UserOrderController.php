@@ -114,7 +114,7 @@ class UserOrderController extends Controller
                 Log::debug($item['book_quantity']);
             }
 
-            $postData = $request->except('_token');
+            $postData = $request->except('_token','payment_mode');
 
             $postData['order_id'] = $orderDetails->id;
 

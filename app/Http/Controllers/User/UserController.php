@@ -37,8 +37,8 @@ class UserController extends Controller
      */
     public function displayAllBooks()
     {
-
-        $books = BookDetail::simplePaginate(6);
+        $cartBookIds = Cart::where('user_id',auth()->user()->id)->pluck('book_id');
+        $books = BookDetail::whereNotIn('id',$cartBookIds)->simplePaginate(6);
         // Return the View with Data
         return view("User.all_books")->with(compact('books'));
     }

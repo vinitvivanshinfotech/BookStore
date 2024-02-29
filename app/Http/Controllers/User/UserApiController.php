@@ -53,7 +53,14 @@ class UserApiController extends Controller
     {
 
         $data = Cart::where(["user_id" => $user_id, "book_id" => $book_id])->first();
-        if ($data == NULL) {
+        if ($data != null) {
+            $data->book_quantity = $data->book_quantity + 1;
+            $data->save();
+            return  response()->json([
+                'status' => "exists",
+                'book_id' => $data->book_id,
+            ], 200);
+        }else {
 
             try {
                 $listItem = Cart::create([
@@ -63,15 +70,16 @@ class UserApiController extends Controller
                 ]);
                 Log::info('Added book to cart: by ' .$user_id.' book id '.$book_id);
                 if ($listItem != NULL) {
-                    return  response()->json(['status' => "success"]);
+                    return  response()->json([
+                        'status' => "success",
+                        'book_id' => $listItem->book_id,
+                    ],200);
                 } else {
                     return  response()->json(['status' => "failed"], 500);
                 }
             } catch (\Exception $th) {
                 Log::error(__METHOD__ . ',' . __LINE__ . '-' . $th->getMessage());
             }
-        } else {
-            return  response()->json(['status' => "exists"]);
         }
     }
 

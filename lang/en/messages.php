@@ -7,6 +7,7 @@ return [
    'password'=>'Password',
    'login'=>'Login',
    'added_to_cart' => 'Item added to cart',
+   'quantity_incresed'=>'Quantity increased by one.',
    'added_to_wishlist' => 'Item added to wishlist',
    'added_to_wishlist_error'=> 'Error while adding to wishlist',
    'added_to_cart_error'=> 'Error while adding to cart',

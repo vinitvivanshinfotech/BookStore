@@ -9,9 +9,8 @@ class WishlistBook extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'user_id',
-        'book_id'
+    protected $guarded = [
+       
     ];
 
     public function bookDetails(){

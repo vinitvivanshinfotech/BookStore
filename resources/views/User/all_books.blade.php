@@ -27,7 +27,7 @@
                                         {{ $book->book_discount }}
 
                                     <li class="list-group-item">
-                                        <span class="text-success {{$book->id}}"></span>
+                                        <span class="text-success addedSpan {{$book->id}}"></span>
                                         <div class="row">
                                             <div class="col">
                                                 <form action="{{ route('user.bookDetails') }}" method="GET">
@@ -49,7 +49,7 @@
                                                 </button>
                                             </div>
                                             <div class="col">
-                                                <button class="btn-sm btn-warning   addToCartButton" id="addToCartButton"
+                                                <button class="btn-sm btn-warning   addToCartButton {{$book->id}}" id="addToCartButton"
                                                     name="addToCartButton" value="{{ $book->id }}">
                                                     <i
                                                         class="bi bi-cart-plus-fill mr-1"></i>{{ __('labels.add_to_cart_btn') }}
