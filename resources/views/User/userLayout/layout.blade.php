@@ -33,17 +33,16 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#">Link</a>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Dropdown
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Dropdown
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="#">Action</a>
+                    <a class="dropdown-item" href="#">Another action</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                </div>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
@@ -53,14 +52,15 @@
             <form class="form-inline my-2 mr-3 my-lg-0" method="get" action="{{ route('user.watchlist') }}">
                 @csrf
                 <button class="btn-sm btn-primary " type="submit" id="seeWatchlist" name="seeWatchlist" value="">
-                    <i class="bi bi-bookmark-check-fill mr-1"></i>{{ __('labels.see_wishlist_btn') }}
+                    <i class="bi bi-bookmark-check-fill mr-1"></i>{{ __('labels.see_wishlist_btn') }}<i
+                        id="watchlistCount"></i>
                 </button>
             </form>
 
             <form class="form-inline my-2 my-lg-0" method="get" action="{{ route('user.cart') }}">
                 @csrf
                 <button class="btn-sm btn-warning " type="submit" id="seeCart" name="seeCart" value="">
-                    <i class="bi bi-cart-plus-fill mr-1"></i>{{ __('labels.see_cart_btn') }}
+                    <i class="bi bi-cart-plus-fill mr-1"></i>{{ __('labels.see_cart_btn') }}<i id="cartCount"></i>
                 </button>
             </form>
         </div>
@@ -88,7 +88,7 @@
                                     class="ms-1 d-none d-sm-inline">{{ __('labels.see_books') }}</span>
                             </a>
                         </li>
-                        
+
                         <li class="nav-item">
                             <a href="{{ route('user.myOrders') }}" class="nav-link align-middle px-0">
                                 <i class="fs-4 bi-card-list"></i> <span
@@ -207,6 +207,166 @@
 </script>
 
 <script>
+    jQuery(document).ready(function($) {
+
+        $.ajax({
+            type: 'get',
+            url: '/api/getWatchlistCartData',
+            data: {
+                'user_id': {{ auth()->user()->id }}
+            },
+            dataType: "json",
+            success: function(data) {
+                $('#watchlistCount').html("").html('(' + data['wishlistCount'] + ')');
+                $('#cartCount').html("").html('(' + data['cartCount'] + ')');
+
+            },
+            error: function(err) {
+
+            }
+
+        });
+        
+        $('.addToWishlistButton').click(function() {
+
+
+            // Get the value of the book ID
+            var bookId = $(this).val();
+            // Get the value of the authenticated user's ID
+            var userId = {{ auth()->id() }};
+            // Log the values to the console (you can do further processing here)
+
+            $.ajax({
+                type: 'get',
+                url: 'http://localhost:8000/api/addToWishlist/' + userId + '/' + bookId,
+                data: {
+                    'book_id': bookId,
+                    'user_id': userId
+                },
+                dataType: "json",
+                success: function(data) {
+
+                    if (data['status'] == "exists") {
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "warning",
+                            title: "{{ __('messages.exists_in_wishlist') }}",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else {
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "success",
+                            title: "{{ __('messages.added_to_wishlist') }}",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+
+
+
+                },
+                error: function(err) {
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "error",
+                        title: "{{ __('messages.added_to_wishlist_error') }}",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
+
+            $.ajax({
+                type: 'get',
+                url: '/api/getWatchlistCartData',
+                data: {
+                    'user_id': {{ auth()->user()->id }}
+                },
+                dataType: "json",
+                success: function(data) {
+                    $('#watchlistCount').html("").html('(' + data['wishlistCount'] + ')');
+                    $('#cartCount').html("").html('(' + data['cartCount'] + ')');
+
+                },
+                error: function(err) {
+
+                }
+
+            });
+        });
+        $('.addToCartButton').click(function() {
+            // Get the value of the book ID
+            var bookId = $(this).val();
+            // Get the value of the authenticated user's ID
+            var userId = {{ auth()->id() }};
+            // Log the values to the console (you can do further processing here)
+
+            $.ajax({
+                type: 'get',
+                url: 'http://localhost:8000/api/addToCart/' + userId + '/' + bookId,
+                data: {
+                    'book_id': bookId,
+                    'user_id': userId
+                },
+                dataType: "json",
+                success: function(data) {
+
+                    if (data['status'] == "exists") {
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "warning",
+                            title: "{{ __('messages.exists_in_cart') }}",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else {
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "success",
+                            title: "{{ __('messages.added_to_cart') }}",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+
+
+
+                },
+                error: function(err) {
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "error",
+                        title: "{{ __('messages.added_to_cart_error') }}",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
+
+            $.ajax({
+                type: 'get',
+                url: '/api/getWatchlistCartData',
+                data: {
+                    'user_id': {{ auth()->user()->id }}
+                },
+                dataType: "json",
+                success: function(data) {
+                    $('#watchlistCount').html("").html('(' + data['wishlistCount'] + ')');
+                    $('#cartCount').html("").html('(' + data['cartCount'] + ')');
+
+                },
+                error: function(err) {
+
+                }
+
+            });
+
+        });
+    });
+
+
     function showConfirmButton() {
         let c = confirm("Are you Sure want to logout...?");
         if (c) {

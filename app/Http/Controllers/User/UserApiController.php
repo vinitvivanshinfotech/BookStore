@@ -5,10 +5,12 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 // model
 use App\Models\WishlistBook;
 use App\Models\Cart;
+
 
 class UserApiController extends Controller
 {
@@ -72,4 +74,24 @@ class UserApiController extends Controller
             return  response()->json(['status' => "exists"]);
         }
     }
+
+    /**
+     * Desciption : Get the data of watchlist and cart data of authenticated user
+     * 
+     * @param : 
+     * @return : json
+     */ 
+
+     public function getWatchlistCartData(Request $request){
+        $userId = $request->user_id;
+        $cartItems = Cart::where('user_id',$userId)->get()->toArray();
+        
+        $wishlistItems = WishlistBook::where('user_id',$userId)->get()->toArray();
+
+        return response()->json([
+            'status'=>'success',
+            'cartCount' => count($cartItems),
+            'wishlistCount' => count($wishlistItems)
+        ]);
+     }
 }

@@ -30,27 +30,25 @@ class UserAuthController extends Controller
     public function userRegistrationPost(RegisterRequest $request)
     {
         $user = User::create([
-            'first_name'=>$request->input('first_name'),
-            'last_name'=>$request->input('last_name'),
-            'email'=>$request->input('email'),
-            'phone_number'=>$request->input('phone_number'),
-            'password'=>$request->input('password'),
+            'first_name' => $request->input('first_name'),
+            'last_name' => $request->input('last_name'),
+            'email' => $request->input('email'),
+            'phone_number' => $request->input('phone_number'),
+            'password' => $request->input('password'),
         ]);
-        
-        return redirect()->route('login')->with("Success","Your account has been created successfully!");
+
+        return redirect()->route('login')->with("Success", "Your account has been created successfully!");
     }
 
-    public function userLoginPost(LoginRequest $request){
-        if(Auth::attempt(['email' => $request->input('email'), 'password' => $request->input('password')]))  
-        {  
+    public function userLoginPost(LoginRequest $request)
+    {
+        if (Auth::guard('user')->attempt(['email' => $request->input('email'), 'password' => $request->input('password')])) {
             // Authentication passed...
-            Session::flash( "success", "You are Successfully Logged In!" ); 
-            return redirect()->route('user.dashboard')->with(["Success"=>"You are Logged In Successfully","user"=>Auth::user()]); 
-        }  
-        else    
-        {  
-            Session::flash( 'error', 'Invalid Email or Password!' ); 
-            return  redirect() ->back();
+            Session::flash("success", "You are Successfully Logged In!");
+            return redirect()->route('user.dashboard')->with(["Success" => "You are Logged In Successfully"]);
+        } else {
+            Session::flash('error', 'Invalid Email or Password!');
+            return  redirect()->back();
         }
     }
 
@@ -59,10 +57,10 @@ class UserAuthController extends Controller
      * 
      * @param : 
      * @return : 
-     */ 
-    public function userLogout(){
-        Auth::logout();
-        Session::flush();
+     */
+    public function userLogout()
+    {
+        Auth::guard('user')->logout();
         return redirect()->route('login');
     }
 }

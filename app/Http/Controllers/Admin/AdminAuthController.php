@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
@@ -13,7 +14,7 @@ use App\Http\Requests\LoginRequest;
 class AdminAuthController extends Controller
 {
 
-    
+
 
     public function showLoginForm()
     {
@@ -29,9 +30,9 @@ class AdminAuthController extends Controller
         }
     }
 
-    public function adminLogout(){
-        Auth::logout();
-        Session::flush();
+    public function adminLogout()
+    {
+        Auth::guard('admin')->logout();
         return redirect()->route('admin.loginForm');
     }
 

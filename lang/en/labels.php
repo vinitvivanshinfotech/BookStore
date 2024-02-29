@@ -36,6 +36,7 @@ return [
    'quantity'=>'Quantity',
    'discount'=>'Discount',
    'total_price'=>'Total Price',
+   'total_discount'=>'Total Discount',
    
    
    // Buttons
@@ -72,12 +73,20 @@ return [
    'total'=>'Total',
    'status'=>'Status',
    'payable_amount'=>'Amount to be payed',
+   'give_review'=>'Give Review',
 
 
 
    // Order Placed confirmation pdf send
    'customer_name'=> 'Customer Name',
    'shipment_address'=>'Shipment Address',
+
+
+   // Book rating
+   'rate_us'=>'Please rate us',
+   'submit_review'=>'Submit review',
+   'rating'=>'Rating',
+   'your_review'=>'Your review'
 
 
 

@@ -1,7 +1,6 @@
 @extends('User.userLayout.layout')
 @section('content')
     
-
     <div class="card">
         <div class="card-header">
             <div class="text-right mb-3">
@@ -19,7 +18,7 @@
         <div class="card-body">
             <img class="card-img-top"
                 src="{{ Storage::disk(config('constant.FILESYSTEM_DISK'))->url($bookDetails->book_cover) }}" alt="Book cover"
-                style="border: 1px solid black; height: 200px; width: 100px;">
+                onerror="this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTUUcQuoOAi8EgqOQ6epycAwp8T9WaxN7IkA&usqp=CAU';" style="border: 1px solid black; height: 200px; width: 100px;">
             <br>
             <br>
 
@@ -55,100 +54,5 @@
 @endsection
 
 @push('scripts')
-    
-jQuery(document).ready(function($) {
-    $('.addToWishlistButton').click(function() {
-        // Get the value of the book ID
-        var bookId = $(this).val();
-        // Get the value of the authenticated user's ID
-        var userId = {{ auth()->id() }};
-        // Log the values to the console (you can do further processing here)
-
-        $.ajax({
-            type: 'get',
-            url: 'http://localhost:8000/api/addToWishlist/' + userId + '/' + bookId,
-            data: {
-                'book_id': bookId,
-                'user_id': userId
-            },
-            dataType: "json",
-            success: function(data) {
-
-                if (data['status'] == "exists") {
-                    Swal.fire({
-                        position: "top-end",
-                        icon: "warning",
-                        title: "{{ __('messages.exists_in_wishlist') }}",
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                } else {
-                    Swal.fire({
-                        position: "top-end",
-                        icon: "success",
-                        title: "{{ __('messages.added_to_wishlist') }}",
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                }
-
-            },
-            error: function(err) {
-                Swal.fire({
-                    position: "top-end",
-                    icon: "error",
-                    title: "{{ __('messages.added_to_wishlist_error') }}",
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }
-        });
-    });
-    $('.addToCartButton').click(function() {
-        // Get the value of the book ID
-        var bookId = $(this).val();
-        // Get the value of the authenticated user's ID
-        var userId = {{ auth()->id() }};
-        // Log the values to the console (you can do further processing here)
-
-        $.ajax({
-            type: 'get',
-            url: 'http://localhost:8000/api/addToCart/' + userId + '/' + bookId,
-            data: {
-                'book_id': bookId,
-                'user_id': userId
-            },
-            dataType: "json",
-            success: function(data) {
-
-                if (data['status'] == "exists") {
-                    Swal.fire({
-                        position: "top-end",
-                        icon: "warning",
-                        title: "{{ __('messages.exists_in_cart') }}",
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                } else {
-                    Swal.fire({
-                        position: "top-end",
-                        icon: "success",
-                        title: "{{ __('messages.added_to_cart') }}",
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                }
-            },
-            error: function(err) {
-                Swal.fire({
-                    position: "top-end",
-                    icon: "error",
-                    title: "{{ __('messages.added_to_cart_error') }}",
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }
-        });
-    });
-});
+  
 @endpush
