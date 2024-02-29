@@ -34,4 +34,15 @@ class AdminAuthController extends Controller
         Session::flush();
         return redirect()->route('admin.loginForm');
     }
+
+   /**
+   * Desciption : 
+   *
+   * @param :
+   * @return : 
+   */
+   public function forgetpassowrd()
+   {
+       
+   }
 }

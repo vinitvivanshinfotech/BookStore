@@ -6,6 +6,7 @@ use App\Models\BookDetail;
 use Illuminate\Http\Request;
 use App\Http\Requests\saveBookRequest;
 use App\Http\Requests\updateBookRequest;
+use App\Jobs\SendOrderListToAdmin;
 use App\Mail\SendInvoiceToUser;
 use App\Models\OrderDetail;
 use App\Models\PaymentBook;
@@ -22,6 +23,7 @@ use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Validation\Rules\Unique;
 
 // use App\Traits\InvoiceDetailsTrait;
 
@@ -300,14 +302,18 @@ class BookContoller extends Controller
     {
         try {
 
-            $paymentBook = $orderDetails = ShippingDetail::join('order_details', 'order_details.id', '=', 'shipping_details.order_id')
+            $paymentBook  = ShippingDetail::join('order_details', 'order_details.id', '=', 'shipping_details.order_id')
                 ->join('payment_books', 'payment_books.id', '=', 'order_details.payment_id')
                 ->join('order_descripitions', 'order_descripitions.order_id', '=', 'order_details.id')
                 ->join('book_details', 'book_details.id', '=', 'order_descripitions.book_id')
+                ->distinct('shipping_details.order_id')
                 ->whereDate('shipping_details.created_at', '=', Carbon::today())
                 ->whereTime('shipping_details.created_at', '>', Carbon::now()->subHours(2))
                 ->get()->toArray();
-            $csvFileName = 'payment.csv';
+
+            // dd($paymentBook);
+            $csvFileName = 'neworderlist.csv';
+            $tempFilePath = tempnam(sys_get_temp_dir(), 'csv_') . '.csv';
             $headers = [
                 'Content-Type' => 'text/csv',
                 'Content-Disposition' => 'attachment; filename="' . $csvFileName . '"',
@@ -321,7 +327,9 @@ class BookContoller extends Controller
             }
 
             fclose($handle);
-
+            $details = 'vinit.m@vivanshinfotech.com';
+            dispatch(new SendOrderListToAdmin($details,['tempFilePath'=>$tempFilePath]));    
+        
             return Response::make('', 200, $headers);
         } catch (\Exception $e) {
             Log::error('Attempt to send csv file of orderlist to admin ' . ' failed. Error: ' . $e->getMessage());
