@@ -85,12 +85,13 @@ class UserApiController extends Controller
      public function getWatchlistCartData(Request $request){
         $userId = $request->user_id;
         $cartItems = Cart::where('user_id',$userId)->get()->toArray();
+        
         $wishlistItems = WishlistBook::where('user_id',$userId)->get()->toArray();
 
         return response()->json([
             'status'=>'success',
-            'cartItems' => $cartItems,
-            'wishlistItems' => $wishlistItems
+            'cartCount' => count($cartItems),
+            'wishlistCount' => count($wishlistItems)
         ]);
      }
 }
