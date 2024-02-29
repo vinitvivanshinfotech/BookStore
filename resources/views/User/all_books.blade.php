@@ -2,17 +2,6 @@
 @section('content')
     <div class="container-fluid">
         <table class="table ">
-            <thead>
-                {{-- <tr>
-                    <th scope="col">{{ __('labels.book_cover') }}</th>
-                    <th scope="col">{{ __('labels.book_name') }}</th>
-                    <th scope="col">{{ __('labels.author_name') }}</th>
-                    <th scope="col">{{ __('labels.view_details') }}</th>
-                    <th scope="col">{{ __('labels.add_to_wishlist') }}</th>
-                    <th scope="col">{{ __('labels.add_to_cart') }}</th>
-
-                </tr> --}}
-            </thead>
             <tbody>
                 @foreach ($books as $book)
                     @if ($loop->index % 3 == 0)
@@ -25,44 +14,50 @@
 
                             <img class="card-img-top"
                                 src="{{ Storage::disk(config('constant.FILESYSTEM_DISK'))->url($book->book_cover) }}"
-                                onerror="this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTUUcQuoOAi8EgqOQ6epycAwp8T9WaxN7IkA&usqp=CAU';" alt="Image not fount"
-                                height="150px" width="200px">
+                                onerror="this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTUUcQuoOAi8EgqOQ6epycAwp8T9WaxN7IkA&usqp=CAU';"
+                                alt="Image not fount" height="150px" width="200px">
                             <hr>
                             <div class="card-body">
                                 <h5 class="card-title">{{ $book->book_name }}</h5>
                                 <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">{{ __('labels.author_name') }} :
+                                    <li class="list-group-item"><b class="text-primary">{{ __('labels.author_name') }} : </b>
                                         {{ $book->author_name }}</li>
-                                    <li class="list-group-item">{{ __('labels.book_price') }} : {{ $book->book_price }}
-                                    <li class="list-group-item">{{ __('labels.book_discount') }} :
+                                    <li class="list-group-item"><b class="text-primary">{{ __('labels.book_price') }} : </b>{{ $book->book_price }} <i>   </i>
+                                        <b class="text-primary ms-3">{{ __('labels.book_discount') }} : </b>
                                         {{ $book->book_discount }}
-                                    </li>
+
                                     <li class="list-group-item">
-
-                                        <form action="{{ route('user.bookDetails') }}" method="GET">
-                                            @csrf
-                                            <input type="hidden" id="book_id" name="book_id" value="{{ $book->id }}">
-                                            <button type="submit" class="btn-sm btn-secondary" id="showBookDetails"
-                                                name="showBookDetails" value="">
-                                                <i class="bi bi-eye-fill mr-1"></i>{{ __('labels.more') }}
-                                            </button>
-                                        </form>
-
-
-
-
-                                        <button class="btn-sm btn-primary mt-2 mr-1 addToWishlistButton"
-                                            id="addToWishlistButton" name="addToWishlistButton"
-                                            value="{{ $book->id }}">
-                                            <i
-                                                class="bi bi-bookmark-check-fill "></i>{{ __('labels.add_to_wishlist_btn') }}
-                                        </button>
-
-                                        <button class="btn-sm btn-warning mt-2 mb-3 addToCartButton" id="addToCartButton"
-                                            name="addToCartButton" value="{{ $book->id }}">
-                                            <i class="bi bi-cart-plus-fill mr-1"></i>{{ __('labels.add_to_cart_btn') }}
-                                        </button>
+                                        <span class="text-success {{$book->id}}"></span>
+                                        <div class="row">
+                                            <div class="col">
+                                                <form action="{{ route('user.bookDetails') }}" method="GET">
+                                                    @csrf
+                                                    <input type="hidden" id="book_id" name="book_id"
+                                                        value="{{ $book->id }}">
+                                                    <button type="submit" class="btn-sm btn-secondary" id="showBookDetails"
+                                                        name="showBookDetails" value="">
+                                                        <i class="bi bi-eye-fill mr-1"></i>{{ __('labels.more') }}
+                                                    </button>
+                                                </form>
+                                            </div>
+                                            <div class="col">
+                                                <button class="btn-sm btn-primary  addToWishlistButton"
+                                                    id="addToWishlistButton" name="addToWishlistButton"
+                                                    value="{{ $book->id }}">
+                                                    <i
+                                                        class="bi bi-bookmark-check-fill "></i>{{ __('labels.add_to_wishlist_btn') }}
+                                                </button>
+                                            </div>
+                                            <div class="col">
+                                                <button class="btn-sm btn-warning   addToCartButton" id="addToCartButton"
+                                                    name="addToCartButton" value="{{ $book->id }}">
+                                                    <i
+                                                        class="bi bi-cart-plus-fill mr-1"></i>{{ __('labels.add_to_cart_btn') }}
+                                                </button>
+                                            </div>
+                                        </div>
                                     </li>
+
                                 </ul>
 
                             </div>
@@ -81,99 +76,4 @@
 @endsection
 
 @push('scripts')
-    jQuery(document).ready(function($) {
-    $('.addToWishlistButton').click(function() {
-    // Get the value of the book ID
-    var bookId = $(this).val();
-    // Get the value of the authenticated user's ID
-    var userId = {{ auth()->id() }};
-    // Log the values to the console (you can do further processing here)
-
-    $.ajax({
-    type: 'get',
-    url: 'http://localhost:8000/api/addToWishlist/' + userId + '/' + bookId,
-    data: {
-    'book_id': bookId,
-    'user_id': userId
-    },
-    dataType: "json",
-    success: function(data) {
-
-    if (data['status'] == "exists") {
-    Swal.fire({
-    position: "top-end",
-    icon: "warning",
-    title: "{{ __('messages.exists_in_wishlist') }}",
-    showConfirmButton: false,
-    timer: 1500
-    });
-    } else {
-    Swal.fire({
-    position: "top-end",
-    icon: "success",
-    title: "{{ __('messages.added_to_wishlist') }}",
-    showConfirmButton: false,
-    timer: 1500
-    });
-    }
-
-    },
-    error: function(err) {
-    Swal.fire({
-    position: "top-end",
-    icon: "error",
-    title: "{{ __('messages.added_to_wishlist_error') }}",
-    showConfirmButton: false,
-    timer: 1500
-    });
-    }
-    });
-    });
-    $('.addToCartButton').click(function() {
-    // Get the value of the book ID
-    var bookId = $(this).val();
-    // Get the value of the authenticated user's ID
-    var userId = {{ auth()->id() }};
-    // Log the values to the console (you can do further processing here)
-
-    $.ajax({
-    type: 'get',
-    url: 'http://localhost:8000/api/addToCart/' + userId + '/' + bookId,
-    data: {
-    'book_id': bookId,
-    'user_id': userId
-    },
-    dataType: "json",
-    success: function(data) {
-
-    if (data['status'] == "exists") {
-    Swal.fire({
-    position: "top-end",
-    icon: "warning",
-    title: "{{ __('messages.exists_in_cart') }}",
-    showConfirmButton: false,
-    timer: 1500
-    });
-    } else {
-    Swal.fire({
-    position: "top-end",
-    icon: "success",
-    title: "{{ __('messages.added_to_cart') }}",
-    showConfirmButton: false,
-    timer: 1500
-    });
-    }
-    },
-    error: function(err) {
-    Swal.fire({
-    position: "top-end",
-    icon: "error",
-    title: "{{ __('messages.added_to_cart_error') }}",
-    showConfirmButton: false,
-    timer: 1500
-    });
-    }
-    });
-    });
-    });
 @endpush
