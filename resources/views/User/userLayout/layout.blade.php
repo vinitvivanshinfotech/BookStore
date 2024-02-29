@@ -27,9 +27,7 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                </li>
+                
                 <li class="nav-item">
                     <a class="nav-link" href="#">Link</a>
                 </li>
@@ -76,11 +74,7 @@
                     </a>
                     <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start"
                         id="menu">
-                        <li class="nav-item">
-                            <a href="" class="nav-link align-middle px-0">
-                                <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Home</span>
-                            </a>
-                        </li>
+                        
 
                         <li class="nav-item">
                             <a href="{{ route('user.showBooks') }}" class="nav-link align-middle px-0">
@@ -93,65 +87,6 @@
                             <a href="{{ route('user.myOrders') }}" class="nav-link align-middle px-0">
                                 <i class="fs-4 bi-card-list"></i> <span
                                     class="ms-1 d-none d-sm-inline">{{ __('labels.my_orders') }}</span>
-                            </a>
-                        </li>
-
-
-
-
-                        <li>
-                            <a href="" class="nav-link px-0 align-middle"> <i
-                                    class="fs-4 bi-cloud-arrow-up-fill"></i><span class="ms-2 d-none d-sm-inline">Upload
-                                    Images</span> </a>
-                        </li>
-
-
-                        <li>
-                            <a href="" class="nav-link px-0 align-middle">
-                                <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline">View
-                                    Images</span></a>
-                        </li>
-                        <li>
-                            <a href="#submenu2" data-bs-toggle="collapse" class="nav-link px-0 align-middle ">
-                                <i class="fs-4 bi-bootstrap"></i> <span
-                                    class="ms-1 d-none d-sm-inline">Bootstrap</span></a>
-                            <ul class="collapse nav flex-column ms-1" id="submenu2" data-bs-parent="#menu">
-                                <li class="w-100">
-                                    <a href="#" class="nav-link px-0"> <span
-                                            class="d-none d-sm-inline">Item</span> 1</a>
-                                </li>
-                                <li>
-                                    <a href="#" class="nav-link px-0"> <span
-                                            class="d-none d-sm-inline">Item</span> 2</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#submenu3" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
-                                <i class="fs-4 bi-grid"></i> <span class="ms-1 d-none d-sm-inline">Products</span>
-                            </a>
-                            <ul class="collapse nav flex-column ms-1" id="submenu3" data-bs-parent="#menu">
-                                <li class="w-100">
-                                    <a href="#" class="nav-link px-0"> <span
-                                            class="d-none d-sm-inline">Product</span> 1</a>
-                                </li>
-                                <li>
-                                    <a href="#" class="nav-link px-0"> <span
-                                            class="d-none d-sm-inline">Product</span> 2</a>
-                                </li>
-                                <li>
-                                    <a href="#" class="nav-link px-0"> <span
-                                            class="d-none d-sm-inline">Product</span> 3</a>
-                                </li>
-                                <li>
-                                    <a href="#" class="nav-link px-0"> <span
-                                            class="d-none d-sm-inline">Product</span> 4</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#" class="nav-link px-0 align-middle">
-                                <i class="fs-4 bi-people"></i> <span class="ms-1 d-none d-sm-inline">Customers</span>
                             </a>
                         </li>
                     </ul>
@@ -200,12 +135,10 @@
 
 
 </body>
-<script>
-    @stack('scripts')
-</script>
 
 <script>
     jQuery(document).ready(function($) {
+        @stack('scripts')
 
         $.ajax({
             type: 'get',

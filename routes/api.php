@@ -22,7 +22,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/addToWishlist/{user_id}/{book_id}',[UserApiController::class,'addToWishlist']);
-Route::get('/addToCart/{user_id}/{book_id}',[UserApiController::class,'addToCart']);
-Route::get('getWatchlistCartData',[UserApiController::class,'getWatchlistCartData']);
+Route::controller(UserApiController::class)->group(function () {
+    Route::get('/addToWishlist/{user_id}/{book_id}','addToWishlist');
+    Route::get('/addToCart/{user_id}/{book_id}','addToCart');
+    Route::get('getWatchlistCartData','getWatchlistCartData');
+    Route::post('addRatings','addRatings');
+});
+
+
+
 

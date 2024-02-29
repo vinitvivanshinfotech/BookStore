@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 // model
 use App\Models\WishlistBook;
 use App\Models\Cart;
+use App\Models\ReviewBook;
 
 
 class UserApiController extends Controller
@@ -101,5 +102,26 @@ class UserApiController extends Controller
             'cartCount' => count($cartItems),
             'wishlistCount' => count($wishlistItems)
         ]);
+     }
+
+     public function addRatings(Request $request){
+        
+        {
+            $review = ReviewBook::create([
+                'user_id'       => $request->user_id,
+                'book_id'       => $request->book_id,
+                'book_ratings' => $request->rating ?? '',
+                'book_comments' => $request->review ?? ''
+            ]);
+            if($review){
+                return response()->json([
+                    'status'=>'success',
+                ],200);
+            }else{
+                return response()->json([
+                    'status'=>'fail',
+                ],501);
+            }
+        }
      }
 }
