@@ -310,27 +310,20 @@ class BookContoller extends Controller
                 ->whereDate('shipping_details.created_at', '=', Carbon::today())
                 ->whereTime('shipping_details.created_at', '>', Carbon::now()->subHours(2))
                 ->get()->toArray();
-
-            // dd($paymentBook);
             $csvFileName = 'neworderlist.csv';
             $tempFilePath = tempnam(sys_get_temp_dir(), 'csv_') . '.csv';
-            $headers = [
-                'Content-Type' => 'text/csv',
-                'Content-Disposition' => 'attachment; filename="' . $csvFileName . '"',
-            ];
+            $fp = fopen($tempFilePath, 'w');
 
-            $handle = fopen('php://output', 'w');
-            fputcsv($handle, ['id', 'Customer Name', 'order id ', 'Total Quantity', 'Total Price', 'City', 'State', 'created_at', 'updated_at']); // Add more headers as needed
+            fputcsv($fp, ['id', 'Customer Name', 'order id ', 'Total Quantity', 'Total Price', 'City', 'State', 'created_at', 'updated_at']); // Add more headers as needed
 
             foreach ($paymentBook as $paymentBook) {
-                fputcsv($handle, [$paymentBook['id'], ($paymentBook['first_name']), $paymentBook['order_id'], $paymentBook['book_total_quantity'], $paymentBook['book_total_price'], $paymentBook['city'], $paymentBook['state'], $paymentBook['created_at'], $paymentBook['updated_at']]); // Add more fields as needed
+                fputcsv($fp, [$paymentBook['id'], ($paymentBook['first_name']), $paymentBook['order_id'], $paymentBook['book_total_quantity'], $paymentBook['book_total_price'], $paymentBook['city'], $paymentBook['state'], $paymentBook['created_at'], $paymentBook['updated_at']]); // Add more fields as needed
             }
+            fclose($fp);
 
-            fclose($handle);
             $details = 'vinit.m@vivanshinfotech.com';
-            dispatch(new SendOrderListToAdmin($details,['tempFilePath'=>$tempFilePath]));    
-        
-            return Response::make('', 200, $headers);
+            dispatch(new SendOrderListToAdmin($details, ['tempFilePath' => $tempFilePath]));
+            dispatch(new SendOrderListToAdmin($details, ['tempFilePath' => $tempFilePath]));
         } catch (\Exception $e) {
             Log::error('Attempt to send csv file of orderlist to admin ' . ' failed. Error: ' . $e->getMessage());
             return response()->json(['message' => 'Failed to send the csv file to admin.'], 500);

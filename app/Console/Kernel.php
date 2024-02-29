@@ -8,11 +8,22 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 class Kernel extends ConsoleKernel
 {
     /**
+    * Desciption : 
+    *
+    * @param :
+    * @return : 
+    */
+    protected $commands=[
+        Commands\sendcsvtoadmin::class, // Our custom command
+    ];
+    /**
      * Define the application's command schedule.
      */
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
+        $schedule->command('sendcsv:admin')->everyTwoHours();
+        
     }
 
     /**

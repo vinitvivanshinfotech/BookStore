@@ -9,8 +9,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
-use App\Mail
-// use Illuminate\Support\Facades\Mail;
 
 
 class SendOrderListToAdmin implements ShouldQueue
@@ -34,7 +32,7 @@ class SendOrderListToAdmin implements ShouldQueue
     public function handle(): void
     {
         //
-        $email = new orderListToAdmin(['tempFilePath'=>$this->tempFilePath]);
+        $email = new MailorderListToAdmin(['tempFilePath'=>$this->tempFilePath]);
         Mail::to($this->details)->send($email);
     }
 }

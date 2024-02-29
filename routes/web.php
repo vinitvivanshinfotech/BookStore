@@ -21,7 +21,7 @@ use App\Http\Controllers\BookContoller;
 
 
 //GUEST ROTES
-Route::middleware(['guest:user'])->controller(UserAuthController::class)->group(function () {
+Route::middleware(['guest'])->controller(UserAuthController::class)->group(function () {
     Route::get('/', 'showLoginForm')->name('login');
     Route::get('/login', 'showLoginForm')->name('login');
     Route::post('/login', 'userLoginPost')->name('user.login');
@@ -29,11 +29,14 @@ Route::middleware(['guest:user'])->controller(UserAuthController::class)->group(
     Route::post('/register', 'userRegistrationPost')->name('user.register');
 });
 
+Route::controller(AdminAuthController::class)->prefix('admin')->group(function () {
+    Route::get('login',  'showLoginForm')->name('admin.loginForm');
+    Route::post('loginPost',  'adminLoginPost')->name('admin.login');
+});
 
 
 
-
-Route::middleware(['auth:user'])->group(function () {
+Route::middleware(['auth'])->group(function () {
 
     Route::get('user/logout', [UserAuthController::class, 'userLogout'])->name('user.logout');
 
@@ -54,7 +57,6 @@ Route::middleware(['auth:user'])->group(function () {
         Route::get('addShippingDetails', 'ShippingDetailsForm')->name('ShippingDetailsForm');
         Route::get('myOrders', 'viewMyOrders')->name('myOrders');
         Route::post('orderMoreInfo', 'orderMoreInfo')->name('orderMoreInfo');
-        Route::post('addBookReview', 'addBookReview')->name('addBookReview');
     });
 });
 
