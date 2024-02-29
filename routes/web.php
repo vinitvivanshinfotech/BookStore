@@ -68,7 +68,7 @@ Route::middleware(['guest:admin'])->controller(AdminAuthController::class)->pref
 });
 
 
-Route::group(['prefix' => 'admin', 'middleware' => 'guest:admin'], function () {
+Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 
     Route::get('/logout', [AdminAuthController::class, 'adminLogout'])->name('admin.logout');
 

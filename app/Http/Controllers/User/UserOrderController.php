@@ -82,6 +82,7 @@ class UserOrderController extends Controller
                  SUM(carts.book_quantity * book_details.book_price) as total_ordered_book_price')
                 ->first();
 
+
             $totalOrderedBookQty = $cart->total_ordered_book_qty;
             $totalOrderedBookDiscount = $cart->total_ordered_book_discount;
             $totalOrderedBookPrice = $cart->total_ordered_book_price;
@@ -104,15 +105,16 @@ class UserOrderController extends Controller
             Log::info('user ' . $userId . " order" . $orderDetails->id . " created");
 
 
-            foreach ($cartitems as $item) {
+            foreach ($cartitems as $cartitem) {
 
                 OrderDescripition::create([
                     'order_id' => $orderDetails->id,
-                    'book_id' => $item['book_id'],
-                    'book_quantity' => $item['book_quantity'],
+                    'book_id' => $cartitem['book_id'],
+                    'book_quantity' => $cartitem['book_quantity'],
                 ]);
-                Log::debug($item['book_quantity']);
+                Log::debug($cartitem['book_quantity']);
             }
+
 
             $postData = $request->except('_token','payment_mode');
 
