@@ -29,14 +29,8 @@ Route::middleware(['guest'])->controller(UserAuthController::class)->group(funct
     Route::post('/register', 'userRegistrationPost')->name('user.register');
 });
 
-Route::controller(AdminAuthController::class)->prefix('admin')->group(function () {
-    Route::get('login',  'showLoginForm')->name('admin.loginForm');
-    Route::post('loginPost',  'adminLoginPost')->name('admin.login');
-});
 
-
-
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth:user'])->group(function () {
 
     Route::get('user/logout', [UserAuthController::class, 'userLogout'])->name('user.logout');
 
@@ -57,13 +51,22 @@ Route::middleware(['auth'])->group(function () {
         Route::get('addShippingDetails', 'ShippingDetailsForm')->name('ShippingDetailsForm');
         Route::get('myOrders', 'viewMyOrders')->name('myOrders');
         Route::post('orderMoreInfo', 'orderMoreInfo')->name('orderMoreInfo');
+        Route::post('addBookReview', 'addBookReview')->name('addBookReview');
+        Route::post('addBookReview', 'addBookReview')->name('addBookReview');
     });
+});
+
+
+Route::middleware(['guest:admin'])->controller(AdminAuthController::class)->prefix('admin')->group(function () {
+    Route::get('/',  'showLoginForm')->name('admin.loginForm');
+    Route::get('login',  'showLoginForm')->name('admin.loginForm');
+    Route::post('login',  'adminLoginPost')->name('admin.login');
 });
 
 
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 
-    Route::get('/logoutPost', [AdminAuthController::class, 'adminLogout'])->name('admin.logout');
+    Route::get('/logout', [AdminAuthController::class, 'adminLogout'])->name('admin.logout');
 
     // view route
     Route::view('/dashboard', 'Admin.dashboard')->name('admin.dashboard');
@@ -84,5 +87,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
         Route::Post('/rejectingorder/{id}', 'deleteOrder')->name('delete.order');
 
         Route::get('/sendingcsvtoadmin', 'sendorderlist')->name('sendingordercsvfile');
+
+        Route::get('/sendingInvoiceToUser/{id}','sendingInvoiceToUser')->name('sendingInvoiceToUser');
+
+        Route::get('categories','categories')->name('categories');
+        Route::post('category/store','categoryBookView')->name('category.store');
     });
 });

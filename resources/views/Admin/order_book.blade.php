@@ -45,7 +45,7 @@
                         @php
                         $order_status[] = $order->order_status;
                         @endphp
-                        <select class="form-select test" id="{{$order->id}}" name="Order Status">
+                        <select class="form-select optionselect" id="{{$order->id}}" name="Order Status">
                             <option value="{{__('adminlabel.placed_order')}}" @if(in_array('Placed Order',$order_status)) selected @endif>{{__('adminlabel.placed_order')}}</option>
                             <option value="{{__('adminlabel.procees_order')}}" @if(in_array('Process Order',$order_status)) selected @endif>{{__('adminlabel.procees_order')}}</option>
                             <option value="{{__('adminlabel.shipped_order')}}" @if(in_array('Shipped Order',$order_status)) selected @endif>{{__('adminlabel.shipped_order')}}</option>
@@ -61,7 +61,7 @@
                 <td>
                     <form action="{{route('delete.order',$order->id)}}" method="POST">
                         @csrf
-                        <input type="submit" class="btn btn-sm btn-danger" value="{{__('adminlabel.delete')}}">
+                    <input type="submit" class="btn btn-sm btn-danger delete" value="{{__('adminlabel.delete')}}" id="{{$order->id}}">
                     </form>
                     <form>
                         <a href="{{route('orderdetails.book',$order->id)}}" class="btn btn-sm btn-info">{{__('adminlabel.moreinfo')}}</a>
@@ -74,7 +74,7 @@
     <script>
         $(document).ready(function() {
             let table = new DataTable('#books_list');
-            $('.test').change(function() {
+            $('.optionselect').change(function() {
                 var id = $(this).attr('id');
                 var order_status = $(this).val();
                 $.ajax({
@@ -99,6 +99,8 @@
                 });
 
             });
+
+
         });
     </script>
 

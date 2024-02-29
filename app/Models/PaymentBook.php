@@ -9,8 +9,7 @@ class PaymentBook extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'payment_mode',
-        'user_id',
+    protected $guarded = [
+        
     ];
 }

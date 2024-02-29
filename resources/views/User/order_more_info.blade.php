@@ -36,21 +36,7 @@
                             <td>{{ $bookInfo['book_discount'] }}</td>
                             <td>{{ $bookInfo['book_quantity'] }}</td>
                             <td>
-                                <form action="{{ route('user.addBookReview') }}" method="post">
-                                    @csrf
-                                    <input type="hidden" name="user_id" id="user_id" value="{{ auth()->user()->id }}">
-                                    <input type="hidden" name="book_id" id="book_id"
-                                        value="{{ $bookInfo['book_details_id'] }}">
-
-                                    <input class="" type="number" name="" placeholder="{{__( 'labels.rating' )}}"   value="0"/>
-                                    <br>
-                                    <input class="mt-1" type="text" name="" placeholder="{{__('labels.your_review')}}" >
-                                    <br>
-
-                                    <button type="submit" class="btn btn-sm btn-primary mt-1"><i
-                                            class="bi bi-send mr-1"></i>{{ __('labels.submit_review') }}</button>
-
-                                </form>
+                                
                             </td>
                         </tr>
                         @php

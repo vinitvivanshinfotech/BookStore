@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('book_language')->nullable();
             $table->string('book_type')->nullable();
             $table->timestamps();
+            
         });
     }
 

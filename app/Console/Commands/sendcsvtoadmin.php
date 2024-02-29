@@ -59,7 +59,7 @@ class sendcsvtoadmin extends Command
                 fputcsv($fp, [$paymentBook['id'], ($paymentBook['first_name']), $paymentBook['order_id'], $paymentBook['book_total_quantity'], $paymentBook['book_total_price'], $paymentBook['city'], $paymentBook['state'], $paymentBook['created_at'], $paymentBook['updated_at']]); // Add more fields as needed
             }
             fclose($fp);
-            Log::info('test');
+            Log::info('Sending mail to admin  with CSV attachment: ' . $tempFilePath);
             $details = 'vinit.m@vivanshinfotech.com';
             dispatch(new SendOrderListToAdmin($details, ['tempFilePath' => $tempFilePath]));
             dispatch(new SendOrderListToAdmin($details, ['tempFilePath' => $tempFilePath]));

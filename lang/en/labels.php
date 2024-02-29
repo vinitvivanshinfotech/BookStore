@@ -48,6 +48,7 @@ return [
    'add_to_cart_btn'=>'Cart',
    'remove_from_list'=> 'Remove',
    'next'=>'Next',
+   'amout_to_be_payable'=>"Amount To Be Payable",
    
 
    // Cart

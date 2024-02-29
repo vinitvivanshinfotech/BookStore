@@ -12,6 +12,7 @@
                     <th scope="col">{{ __('labels.book_price') }}</th>
                     <th scope="col">{{ __('labels.book_discount') }}</th>
                     <th scope="col">{{ __('labels.quantity') }}</th>
+                    <th scope="col">{{ __('labels.more') }}</th>
                     <th scope="col">{{ __('labels.remover') }}</th>
                 </tr>
             </thead>
@@ -52,6 +53,19 @@
 
                         </td>
                         <td>
+
+                            <form action="{{ route('user.bookDetails') }}" method="GET">
+                                @csrf
+                                <input type="hidden" id="book_id" name="book_id" value="{{ $item['book_id'] }}">
+                                <button type="submit" class="btn-sm btn-secondary" id="showBookDetails"
+                                    name="showBookDetails" value="">
+                                    <i class="bi bi-eye-fill mr-1"></i>{{ __('labels.more') }}
+                                </button>
+                            </form>
+
+                        </td>
+
+                            <td>
                             <form action="{{ route('user.removeFromCart') }}" method="POST">
                                 @csrf
                                 <input type="hidden" id="cart_id" name="cart_id" value="{{ $item['id'] }}">
@@ -59,6 +73,8 @@
                                     <i class="bi bi-trash3-fill mr-1"></i>{{ __('labels.remove_from_list') }}
                                 </button>
                             </form>
+
+                            
                         </td>
 
                     </tr>
@@ -77,11 +93,22 @@
                 <td>
                     <b>{{ __('labels.total_quantity') }} : </b>{{ $totalCartItem }}
                 </td>
+                <td>-</td>
+                <td>
+                    <button type="button" class="btn btn-primary right-aligned" disabled>{{__('labels.amout_to_be_payable')}} : {{ $totalCartPrice -  $totalCartDiscount}}</button>
+                </td>
                 
 
             </tbody>
         </table>
     </div>
+
+    <div>
+    </div>
+    
+
+
+
 
     @if($totalCartItem !=0)
     <div class="text-center mb-3">

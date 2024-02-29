@@ -157,9 +157,7 @@
                     </ul>
                     <hr>
                     <div class="dropdown pb-4 text-dark">
-
-                        {{-- <img src="https://github.com/mdo.png" alt="hugenerd" width="30" height="30"
-                          class="rounded-circle"> --}}
+                        
                         <button class="btn btn-outline-dark"><span class="d-none d-sm-inline mx-1 text-primary"> <i
                                     class="fs-4 bi-people "> </i>
                                 <b class="text-primary">
@@ -313,14 +311,18 @@
                 dataType: "json",
                 success: function(data) {
 
+                    var dynamicClass= data['book_id']
+                    
                     if (data['status'] == "exists") {
                         Swal.fire({
                             position: "top-end",
-                            icon: "warning",
-                            title: "{{ __('messages.exists_in_cart') }}",
+                            icon: "success",
+                            title: "{{ __('messages.quantity_incresed') }}",
                             showConfirmButton: false,
                             timer: 1500
                         });
+                        $('.addedSpan.'+dynamicClass).html('Quantity incresed');
+                        $('.addToCartButton.'+dynamicClass).prop("disabled", true);
                     } else {
                         Swal.fire({
                             position: "top-end",
@@ -329,6 +331,8 @@
                             showConfirmButton: false,
                             timer: 1500
                         });
+                        $('.addedSpan.'+dynamicClass).html('Added to cart');
+                        $('.addToCartButton.'+dynamicClass).prop("disabled", true);
                     }
 
 
