@@ -16,7 +16,8 @@ return [
 
 
 
-   'empty_cart'=> 'Please add something in cart first',
+   'empty_cart'=> 'Your cart is empty',
+   'empty_wishlist'=> 'Your wishlist is empty',
    'payment_fail'=>'Something went wrong in payment.',
    'order_fail'=>'Something went wrong in order.',
    'shipping_details_add_fail'=>'Something went wrong in order.',

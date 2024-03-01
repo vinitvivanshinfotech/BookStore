@@ -12,4 +12,14 @@ class BookDetail extends Model
     use SoftDeletes;
     protected $table = 'book_details';
     protected $guarded = [];
+
+    protected $appends= [
+        
+    ];
+
+    public function reviewbooks(){
+        return  $this->hasMany(ReviewBook::class,'book_id');
+    }
+
+    
 }

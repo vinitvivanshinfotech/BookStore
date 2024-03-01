@@ -12,4 +12,12 @@ class ReviewBook extends Model
     protected $guarded = [ 
         
     ];
+
+    public function book(){
+        $this->belongsTo(BookDetail::class);
+    }
+
+    public function  user() {
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
 }

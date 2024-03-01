@@ -13,6 +13,7 @@ use App\Models\Cart;
 use App\Models\ReviewBook;
 
 
+
 class UserApiController extends Controller
 {
     /**
@@ -26,6 +27,7 @@ class UserApiController extends Controller
 
         $data = WishlistBook::where(["user_id" => $user_id, "book_id" => $book_id])->first();
 
+
         if ($data == null) {
             // insert data to wishlist table
 
@@ -35,12 +37,21 @@ class UserApiController extends Controller
             ]);
 
             if ($listItem != NULL) {
-                return  response()->json(['status' => "success"]);
+                return  response()->json([
+                    'status' => "success",
+                    'book_id' => $book_id,
+                ]);
             } else {
-                return  response()->json(['status' => "failed"], 500);
+                return  response()->json([
+                    'status' => "failed",
+                    'book_id' => $book_id,
+                ], 500);
             }
         } else {
-            return  response()->json(['status' => "exists"]);
+            return  response()->json([
+                'status' => "exists",
+                'book_id' => $book_id,
+            ]);
         }
     }
 
@@ -54,6 +65,7 @@ class UserApiController extends Controller
     {
 
         $data = Cart::where(["user_id" => $user_id, "book_id" => $book_id])->first();
+        $deletdFromWishlist = WishlistBook::where('book_id',$book_id)->delete();
         if ($data != null) {
             $data->book_quantity = $data->book_quantity + 1;
             $data->save();
