@@ -74,15 +74,16 @@
             $total_amount = 0
             @endphp
             @foreach ($orderDetails as $orderDetail )
+            {{$orderDetail['book_quantity']}}
             <tr>
                 <td>{{$loop->index+1 }}</td>
                 <td>{{$orderDetail['book_name']}}</td>
                 <td>{{$orderDetail['book_price']}}</td>
                 <td>{{$orderDetail['book_discount']}}</td>
                 <td>{{$orderDetail['book_quantity']}}</td>
-                <td>{{(($orderDetail['book_price'] * $orderDetails[0]['book_quantity']) - ($orderDetail['book_discount'] * $orderDetails[0]['book_quantity']))}}
+                <td>{{(($orderDetail['book_price'] * $orderDetail['book_quantity']) - ($orderDetail['book_discount'] * $orderDetail['book_quantity']))}}
                 @php
-                $total_amount += ($orderDetail['book_price'] * $orderDetails[0]['book_quantity']) - ($orderDetail['book_discount'] * $orderDetails[0]['book_quantity'])
+                $total_amount += (($orderDetail['book_price'] * $orderDetail['book_quantity']) - ($orderDetail['book_discount'] * $orderDetail['book_quantity']))
                 @endphp
             </td>
             </tr>

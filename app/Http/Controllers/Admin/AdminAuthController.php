@@ -35,4 +35,15 @@ class AdminAuthController extends Controller
         Auth::guard('admin')->logout();
         return redirect()->route('admin.loginForm');
     }
+
+   /**
+   * Desciption : 
+   *
+   * @param :
+   * @return : 
+   */
+   public function forgetpassowrd()
+   {
+       
+   }
 }

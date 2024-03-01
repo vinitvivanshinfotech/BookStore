@@ -6,12 +6,12 @@ use App\Models\BookDetail;
 use Illuminate\Http\Request;
 use App\Http\Requests\saveBookRequest;
 use App\Http\Requests\updateBookRequest;
+use App\Jobs\SendOrderListToAdmin;
 use App\Mail\SendInvoiceToUser;
 use App\Models\OrderDetail;
 use App\Models\PaymentBook;
 use App\Models\ShippingDetail;
 use Illuminate\Support\Facades\Mail;
-
 use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -22,6 +22,7 @@ use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Validation\Rules\Unique;
 
 // use App\Traits\InvoiceDetailsTrait;
 
@@ -216,7 +217,7 @@ class BookContoller extends Controller
             $order = OrderDetail::find($request->id);
             $order->update(['order_status' => $request->order_status]);
             if ($request->order_status == "Shipped Order") {
-                $this->sendingInvoiceToUser($request->id);
+                $this->sendInvoiceToUser($request->id);
             }
             Log::info('Updated order with ID ' . $request->id . ' to status ' . $request->order_status . '.');
             return response()->json(['success' => 'Order status updated successfully.'], 200);
@@ -232,9 +233,11 @@ class BookContoller extends Controller
      * @param :id 
      * @return : 
      */
-    public function deleteOrder(int $id)
+    public function deleteOrder(Request $request)
     {
+
         try {
+            $id = $request->id;
             $order = OrderDetail::findOrFail($id);
 
             if ($order['order_status'] != "Cancelled Order") {
@@ -246,11 +249,11 @@ class BookContoller extends Controller
                 return redirect()->route('order.book')->with('success', 'Order deleted successfully.');
             } else {
                 Log::error('Attempt to delete order with ID ' . $id . ' failed. Reason: Record not found.');
-                return response()->json(['message' => 'Order not found.'], 404);
+                return response()->json(['error' => 'Order not found.'], 404);
             }
         } catch (\Exception $e) {
             Log::error('Attempt to delete order with ID ' . $id . ' failed. Error: ' . $e->getMessage());
-            return response()->json(['message' => 'An error occurred while deleting the order.'], 500);
+            return response()->json(['error' => 'An error occurred while deleting the order.'], 500);
         }
     }
 
@@ -260,7 +263,7 @@ class BookContoller extends Controller
      * @param :id
      * @return : 
      */
-    public function sendingInvoiceToUser($id)
+    public function sendInvoiceToUser($id)
     {
         try {
 
@@ -271,7 +274,6 @@ class BookContoller extends Controller
                 ->get();
             $email = $orderDetails[0]['email'];
             $customer_name = $orderDetails[0]['first_name'] . '' . $orderDetails[0]['last_name'];
-
             $html = (string)View::make('Admin.order_details', compact('orderDetails'));
             $pdf = PDF::loadHTML($html);
 
@@ -281,7 +283,6 @@ class BookContoller extends Controller
             Mail::to($email)->send(new SendInvoiceToUser(['path' => $tempFilePath], ['customer_name' => $customer_name]));
 
             Log::info('Sending the invoice to user when order is shipped the order id : ' . $id);
-
             return  back()->with('success', 'The invoice has been sent to your email! Please check it out');
         } catch (\Exception $e) {
             Log::error('Attempt to send invoice to user with order ID ' . $id . ' failed. Error: ' . $e->getMessage());
@@ -290,42 +291,34 @@ class BookContoller extends Controller
     }
 
     /**
-     * Desciption : This function which used to send the mail to admin about the order details which was placed in last two hours. 
+     * Desciption : 
      *
      * @param :
      * @return : 
      */
-
-    public function sendorderlist()
+    public function categories(Request $request)
     {
         try {
-
-            $paymentBook = $orderDetails = ShippingDetail::join('order_details', 'order_details.id', '=', 'shipping_details.order_id')
-                ->join('payment_books', 'payment_books.id', '=', 'order_details.payment_id')
-                ->join('order_descripitions', 'order_descripitions.order_id', '=', 'order_details.id')
-                ->join('book_details', 'book_details.id', '=', 'order_descripitions.book_id')
-                ->whereDate('shipping_details.created_at', '=', Carbon::today())
-                ->whereTime('shipping_details.created_at', '>', Carbon::now()->subHours(2))
-                ->get()->toArray();
-            $csvFileName = 'payment.csv';
-            $headers = [
-                'Content-Type' => 'text/csv',
-                'Content-Disposition' => 'attachment; filename="' . $csvFileName . '"',
-            ];
-
-            $handle = fopen('php://output', 'w');
-            fputcsv($handle, ['id', 'Customer Name', 'order id ', 'Total Quantity', 'Total Price', 'City', 'State', 'created_at', 'updated_at']); // Add more headers as needed
-
-            foreach ($paymentBook as $paymentBook) {
-                fputcsv($handle, [$paymentBook['id'], ($paymentBook['first_name']), $paymentBook['order_id'], $paymentBook['book_total_quantity'], $paymentBook['book_total_price'], $paymentBook['city'], $paymentBook['state'], $paymentBook['created_at'], $paymentBook['updated_at']]); // Add more fields as needed
-            }
-
-            fclose($handle);
-
-            return Response::make('', 200, $headers);
+            return view('Admin.categories');
+            
         } catch (\Exception $e) {
-            Log::error('Attempt to send csv file of orderlist to admin ' . ' failed. Error: ' . $e->getMessage());
-            return response()->json(['message' => 'Failed to send the csv file to admin.'], 500);
         }
+    }
+
+    /**
+    * Desciption : 
+    *
+    * @param :
+    * @return : 
+    */
+
+    public  function categoryBookView(Request $request){
+
+
+        
+        $data = BookDetail::where($request->categories);
+        
+        return $data;
+
     }
 }

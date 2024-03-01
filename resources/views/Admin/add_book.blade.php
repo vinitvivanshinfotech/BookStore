@@ -84,14 +84,14 @@
         </div>
         <div class="input-group mb-3">
             <span class="input-group-text">{{__('adminlabel.book_amount')}}</span>
-            <input type="text" class="form-control" aria-label="Dollar amount (with dot and two decimal places)" name="book_price">
+            <input type="number" class="form-control" aria-label="Dollar amount (with dot and two decimal places)" name="book_price">
             @error('book_price')
             <span class="text-danger">{{$message}}</span>
             @enderror
         </div>
         <div class="input-group mb-3">
             <span class="input-group-text">Book Discount</span>
-            <input type="text" class="form-control" aria-label="" name="book_discount">
+            <input type="number" class="form-control" aria-label="" name="book_discount">
             @error('book_price')
             <span class="text-danger">{{$message}}</span>
             @enderror
@@ -126,7 +126,7 @@
         </div>
 
         <div class="form-floating mb-3">
-            <input type="submit" class="btn btn-info" id="addBookForm" name="addBookForm" value="Add Book">
+            <button type="submit" class="btn btn-info">Add Book</button>
         </div>
     </form>
 </body>

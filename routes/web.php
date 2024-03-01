@@ -21,17 +21,13 @@ use App\Http\Controllers\BookContoller;
 
 
 //GUEST ROTES
-Route::middleware(['guest:user'])->controller(UserAuthController::class)->group(function () {
+Route::middleware(['guest'])->controller(UserAuthController::class)->group(function () {
     Route::get('/', 'showLoginForm')->name('login');
     Route::get('/login', 'showLoginForm')->name('login');
     Route::post('/login', 'userLoginPost')->name('user.login');
     Route::get('/register', 'showRegisterForm')->name('register');
     Route::post('/register', 'userRegistrationPost')->name('user.register');
 });
-
-
-
-
 
 
 Route::middleware(['auth:user'])->group(function () {
@@ -91,5 +87,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
         Route::Post('/rejectingorder/{id}', 'deleteOrder')->name('delete.order');
 
         Route::get('/sendingcsvtoadmin', 'sendorderlist')->name('sendingordercsvfile');
+
+        Route::get('/sendingInvoiceToUser/{id}','sendingInvoiceToUser')->name('sendingInvoiceToUser');
+
+        Route::get('categories','categories')->name('categories');
+        Route::post('category/store','categoryBookView')->name('category.store');
     });
 });
