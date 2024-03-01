@@ -20,8 +20,9 @@
         @if ($errors->has('password'))
             <span style="color: red;">{{ $errors->first('password') }}</span>
         @endif
-
+        
         <button>{{ __('messages.login') }}</button>
+        <a href="{{route('admin.forget.password')}}" class="btn btn-sm btn-dark" >forgetpassword</a>
         <div class="social">
             <div class="go"><i class="fab fa-google"></i> Google</div>
             <div class="fb"><i class="fab fa-facebook"></i> Facebook</div>
