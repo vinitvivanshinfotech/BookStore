@@ -40,8 +40,10 @@ Route::middleware(['auth:user'])->group(function () {
         Route::get('allBooks',  'displayAllBooks')->name('showBooks');
         Route::get('allBooks/bookDetails',  'bookDetails')->name('bookDetails');
         Route::get('myWatchlist',  'myWatchlist')->name('watchlist');
+        Route::post('myWatchlist',  'myWatchlistAjax')->name('myWishlistAjax');
         Route::post('myWatchlist/removebook', 'removeFromWatchlist')->name('removeFromWatchlist');
         Route::post('myWatchlist/removebookFromcart', 'removeFromCart')->name('removeFromCart');
+        
         Route::get('myCart',  'myCart')->name('cart');
         Route::post('quantityChange', 'quantityChange')->name('quantityChange');
     });
