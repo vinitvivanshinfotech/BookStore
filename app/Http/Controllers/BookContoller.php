@@ -160,6 +160,18 @@ class BookContoller extends Controller
 
 
     /**
+     * Desciption : 
+     *
+     * @param :
+     * @return : 
+     */
+
+    public function orderBookview()
+    {
+        return view('Admin.order_book');
+    }
+
+    /**
      * Desciption : Showing all order list to admin panel latest by timestamp.
      *
      * @param :
@@ -170,11 +182,11 @@ class BookContoller extends Controller
         try {
 
             $orders = OrderDetail::orderBy('created_at', 'desc')->with(['user', 'book'])->where('order_status', '!=', 'Cancelled Order')->get();
-            $order_status =  $orders[0]['order_status'];
-            $order_status = explode(',', $orders[0]->order_status);
-
+            // $order_status =  $orders[0]['order_status'];
+            // $order_status = explode(',', $orders[0]->order_status);
+            // dd($orders);
+            return response()->json($orders);
             Log::info('Fetching the all order  from the database : ');
-            return view('Admin.order_book', ['orders' => $orders, 'order_status' => $order_status]);
         } catch (\Exception $e) {
             Log::error('Attempt to fetching all order is fails  , Error: ' . $e->getMessage());
             return response()->json(['message' => "Error in fetching the order "], 500);
@@ -246,7 +258,8 @@ class BookContoller extends Controller
                 $order->save();
 
                 Log::info('Deleted order with ID: ' . $id);
-                return redirect()->route('order.book')->with('success', 'Order deleted successfully.');
+                return response()->json(['success' => 'Order Deleted successfully.'], 200);
+                // return redirect()->route('order.book')->with('success', 'Order deleted successfully.');
             } else {
                 Log::error('Attempt to delete order with ID ' . $id . ' failed. Reason: Record not found.');
                 return response()->json(['error' => 'Order not found.'], 404);

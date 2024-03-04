@@ -29,46 +29,8 @@
 
 
         </thead>
-        <tbody>
-            @php
-            $total_quantity = 0
-            @endphp
-            @foreach($orders as $order)
-            <tr>
-                <td>{{$order->id}}</td>
-                <td>{{$order['user']['first_name']}} {{$order['user']['last_name']}}</td>
-                <td>{{$order->id}}</td>
-                <td>{{$order->book_total_price}}</td>
-                <td>{{$order->book_total_quantity}}</td>
-                <td>
-                    <div class="form-floating mb-3">
-                        @php
-                        $order_status[] = $order->order_status;
-                        @endphp
-                        <select class="form-select optionselect" id="{{$order->id}}" name="Order Status">
-                            <option value="{{__('adminlabel.placed_order')}}" @if(in_array('Placed Order',$order_status)) selected @endif>{{__('adminlabel.placed_order')}}</option>
-                            <option value="{{__('adminlabel.procees_order')}}" @if(in_array('Process Order',$order_status)) selected @endif>{{__('adminlabel.procees_order')}}</option>
-                            <option value="{{__('adminlabel.shipped_order')}}" @if(in_array('Shipped Order',$order_status)) selected @endif>{{__('adminlabel.shipped_order')}}</option>
-                            <option value="{{__('adminlabel.delivered_order')}}" @if(in_array('Delivered Order',$order_status)) selected @endif>{{__('adminlabel.delivered_order')}}</option>
-                            <option value="{{__('adminlabel.cancelled_order')}}" @if(in_array('Cancelled Order',$order_status)) selected @endif>{{__('adminlabel.cancelled_order')}}</option>
-                        </select>
-                        @error('book_edition')
-                        <span class="text-danger">{{$message}}</span>
-                        @enderror
-                        <label for="floatingSelectGrid">{{__('adminlabel.order_status')}}</label>
-                    </div>
-                </td>
-                <td>
-                    <form action="{{route('delete.order',$order->id)}}" method="POST">
-                        @csrf
-                    <input type="submit" class="btn btn-sm btn-danger delete" value="{{__('adminlabel.delete')}}" id="{{$order->id}}">
-                    </form>
-                    <form>
-                        <a href="{{route('orderdetails.book',$order->id)}}" class="btn btn-sm btn-info">{{__('adminlabel.moreinfo')}}</a>
-                    </form>
-                </td>
-                @endforeach
-            </tr>
+        <tbody id="orders">
+
         </tbody>
     </table>
     <script>
@@ -99,7 +61,81 @@
                 });
 
             });
+            // setInterval(updateOrdersTable(), 3000);
+            updateOrdersTable();
 
+            function updateOrdersTable() {
+                $.ajax({
+                    type: "GET",
+                    url: "{{route('order.book')}}",
+                    data: "",
+                    dataType: "json",
+                    success: function(data) {
+                        console.log(data);
+                        printtable(data);
+                    },
+                    error: function(response) {
+                        console.log(response.error);
+                    }
+
+                });
+            }
+
+            function printtable(data) {
+                data.forEach(element => {
+                    var Html = " <tr> <td> " + element['id'] + "</td><td>" + element['user']['first_name'] + element['user']['last_name'] + "</td><td> " + element['id'] + "</td><td>" + element['book_total_price'] + "</td><td>" + element['book_total_quantity'] +
+                        "</td><td> <div class='form-floating mb-3'> <select class='form-select optionselect' id=" + element['id'] + " name='Order Status'> <option value='{{__('adminlabel.placed_order')}}' Placed Order</option><option value=" + element['order_status'] + "Placed Order</option></select></div>"
+
+
+                        +
+                        "</td><td><button class='btn btn-sm btn-info' value" + element['id'] + ">Info</button>  <button class='btn btn-sm btn-danger delete' value=" + element['id'] + ">Delete</button></td><td>";
+                    $('#orders').append(Html)
+                });
+            }
+
+            function clean() {
+                $('#orders').empty();
+            }
+
+
+            $(document).on("click", ".delete", function() {
+
+                var id = $(this).val();
+                console.log(id);
+                $.ajax({
+                    type: "POST",
+                    url: "{{route('delete.order')}}",
+                    data: {
+                        id: id,
+                        _token: '{{csrf_token()}}'
+                    },
+                    success: function(response) {
+                        console.log(response.success);
+                        clean()
+                        updateOrdersTable()
+                    },
+                    error: function(response) {
+                        alert("Order not Deleted Successfully");
+                        console.log(response.error);
+                    }
+                });
+            });
+
+            $(document).on("click",".edit",function(){
+                var id = $(this).val();
+                console.log(id);
+                $.ajax({
+                    type:"GET",
+                    url:"{{route('orderdetails.book')}}",
+                    data:{id:id},
+                    success:function(data){
+
+                    },
+                    error:function(response){
+                        console.log(response.error);
+                    }
+                })
+            });
 
         });
     </script>

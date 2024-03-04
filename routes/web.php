@@ -89,10 +89,14 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
         Route::get('/edit/{id}',  'bookEditShow')->name('edit.book');
         Route::post('/bookUpdate',  'bookUpdate')->name('update.book');
         Route::get('/delete/{id}',  'bookDelete')->name('delete.book');
+
+        Route::get('/orderview', 'orderBookview')->name('order.bookview');
+        
         Route::get('/order', 'orderBook')->name('order.book');
+
         Route::post('/updateorderstatus', 'updateOrderStatus')->name('update.order.status');
         Route::get('/orderdetails/{id}', 'orderDetails')->name('orderdetails.book');
-        Route::Post('/rejectingorder/{id}', 'deleteOrder')->name('delete.order');
+        Route::Post('/rejectingorder', 'deleteOrder')->name('delete.order');
 
         Route::get('/sendingcsvtoadmin', 'sendorderlist')->name('sendingordercsvfile');
 
