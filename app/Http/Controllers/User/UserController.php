@@ -2,19 +2,22 @@
 
 namespace App\Http\Controllers\User;
 
+// Import Models
+use App\Models\BookDetail;
+use App\Models\WishlistBook;
+use App\Models\Cart;
+use App\Models\ReviewBook;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Exceptions;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 
-// Import Models
-use App\Models\BookDetail;
-use App\Models\WishlistBook;
-use App\Models\Cart;
-use App\Models\ReviewBook;
+
 
 class UserController extends Controller
 {
@@ -38,15 +41,12 @@ class UserController extends Controller
      */
     public function displayAllBooks()
     {
-        $booksInCart=Cart::where('user_id',Auth::user()->id)->pluck( 'book_id' )->toArray();
-        $booksInWishlist = WishlistBook::where( 'user_id', Auth::user()->id )->pluck( 'book_id' )->toArray();
+        $booksInCart = Cart::where('user_id', Auth::user()->id)->pluck('book_id')->toArray();
+        $booksInWishlist = WishlistBook::where('user_id', Auth::user()->id)->pluck('book_id')->toArray();
         // $books = BookDetail::whereNotIn('id',$cartBookIds)->simplePaginate(6);
-        $books = BookDetail::leftJoin('review_books','book_details.id','=','review_books.book_id')->
-                             selectRaw('book_details.*,AVG(review_books.book_ratings) as ratings')->
-                             whereNotIn('book_details.id',$booksInCart)->groupBy( 'book_details.id' )->
-                             simplePaginate(6);
+        $books = BookDetail::leftJoin('review_books', 'book_details.id', '=', 'review_books.book_id')->selectRaw('book_details.*,AVG(review_books.book_ratings) as ratings')->whereNotIn('book_details.id', $booksInCart)->groupBy('book_details.id')->simplePaginate(6);
         // Return the View with Data
-        return view("User.all_books")->with(compact('books','booksInCart','booksInWishlist'));
+        return view("User.all_books")->with(compact('books', 'booksInCart', 'booksInWishlist'));
     }
 
     /**
@@ -59,15 +59,15 @@ class UserController extends Controller
     public function bookDetails(Request $request)
     {
         $book_id = $request->input('book_id');
-        $booksInCart=Cart::where('user_id',Auth::user()->id)->pluck( 'book_id' )->toArray();
-        $booksInWishlist = WishlistBook::where( 'user_id', Auth::user()->id )->pluck( 'book_id' )->toArray();
+        $booksInCart = Cart::where('user_id', Auth::user()->id)->pluck('book_id')->toArray();
+        $booksInWishlist = WishlistBook::where('user_id', Auth::user()->id)->pluck('book_id')->toArray();
 
-        
-        
 
-        $bookDetails = BookDetail::where('id',$book_id)->with(['reviewbooks.user'])->first();        
 
-        return view("User.book_details")->with(compact('bookDetails','booksInCart','booksInWishlist'));
+
+        $bookDetails = BookDetail::where('id', $book_id)->with(['reviewbooks.user'])->first();
+
+        return view("User.book_details")->with(compact('bookDetails', 'booksInCart', 'booksInWishlist'));
     }
 
 
@@ -80,9 +80,112 @@ class UserController extends Controller
     public function myWatchlist()
     {
         $userId = auth()->id();
-        $booksInCart=Cart::where('user_id',Auth::user()->id)->pluck( 'book_id' )->toArray();
+        $booksInCart = Cart::where('user_id', Auth::user()->id)->pluck('book_id')->toArray();
         $wishListData = WishlistBook::where('user_id', $userId)->with(['bookDetails'])->get()->toArray();
-        return view('User.my_watchlist')->with(['data'=> $wishListData , 'booksInCart' => $booksInCart]);
+        return view('User.my_watchlist')->with(['data' => $wishListData, 'booksInCart' => $booksInCart]);
+        // return view('User.my_watchlist');
+    }
+
+    /**
+     * Desciption : Accept My watchlist Ajax call request and return  response
+     * 
+     * @param : 
+     * @return : 
+     */
+    public function myWatchlistAjax(Request $request)
+    {
+
+        $draw_val = $request->input('draw');
+
+        $booksInCart = Cart::where('user_id', Auth::user()->id)->pluck('book_id')->toArray();
+
+        $totalDataRecord = $totalFilterdRecord = $draw_val = "";
+
+        $column_list = array(
+            0 => "book_cover",
+            1 => "book_name",
+            2 => "author_name",
+            3 => "book_price",
+            4 => "book_discount",
+            5 =>  "more",
+            6 => "remove",
+            7 => "add_to_cart"
+        );
+
+        $totalDataRecord = WishlistBook::count();
+        $totalFilterdRecord = $totalDataRecord;
+
+        $limit_val = $request->input('length');
+        $start_val = $request->input('start');
+        $order_val = $column_list[$request->input('order.0.column')];
+        if ($order_val == 'book_cover' || $order_val == 'more' || $order_val == 'remover' || $order_val == 'add_to_cart') {
+            $order_val = 'book_name';
+        }
+        $dir_val = $request->input('order.0.dir');
+        $search_val = $request->input('search.value');
+
+        if (empty($search_val)) {
+            $wishlistData = WishlistBook::join('book_details', 'wishlist_books.book_id', '=', 'book_details.id')
+                ->where('wishlist_books.user_id', auth()->user()->id)
+                ->select('wishlist_books.*', 'book_details.*')
+                ->offset($start_val)
+                ->limit($limit_val)
+                ->orderBy($order_val, $dir_val)
+                ->get();
+        } else {
+            $wishlistData = WishlistBook::join('book_details', 'wishlist_books.book_id', '=', 'book_details.id')
+                ->where('wishlist_books.user_id', auth()->user()->id)
+                ->where(function ($query) use ($search_val) {
+                    $query->where("book_details.book_name", "like", "%" . $search_val . "%")
+                        ->orWhere("book_details.author_name", "like", "%" . $search_val . "%")
+                        ->orWhere("book_details.book_price", "like", "%" . $search_val . "%")
+                        ->orWhere("book_details.book_discount", "like", "%" . $search_val . "%");
+                })
+                ->select('wishlist_books.*', 'book_details.*')
+                ->offset($start_val)
+                ->limit($limit_val)
+                ->orderBy($order_val, $dir_val)
+                ->get();
+
+
+            $totalFilterdRecord = count($wishlistData);
+        }
+
+        $data = [];
+        foreach ($wishlistData as $listItem) {
+            $raw = [
+                'book_cover' => '<img class="card-img-top mt-1 mb-1 ms-1 mr-1" src="' . Storage::disk(config('constant.FILESYSTEM_DISK'))->url($listItem['book_cover']) . '" onerror="this.src=\'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTUUcQuoOAi8EgqOQ6epycAwp8T9WaxN7IkA&usqp=CAU\';" alt="Card image cap" height="100px" width="50px">',
+                'book_name' => $listItem['book_name'],
+                'author_name' => $listItem['author_name'],
+                'book_price' => $listItem['book_price'],
+                'book_discount' => $listItem['book_discount'],
+                'more' => '<form action="' . route('user.bookDetails') . '" method="GET">' .
+                    csrf_field() .
+                    '<input type="hidden" id="book_id" name="book_id" value="' . $listItem['id'] . '">' .
+                    '<button type="submit" class="btn-sm btn-secondary" id="showBookDetails" name="showBookDetails" value="">' .
+                    '<i class="bi bi-eye-fill mr-1"></i>' . __('labels.more') .
+                    '</button></form>',
+                'remove' => '<form class="mt-1" action="' . route('user.removeFromWatchlist') . '" method="POST">' .
+                    csrf_field() .
+                    '<input type="hidden" id="wishlist_id" name="wishlist_id" value="' . $listItem['id'] . '">' .
+                    '<button type="submit" class="btn-sm btn-danger mt-2 mb-3 " id="" name="">' .
+                    '<i class="bi bi-trash3-fill mr-1"></i>' . __('labels.remove_from_list') .
+                    '</button></form>',
+                'add_to_cart' => '<span class="text-success addedSpan ' . $listItem['id'] . '"></span>' .
+                    '<button class="btn-sm btn-warning mt-2 mb-3 addToCartButton ' . $listItem['id'] . '" id="addToCartButton" name="addToCartButton" value="' . $listItem['id'] . '" ' . (in_array($listItem['id'], $booksInCart) ? 'disabled' : '') . '>' .
+                    '<i class="bi bi-cart-plus-fill mr-1 cartStatus ' . $listItem['id'] . '"></i>' . (in_array($listItem['id'], $booksInCart) ? 'ADDED' : 'Cart') .
+                    '</button>'
+            ];
+            $data[]=$raw;
+        }
+        $data = [
+            'draw' => $request->input('draw'),
+            'recordsTotal' => intval($totalDataRecord),
+            'recordsFiltered' => intval($totalFilterdRecord),
+            'data' => $data
+        ];
+        // echo json_encode($data);
+        return response()->json($data);
     }
 
     /**

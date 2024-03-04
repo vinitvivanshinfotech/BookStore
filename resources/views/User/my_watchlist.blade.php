@@ -9,7 +9,6 @@
     </form>
 </div>
 
-@if(sizeof($data) !=0)
 
     <h1>{{ __('labels.see_wishlist_btn') }}</h1>
     <div class="container-fluid">
@@ -27,7 +26,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($data as $item)
+                {{-- @foreach ($data as $item)
                     <tr>
 
                         <td><img class="card-img-top mt-1 mb-1 ms-1 mr-1"
@@ -67,21 +66,54 @@
                             </button>
                         </td>
                     </tr>
-                @endforeach
+                @endforeach --}}
 
             </tbody>
         </table>
     </div>
 
-    @else
         <div class="text-centre text-dark">
             <h1 class=""> {{__('messages.empty_wishlist')}}</h1>
         </div>
-    @endif
 @endsection
 
 @push('scripts')
-    let table = new DataTable('#myWishlist');
+    {{-- let table = new DataTable('#myWishlist'); --}}
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $('#myWishlist').DataTable({
+        processing : true,
+        serverSide :true,
+        ajax:{
+            url:'{{route('user.myWishlistAjax')}}',
+            type:"POST",
+        },
+        'lengthMenu': [1,2,4,8,10],
+        columns:[
+            {data : 'book_cover'},
+            {data : 'book_name'},
+            {data : 'author_name'},
+            {data : 'book_price'},
+            {data : 'book_discount'},
+            {data : 'more'},
+            {data : 'remove'},
+            {data : 'add_to_cart'},
+        ]
+    })
+
+    {{-- <th scope="col">{{ __('labels.book_cover') }}</th>
+    <th scope="col">{{ __('labels.book_name') }}</th>
+    <th scope="col">{{ __('labels.author_name') }}</th>
+    <th scope="col">{{ __('labels.book_price') }}</th>
+    <th scope="col">{{ __('labels.book_discount') }}</th>
+    <th scope="col">{{ __('labels.more') }}</th>
+    <th scope="col">{{ __('labels.remover') }}</th>
+    <th scope="col">{{ __('labels.add_to_cart') }}</th> --}}
 
     $.ajax({
         type: 'get',
