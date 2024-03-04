@@ -1,5 +1,45 @@
 @extends('User.userLayout.layout')
 
+@php
+ $states = 
+        ["Andhra Pradesh",
+    "Arunachal Pradesh",
+    "Assam",
+    "Bihar",
+    "Chhattisgarh",
+    "Goa",
+    "Gujarat",
+    "Haryana",
+    "Himachal Pradesh",
+    "Jharkhand",
+    "Karnataka",
+    "Kerala",
+    "Madhya Pradesh",
+    "Maharashtra",
+    "Manipur",
+    "Meghalaya",
+    "Mizoram",
+    "Nagaland",
+    "Odisha",
+    "Punjab",
+    "Rajasthan",
+    "Sikkim",
+    "Tamil Nadu",
+    "Telangana",
+    "Tripura",
+    "Uttar Pradesh",
+    "Uttarakhand",
+    "West Bengal",
+    "Andaman Nicobar Islands",
+    "Chandigarh",
+    "Dadra and Nagar Haveli",
+    "Daman",
+    "Diu",
+    "Lakshadweep",
+    "Delhi",
+    "Puducherry"
+    ];   
+@endphp
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
@@ -7,9 +47,11 @@
             <div class="card" style="width: 36rem;">
                 <div class="card-body">
                     <h3 class="card-title">{{ __('labels.shipping_info') }}</h3>
+
                     <form method="POST" action="{{ route('user.placeOrder') }}">
                         @csrf
                         <div class="form-row">
+
                             <div class="form-group col-md-6">
                                 <label for="first_name">{{ __('labels.first_name') }}</label>
                                 <input type="text" class="form-control" id="first_name" name="first_name"
@@ -19,6 +61,7 @@
                                     <span style="color: red;">{{ $errors->first('first_name') }}</span>
                                 @endif
                             </div>
+
                             <div class="form-group col-md-6">
                                 <label for="last_name">{{ __('labels.last_name') }}</label>
                                 <input type="text" class="form-control" id="last_name" name="last_name"
@@ -27,7 +70,9 @@
                                     <span style="color: red;">{{ $errors->first('last_name') }}</span>
                                 @endif
                             </div>
+
                         </div>
+
                         <div class="form-group">
                             <label for="email">{{ __('labels.email') }}</label>
                             <input type="email" class="form-control" id="email" name="email"
@@ -36,6 +81,7 @@
                                 <span style="color: red;">{{ $errors->first('email') }}</span>
                             @endif
                         </div>
+
                         <div class="form-group">
                             <label for="phone_number">{{ __('labels.phone_number') }}</label>
                             <input type="tel" class="form-control" id="phone_number" name="phone_number"
@@ -45,6 +91,7 @@
                                 <span style="color: red;">{{ $errors->first('phone_number') }}</span>
                             @endif
                         </div>
+
                         <div class="form-group">
                             <label for="address">{{ __('labels.address') }}</label>
                             <input type="text" class="form-control" id="address" name="address" required>
@@ -52,6 +99,7 @@
                                 <span style="color: red;">{{ $errors->first('address') }}</span>
                             @endif
                         </div>
+
                         <div class="form-row">
 
                             <div class="form-group col-md-6">
@@ -61,6 +109,7 @@
                                     <span style="color: red;">{{ $errors->first('pincode') }}</span>
                                 @endif
                             </div>
+
                             <div class="form-group col-md-6">
                                 <label for="city">{{ __('labels.city') }}</label>
                                 <input type="text" class="form-control" id="city" name="city" required>
@@ -68,14 +117,23 @@
                                     <span style="color: red;">{{ $errors->first('city') }}</span>
                                 @endif
                             </div>
+
                         </div>
+
                         <div class="form-group">
                             <label for="state">{{ __('labels.state') }}</label>
-                            <input type="text" class="form-control" id="state" name="state" required>
+                            <select class="form-control" name="state" id="name">
+                                <option value="" selected disabled hidden>Select State</option>
+                                @foreach($states as $key)
+                                    <option value="{{$key}}">{{$key}}</option>
+                                @endforeach
+                            </select>
+                            </select>
                             @if ($errors->has('state'))
                                 <span style="color: red;">{{ $errors->first('state') }}</span>
                             @endif
                         </div>  
+
                         <div class="form-group">
                             <label>{{ __('labels.payment_mode') }}</label><br>
                             <div class="form-check form-check-inline">

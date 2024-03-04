@@ -13,6 +13,7 @@ return [
    'phone_number' => 'Contact Number',
    'password_confirm' => 'Confirm Password',
    'register' => 'Register',
+   'added'=>'Added',
 
    // NavBar
    'see_books'=> 'Show Books',
@@ -37,6 +38,8 @@ return [
    'discount'=>'Discount',
    'total_price'=>'Total Price',
    'total_discount'=>'Total Discount',
+   'ratings'=>'Rating',
+   'review'=> 'Reviews',
    
    
    // Buttons

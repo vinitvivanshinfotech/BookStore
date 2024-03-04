@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\BookDetail;
 use App\Models\WishlistBook;
 use App\Models\Cart;
+use App\Models\ReviewBook;
 
 class UserController extends Controller
 {
@@ -37,10 +38,15 @@ class UserController extends Controller
      */
     public function displayAllBooks()
     {
-        $cartBookIds = Cart::where('user_id',auth()->user()->id)->pluck('book_id');
-        $books = BookDetail::whereNotIn('id',$cartBookIds)->simplePaginate(6);
+        $booksInCart=Cart::where('user_id',Auth::user()->id)->pluck( 'book_id' )->toArray();
+        $booksInWishlist = WishlistBook::where( 'user_id', Auth::user()->id )->pluck( 'book_id' )->toArray();
+        // $books = BookDetail::whereNotIn('id',$cartBookIds)->simplePaginate(6);
+        $books = BookDetail::leftJoin('review_books','book_details.id','=','review_books.book_id')->
+                             selectRaw('book_details.*,AVG(review_books.book_ratings) as ratings')->
+                             whereNotIn('book_details.id',$booksInCart)->groupBy( 'book_details.id' )->
+                             simplePaginate(6);
         // Return the View with Data
-        return view("User.all_books")->with(compact('books'));
+        return view("User.all_books")->with(compact('books','booksInCart','booksInWishlist'));
     }
 
     /**
@@ -53,8 +59,15 @@ class UserController extends Controller
     public function bookDetails(Request $request)
     {
         $book_id = $request->input('book_id');
-        $bookDetails = BookDetail::find($book_id);
-        return view("User.book_details")->with(compact('bookDetails'));
+        $booksInCart=Cart::where('user_id',Auth::user()->id)->pluck( 'book_id' )->toArray();
+        $booksInWishlist = WishlistBook::where( 'user_id', Auth::user()->id )->pluck( 'book_id' )->toArray();
+
+        
+        
+
+        $bookDetails = BookDetail::where('id',$book_id)->with(['reviewbooks.user'])->first();        
+
+        return view("User.book_details")->with(compact('bookDetails','booksInCart','booksInWishlist'));
     }
 
 
@@ -67,8 +80,9 @@ class UserController extends Controller
     public function myWatchlist()
     {
         $userId = auth()->id();
+        $booksInCart=Cart::where('user_id',Auth::user()->id)->pluck( 'book_id' )->toArray();
         $wishListData = WishlistBook::where('user_id', $userId)->with(['bookDetails'])->get()->toArray();
-        return view('User.my_watchlist')->with('data', $wishListData);
+        return view('User.my_watchlist')->with(['data'=> $wishListData , 'booksInCart' => $booksInCart]);
     }
 
     /**

@@ -41,5 +41,9 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    public function review(){
+        $this->hasMany(ReviewBook::class,'user_id');
+    }
+
    
 }
