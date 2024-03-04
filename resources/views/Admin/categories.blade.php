@@ -25,9 +25,26 @@
         </select>
         <label class="floatingSelectGrid">{{__('adminlabel.book_type')}}</span>
     </div>
-
+    <table class="table table-bordered table-hover" id="books_list" name="books_list">
+        @if(session()->has('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+        @endif
+        <thead>
+            <th>{{__('adminlabel.no')}}</th>
+            <th>{{__('adminlabel.author_name')}}</th>
+            <th>{{__('adminlabel.book_title')}}</th>
+            <th>{{__('adminlabel.author_name')}}</th>
+            <th>{{__('adminlabel.author_email')}}</th>
+            <th>{{__('adminlabel.book_edition')}}</th>
+            <th>Book Cover</th>
+            <th>{{__('adminlabel.book_language')}}</th>
+        </thead>
+    </table>
     <script>
         $(document).ready(function() {
+
             $('.optionselect').change(function() {
                 var categories = $(this).val();
                 // console.log(categories)
@@ -39,7 +56,7 @@
                         _token: '{{csrf_token()}}'
                     },
                     success: function(response) {
-                       console.log(response);
+                        console.log(response);
                     },
                     error: function(response) {
                         console.log('error');

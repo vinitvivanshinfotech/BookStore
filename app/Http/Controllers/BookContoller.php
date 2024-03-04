@@ -300,25 +300,26 @@ class BookContoller extends Controller
     {
         try {
             return view('Admin.categories');
-            
         } catch (\Exception $e) {
         }
     }
 
     /**
-    * Desciption : 
-    *
-    * @param :
-    * @return : 
-    */
+     * Desciption : 
+     *
+     * @param :
+     * @return : 
+     */
 
-    public  function categoryBookView(Request $request){
+    public  function categoryBookView(Request $request)
+    {
+        try {
 
-
-        
-        $data = BookDetail::where($request->categories);
-        
-        return $data;
-
+            $book_types = BookDetail::where('book_type', $request->categories)->get();
+            return view('Admin.categories', ["book_types", $book_types]);
+        } catch (\Exception $e) {
+            Log::error('Attempt to Read the list of book type ' . $e->getMessage());
+            return response()->json(['message' => 'An error occurred while fet the order.'], 500);
+        }
     }
 }

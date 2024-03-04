@@ -61,6 +61,14 @@ Route::middleware(['guest:admin'])->controller(AdminAuthController::class)->pref
     Route::get('/',  'showLoginForm')->name('admin.loginForm');
     Route::get('login',  'showLoginForm')->name('admin.loginForm');
     Route::post('login',  'adminLoginPost')->name('admin.login');
+    Route::get('/forgetpassword','forgetpassword')->name('admin.forget.password');
+    Route::post('/submitForgetPasswordForm','submitForgetPasswordForm')->name('admin.submitForgetPasswordForm');
+
+    Route::get('/resetpasswordform','resetpasswordform')->name('resetpasswordform');
+    
+    Route::get('/resetpassword/{token}/{email}','submitResetPasswordForm')->name('resetpassword');
+
+    Route::post('/resetpasswordsubmit','checktoken')->name('checktoken');
 });
 
 
@@ -88,9 +96,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 
         Route::get('/sendingcsvtoadmin', 'sendorderlist')->name('sendingordercsvfile');
 
-        Route::get('/sendingInvoiceToUser/{id}','sendingInvoiceToUser')->name('sendingInvoiceToUser');
+        Route::get('/sendingInvoiceToUser/{id}', 'sendingInvoiceToUser')->name('sendingInvoiceToUser');
 
-        Route::get('categories','categories')->name('categories');
-        Route::post('category/store','categoryBookView')->name('category.store');
+        Route::get('categories', 'categories')->name('categories');
+        Route::post('category/store', 'categoryBookView')->name('category.store');
     });
 });
