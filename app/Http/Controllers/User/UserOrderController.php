@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use App\Imports\UserImport;
+use App\Exports\UserExport;
+use Excel;
 
 
 // Model

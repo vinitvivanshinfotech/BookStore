@@ -127,7 +127,7 @@ class UserController extends Controller
         if (empty($search_val)) {
             $wishlistData = WishlistBook::join('book_details', 'wishlist_books.book_id', '=', 'book_details.id')
                 ->where('wishlist_books.user_id', auth()->user()->id)
-                ->select('wishlist_books.*', 'book_details.*')
+                ->select('wishlist_books.id as listId','wishlist_books.*', 'book_details.*')
                 ->offset($start_val)
                 ->limit($limit_val)
                 ->orderBy($order_val, $dir_val)
@@ -141,7 +141,7 @@ class UserController extends Controller
                         ->orWhere("book_details.book_price", "like", "%" . $search_val . "%")
                         ->orWhere("book_details.book_discount", "like", "%" . $search_val . "%");
                 })
-                ->select('wishlist_books.*', 'book_details.*')
+                ->select('wishlist_books.id as listId','wishlist_books.*', 'book_details.*')
                 ->offset($start_val)
                 ->limit($limit_val)
                 ->orderBy($order_val, $dir_val)
@@ -150,6 +150,7 @@ class UserController extends Controller
 
             $totalFilterdRecord = count($wishlistData);
         }
+
 
         $data = [];
         foreach ($wishlistData as $listItem) {
@@ -167,7 +168,7 @@ class UserController extends Controller
                     '</button></form>',
                 'remove' => '<form class="mt-1" action="' . route('user.removeFromWatchlist') . '" method="POST">' .
                     csrf_field() .
-                    '<input type="hidden" id="wishlist_id" name="wishlist_id" value="' . $listItem['id'] . '">' .
+                    '<input type="hidden" id="wishlist_id" name="wishlist_id" value="' . $listItem['listId'] . '">' .
                     '<button type="submit" class="btn-sm btn-danger mt-2 mb-3 " id="" name="">' .
                     '<i class="bi bi-trash3-fill mr-1"></i>' . __('labels.remove_from_list') .
                     '</button></form>',
@@ -226,7 +227,7 @@ class UserController extends Controller
                 return redirect()->route('user.cart');
             }
         } else {
-            return back()->route('user.cart')->with('failure', 'Item doet not  exist in cart');
+            return readdir()->route('user.cart')->with('failure', 'Item doet not  exist in cart');
         }
     }
 
