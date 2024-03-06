@@ -20,7 +20,7 @@
         <table class="table ">
             <tbody>
                 @foreach ($books as $book)
-                    @if ($loop->index % 3 == 0)
+                    @if ($loop->index % 5 == 0)
                         <tr>
                     @endif
                     <td>
@@ -89,13 +89,22 @@
 
                     </td>
 
-                    @if (($loop->index + 1) % 3 == 0 || $loop->last)
+                    @if (($loop->index + 1) % 5 == 0 || $loop->last)
                         </tr>
                     @endif
                 @endforeach
             </tbody>
         </table>
-        {{ $books->links() }}
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="text-center">
+                        {{ $books->links() }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
     </div>
 @endsection
 

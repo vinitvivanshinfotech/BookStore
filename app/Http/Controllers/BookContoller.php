@@ -23,6 +23,8 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rules\Unique;
+use App\Imports\BookImport;
+use Excel;
 
 // use App\Traits\InvoiceDetailsTrait;
 
@@ -50,6 +52,22 @@ class BookContoller extends Controller
 
         // return to showing all books page  with success message.
         return redirect()->route('showAll.books')->with("success", 'Book added successfully!');
+    }
+
+    public function importBookCsv(){
+        return view('Admin.importBookCsv');
+    }
+
+    public function importBookpost(Request $request){
+        $request->validate([
+            'bookDetailsCsv'=> 'required',
+        ]);
+
+        $file = $request->file('bookDetailsCsv');
+        $path = $file->getRealPath();
+        Excel::import(new BookImport,$file);
+        return redirect()->route('admin.dashboard')->with("success", 'Book added successfully!');
+
     }
 
 

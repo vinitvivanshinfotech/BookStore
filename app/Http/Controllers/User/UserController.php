@@ -21,6 +21,40 @@ use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
+
+    /**
+     * Desciption : Get user profile    
+     * 
+     * @param : 
+     * @return : User.myProfile view
+     */ 
+    public function myProfile(){
+        $user = Auth::user();
+        return view('User.myProfile',compact('user'));
+    }
+
+    /**
+     * Desciption : Update user profile  
+     * 
+     * @param : 
+     * @return : User.myProfile view
+     */ 
+    public function updateProfile(Request $request){
+        $request->validate([
+            'first_name' => 'required',
+            'last_name' =>'required',
+            'email' =>'required',
+            'phone_number' =>'required',
+        ]);
+        $data = $request->except(['_token']);
+        $user = Auth::user();
+        $user ->update($data);
+        return redirect()->route('user.profile')->with('success',"Profile updated");
+    }
+
+    
+
+
     /**
      * Desciption return user dashboard: 
      * 
@@ -44,7 +78,7 @@ class UserController extends Controller
         $booksInCart = Cart::where('user_id', Auth::user()->id)->pluck('book_id')->toArray();
         $booksInWishlist = WishlistBook::where('user_id', Auth::user()->id)->pluck('book_id')->toArray();
         // $books = BookDetail::whereNotIn('id',$cartBookIds)->simplePaginate(6);
-        $books = BookDetail::leftJoin('review_books', 'book_details.id', '=', 'review_books.book_id')->selectRaw('book_details.*,AVG(review_books.book_ratings) as ratings')->whereNotIn('book_details.id', $booksInCart)->groupBy('book_details.id')->simplePaginate(6);
+        $books = BookDetail::leftJoin('review_books', 'book_details.id', '=', 'review_books.book_id')->selectRaw('book_details.*,AVG(review_books.book_ratings) as ratings')->whereNotIn('book_details.id', $booksInCart)->groupBy('book_details.id')->simplePaginate(10);
         // Return the View with Data
         return view("User.all_books")->with(compact('books', 'booksInCart', 'booksInWishlist'));
     }

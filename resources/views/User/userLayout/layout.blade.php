@@ -15,122 +15,91 @@
 
     <title>User</title>
 
-
 </head>
 
 <body>
   
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Navbar</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;" >
+        <a class="navbar-brand mr-4" href="#">Book Store</a>
+        <button class="navbar-toggler ms-3" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-
+    
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Dropdown
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+            <div class="dropdown navbar-nav">
+                <button class=" text-right btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    Options
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li class="nav-item">
+                        <a href="{{ route('user.showBooks') }}" class="nav-link align-middle px-0">
+                            <i class="fs-4 bi-clipboard-check"></i> <span class="ms-1 d-none d-sm-inline">{{ __('labels.see_books') }}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('user.myOrders') }}" class="nav-link align-middle px-0">
+                            <i class="fs-4 bi-card-list"></i> <span class="ms-1 d-none d-sm-inline">{{ __('labels.my_orders') }}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{auth()->user()->first_name}}
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="{{route('user.profile')}}">{{__('labels.profiel')}}</a>
+                        <a class="dropdown-item" href="{{ route('user.logout') }}">{{__('labels.logout')}}</a>
+                    </div>
                 </li>
             </ul>
-
-            {{-- <form class="form-inline my-2 mr-3 my-lg-0" method="get" action="{{ route('user.watchlist') }}">
-                <button class="btn-sm btn-primary " type="submit" id="seeWatchlist" name="seeWatchlist" value="">
-                    <i class="bi bi-bookmark-check-fill mr-1"></i>{{ __('labels.see_wishlist_btn') }}<i
-                        id="watchlistCount"></i>
-                </button>
-            </form>
-
-            <form class="form-inline my-2 my-lg-0" method="get" action="{{ route('user.cart') }}">
-                <button class="btn-sm btn-warning " type="submit" id="seeCart" name="seeCart" value="">
-                    <i class="bi bi-cart-plus-fill mr-1"></i>{{ __('labels.see_cart_btn') }}<i id="cartCount"></i>
-                </button>
-            </form> --}}
         </div>
+        
     </nav>
+    
 
-    <div class="container-fluid">
+    <div class="container-fluid" >
         <div class="row flex-nowrap">
-            <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-transparant">
-                <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
-                    <a href="/"
-                        class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                        <span class="fs-5 d-none d-sm-inline">Menu</span>
-                    </a>
-                    <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start"
-                        id="menu">
-
-
+            {{-- <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-transparent" >
+                <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100" style="background-color: #9e9e9e">
+                    
+                    <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
                         <li class="nav-item">
                             <a href="{{ route('user.showBooks') }}" class="nav-link align-middle px-0">
-                                <i class="fs-4 bi-clipboard-check"></i> <span
-                                    class="ms-1 d-none d-sm-inline">{{ __('labels.see_books') }}</span>
+                                <i class="fs-4 bi-clipboard-check"></i> <span class="ms-1 d-none d-sm-inline">{{ __('labels.see_books') }}</span>
                             </a>
                         </li>
-
                         <li class="nav-item">
                             <a href="{{ route('user.myOrders') }}" class="nav-link align-middle px-0">
-                                <i class="fs-4 bi-card-list"></i> <span
-                                    class="ms-1 d-none d-sm-inline">{{ __('labels.my_orders') }}</span>
+                                <i class="fs-4 bi-card-list"></i> <span class="ms-1 d-none d-sm-inline">{{ __('labels.my_orders') }}</span>
                             </a>
                         </li>
                     </ul>
                     <hr>
-                    <div class="dropdown pb-4 text-dark">
-
-                        <button class="btn btn-outline-dark"><span class="d-none d-sm-inline mx-1 text-primary"> <i
-                                    class="fs-4 bi-people "> </i>
-                                <b class="text-primary">
-                                </b></span>
-                            <hr>
-                            <a class="dropdown-item text-primary" href="">Profile</a>
-                            <hr>
-                            <a class="dropdown-item text-primary" onclick="retun showConfirmButton()"
-                                href="{{ route('user.logout') }}">Sign out</a>
-                        </button>
-
-                        </a>
-
-
-                    </div>
+                   
                 </div>
-            </div>
+            </div> --}}
             <div class="col py-3">
-
                 @if (Session::has('success'))
                     <div class="alert alert-success" role="alert">
                         {{ Session::get('success') }}
                     </div>
                 @endif
-
                 @if (Session::has('failure'))
                     <div class="alert alert-danger" role="alert">
                         {{ Session::get('failure') }}
                     </div>
                 @endif
-
                 @yield('content')
-
-
             </div>
         </div>
     </div>
-
+    
 
 
 

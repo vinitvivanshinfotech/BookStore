@@ -14,6 +14,8 @@ return [
    'password_confirm' => 'Confirm Password',
    'register' => 'Register',
    'added'=>'Added',
+   'profiel'=>'Profile',
+   'logout'=>'Logout',
 
    // NavBar
    'see_books'=> 'Show Books',

@@ -37,6 +37,10 @@ Route::middleware(['auth:user'])->group(function () {
     //USER AUTHENTICATED ROUTES
     Route::controller(UserController::class)->prefix('dashboard')->name('user.')->group(function () {
         Route::get('/',  'dashboard')->name('dashboard');
+        Route::get('/profile',  'myProfile')->name('profile');
+        Route::post('/profile',  'updateProfile')->name('updateProfile');
+        
+        
         Route::get('allBooks',  'displayAllBooks')->name('showBooks');
         Route::get('allBooks/bookDetails',  'bookDetails')->name('bookDetails');
         Route::get('myWatchlist',  'myWatchlist')->name('watchlist');
@@ -102,5 +106,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 
         Route::get('categories', 'categories')->name('categories');
         Route::post('category/store', 'categoryBookView')->name('category.store');
+        Route::get('book/importBook', 'importBookCsv')->name('book.importBook');
+        Route::post('book/importBook', 'importBookpost')->name('book.importBookPost');
+        
     });
 });

@@ -97,16 +97,7 @@
         ]
     })
 
-    
 
-    {{-- <th scope="col">{{ __('labels.book_cover') }}</th>
-    <th scope="col">{{ __('labels.book_name') }}</th>
-    <th scope="col">{{ __('labels.author_name') }}</th>
-    <th scope="col">{{ __('labels.book_price') }}</th>
-    <th scope="col">{{ __('labels.book_discount') }}</th>
-    <th scope="col">{{ __('labels.more') }}</th>
-    <th scope="col">{{ __('labels.remover') }}</th>
-    <th scope="col">{{ __('labels.add_to_cart') }}</th> --}}
 
     $.ajax({
         type: 'get',
@@ -116,6 +107,10 @@
         },
         dataType: "json",
         success: function(data) {
+            if(data['wishlistCount']==0){
+                $('#empty-wishlist').show();
+                $('#myWishlistWrapper').hide();
+            }
             $('#watchlistCount').html("").html('(' + data['wishlistCount'] + ')');
             $('#cartCount').html("").html('(' + data['cartCount'] + ')');
 
