@@ -54,28 +54,37 @@ class BookContoller extends Controller
         return redirect()->route('showAll.books')->with("success", 'Book added successfully!');
     }
 
+
+    /**
+     * Desciption : Return view for import book details csv file
+     * 
+     * @param : 
+     * @return : 'Admin.importBookCsv' View
+     */ 
     public function importBookCsv(){
         return view('Admin.importBookCsv');
     }
 
+    /**
+     * Desciption : Add book details csv file to book_detail table
+     * 
+     * @param : Illuminate\Http\Request $request
+     * @return : 
+     */ 
     public function importBookpost(Request $request){
         $request->validate([
-            'bookDetailsCsv'=> 'required',
+            'bookDetailsCsv' => 'required|mimes:csv',
         ]);
-
-        $file = $request->file('bookDetailsCsv');
-        $path = $file->getRealPath();
-        Excel::import(new BookImport,$file);
+        Excel::import(new BookImport,$request->file('bookDetailsCsv'));
         return redirect()->route('admin.dashboard')->with("success", 'Book added successfully!');
-
     }
 
 
     /**
-     * Desciption : This function fetch all bookes from the dataabse
+     * Desciption : This function fetch all bookes from the databse
      * and  show them on the show all book page.
      * @param :
-     * @return : all_books
+     * @return :'Admin.show_all_book' view
      */
     public function showAllBookBook()
     {

@@ -42,6 +42,8 @@ return [
    'total_discount'=>'Total Discount',
    'ratings'=>'Rating',
    'review'=> 'Reviews',
+   'import'=> 'Import',
+   'importBookHeaders'=> 'Import Book Details',
    
    
    // Buttons

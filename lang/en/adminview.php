@@ -15,7 +15,7 @@ return [
     'navabar_categories' => 'Categories',
     'navabar_ondemad' => 'Best Seller',
     'navabar_users' => 'Users',
-    'siderbar_book_csv'=> 'Book CSV',
+    'siderbar_book_csv'=> 'Import Book CSV',
 
 
     // sidebars admin .
