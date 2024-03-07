@@ -60,7 +60,20 @@
     </table>
     <script>
         $(document).ready(function() {
+
             let table = new DataTable('#books_list');
+            
+            $('#books_list').DataTable({
+                serverside:true,
+                processing:true,
+                ajax:{
+                    url:"{{route('showAll.books')}}",
+                    type:"GET",
+                    data:function(data){
+                        
+                    }
+                }
+            });
 
         });
     </script>

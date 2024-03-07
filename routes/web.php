@@ -43,7 +43,7 @@ Route::middleware(['auth:user'])->group(function () {
         Route::post('myWatchlist',  'myWatchlistAjax')->name('myWishlistAjax');
         Route::post('myWatchlist/removebook', 'removeFromWatchlist')->name('removeFromWatchlist');
         Route::post('myWatchlist/removebookFromcart', 'removeFromCart')->name('removeFromCart');
-        
+
         Route::get('myCart',  'myCart')->name('cart');
         Route::post('quantityChange', 'quantityChange')->name('quantityChange');
     });
@@ -63,14 +63,14 @@ Route::middleware(['guest:admin'])->controller(AdminAuthController::class)->pref
     Route::get('/',  'showLoginForm')->name('admin.loginForm');
     Route::get('login',  'showLoginForm')->name('admin.loginForm');
     Route::post('login',  'adminLoginPost')->name('admin.login');
-    Route::get('/forgetpassword','forgetpassword')->name('admin.forget.password');
-    Route::post('/submitForgetPasswordForm','submitForgetPasswordForm')->name('admin.submitForgetPasswordForm');
+    Route::get('/forgetpassword', 'forgetpassword')->name('admin.forget.password');
+    Route::post('/submitForgetPasswordForm', 'submitForgetPasswordForm')->name('admin.submitForgetPasswordForm');
 
-    Route::get('/resetpasswordform','resetpasswordform')->name('resetpasswordform');
-    
-    Route::get('/resetpassword/{token}/{email}','submitResetPasswordForm')->name('resetpassword');
+    Route::get('/resetpasswordform', 'resetpasswordform')->name('resetpasswordform');
 
-    Route::post('/resetpasswordsubmit','checktoken')->name('checktoken');
+    Route::get('/resetpassword/{token}/{email}', 'submitResetPasswordForm')->name('resetpassword');
+
+    Route::post('/resetpasswordsubmit', 'checktoken')->name('checktoken');
 });
 
 
@@ -93,11 +93,12 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
         Route::get('/delete/{id}',  'bookDelete')->name('delete.book');
 
         Route::get('/orderview', 'orderBookview')->name('order.bookview');
-        
-        Route::get('/order', 'orderBook')->name('order.book');
+
+        Route::post('/order', 'orderBook')->name('order.book');
 
         Route::post('/updateorderstatus', 'updateOrderStatus')->name('update.order.status');
-        Route::get('/orderdetails/{id}', 'orderDetails')->name('orderdetails.book');
+
+        Route::get('/orderdetails/{id?}', 'orderDetails')->name('orderdetails.book');
         Route::Post('/rejectingorder', 'deleteOrder')->name('delete.order');
 
         Route::get('/sendingcsvtoadmin', 'sendorderlist')->name('sendingordercsvfile');
