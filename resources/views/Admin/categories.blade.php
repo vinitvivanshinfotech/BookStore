@@ -51,13 +51,13 @@
 
             var $table = $('#book_list'),
                 dataTable;
-            var data = {};    
+            var data = {};
 
             function dataTableReload() {
                 dataTable.ajax.reload();
             };
 
-            function dataTableInit(data){
+            function dataTableInit(data) {
 
                 dataTable = $table.DataTable({
                     "responsive": true,
@@ -65,20 +65,40 @@
                     "serverSide": true,
                     "destroy": true,
                     "stateSave": true,
-                    "colums":[
-                        {data:'id'},
-                        {data:'author_name'},
-                        {data:'book_title'},
-                        {data:'author_name'},
-                        {data:'author_email'},
-                        {data:'book_edition'},
-                        {data:'book_cover'},
-                        {data:'book_language'},
+                    "colums": [{
+                            data: 'id'
+                        },
+                        {
+                            data: 'author_name'
+                        },
+                        {
+                            data: 'book_title'
+                        },
+                        {
+                            data: 'author_name'
+                        },
+                        {
+                            data: 'author_email'
+                        },
+                        {
+                            data: 'book_edition'
+                        },
+                        {
+                            data: 'book_cover'
+                        },
+                        {
+                            data: 'book_language'
+                        },
                     ],
-                    "order": [[ 0, 'desc' ]],
+                    "order": [
+                        [0, 'desc']
+                    ],
                     "pageLength": 10,
-                    "lengthMenu": [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
-                    
+                    "lengthMenu": [
+                        [10, 25, 50, 100, -1],
+                        [10, 25, 50, 100, "All"]
+                    ],
+
                 });
             }
             dataTableReload();

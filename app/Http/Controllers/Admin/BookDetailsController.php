@@ -205,5 +205,4 @@ class BookDetailsController extends Controller
             });
         }
     }
-
 }

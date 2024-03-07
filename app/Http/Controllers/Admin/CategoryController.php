@@ -39,7 +39,7 @@ class CategoryController extends Controller
     {
         try {
             $book_types = BookDetail::where('book_type', $request->categories)->get();
-            
+
             return response()->json($book_types);
             // return view('Admin.categories', ["book_types", $book_types]);
         } catch (\Exception $e) {

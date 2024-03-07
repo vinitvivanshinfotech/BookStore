@@ -37,29 +37,43 @@
     </table>
     <script>
         $(document).ready(function() {
-                $('#datatable').DataTable({
-                    processing: true,
-                    serverSide: true,
+            $('#datatable').DataTable({
+                processing: true,
+                serverSide: true,
 
-                    ajax: {
-                     url :"{{route('order.book')}}",
-                     dataType:"json",
-                     type:"POST",
-                     data:{_token: '{{csrf_token()}}'}  
+                ajax: {
+                    url: "{{route('order.book')}}",
+                    dataType: "json",
+                    type: "POST",
+                    data: {
+                        _token: '{{csrf_token()}}'
+                    }
+                },
+                columns: [{
+                        data: 'id'
                     },
-                    columns:[
-                        {data:'id'},
-                        {data:'customer_name'},
-                        {data:'orderid'},
-                        {data:'book_total_price'},
-                        {data:'book_total_quantity'},
-                        {data:'order_status'},
-                        {data:'options'}
+                    {
+                        data: 'customer_name'
+                    },
+                    {
+                        data: 'orderid'
+                    },
+                    {
+                        data: 'book_total_price'
+                    },
+                    {
+                        data: 'book_total_quantity'
+                    },
+                    {
+                        data: 'order_status'
+                    },
+                    {
+                        data: 'options'
+                    }
 
-                    ],
-                });
+                ],
             });
-           
+        });
     </script>
 
 </body>
