@@ -71,6 +71,7 @@
             </tr>
         </tbody>
     </table>
+    <!-- @include('Admin.layoutAdmin.footer') -->
     <script>
         $(document).ready(function() {
             let table = new DataTable('#books_list');
