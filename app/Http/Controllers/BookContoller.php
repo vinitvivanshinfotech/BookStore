@@ -106,18 +106,37 @@ class BookContoller extends Controller
     public function bookEditShow($id)
     {
         try {
+            // Find the book by ID
+            $bookId = (int) $id;
+            $book = $this->bookDetails->findbook($bookId);
 
-            $book = $this->bookDetails->findbook($id);
+            // Explode the book properties into separate arrays
+            $bookEdition = explode(',', $book->book_edition);
+            $bookLanguage = explode(',', $book->book_language);
+            $bookType = explode(',', $book->book_type);
 
-            $bookEdition = explode(',', $book['book_edition']);
-            $bookLanguage = explode(',', $book['book_language']);
-            $bookType = explode(',', $book['book_type']);
+            // Log the action
+            Log::info("Updating book details with ID: {$bookId}.");
 
-            Log::info('Updateing the book details  with id: ' . $id . '.');
-            return view("Admin.edit_book", ["book" => $book, 'bookEdition' => $bookEdition, 'bookLanguage' => $bookLanguage, 'bookType' => $bookType]);
+            // Return the view with the book and its properties
+            return view("Admin.edit_book", [
+                "book" => $book,
+                'bookEdition' => $bookEdition,
+                'bookLanguage' => $bookLanguage,
+                'bookType' => $bookType,
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            // Log the error
+            Log::error("Book not found with ID: {$id}.");
+
+            // Return a JSON response with a 404 status code
+            return Response::json(['error' => 'Book not found.'], 404);
         } catch (\Exception $e) {
-            Log::error('Error in while showing book details with id : ' . $id . ': ' . $e->getMessage());
-            return response()->json(['error' => $e->getMessage()], 500);
+            // Log the error
+            Log::error("Error while showing book details with ID: {$id}: {$e->getMessage()}.");
+
+            // Return a JSON response with a 500 status code
+            return Response::json(['error' => $e->getMessage()], 500);
         }
     }
 
@@ -173,24 +192,47 @@ class BookContoller extends Controller
      */
     public function bookDelete($id)
     {
-        try {
-            $book = $this->bookDetails->findbook($id);
 
-            if (Storage::disk(config('constant.FILESYSTEM_DISK'))->exists($book->book_cover)) {
-                Storage::disk(config('constant.FILESYSTEM_DISK'))->delete($book->book_cover);
-            }
-            if (null != $id && $id > 0) {
-                DB::transaction(function () use ($id) {
-                    $this->bookDetails->deletebook($id);
-                });
-            }
-            Log::info('delete the book with id: ' . $id . '.');
-            return  redirect()->route("showAll.books")->with("success", "succesfully delete the book");
+        try {
+            $book = $this->bookDetails->findBook($id);
+            $this->deleteBookCover($book);
+            $this->deleteBookRecord($id);
+            Log::info('Deleted book with id: ' . $id);
+            return redirect()->route("showAll.books")->with("success", "Successfully deleted the book");
         } catch (\Exception $e) {
-            Log::error('Attempt to deleteing  the book with id ' . $id . 'fails  , Error: ' . $e->getMessage());
+            Log::error('Failed to delete book with id ' . $id . ': ' . $e->getMessage());
             return response()->json(['message' => "Error in deleting this book"], 500);
         }
     }
+
+    /**
+    * Desciption : 
+    *
+    * @param : Book Delete Cover
+    * @return : 
+    */
+    private function deleteBookCover($book)
+    {
+        if (Storage::disk(config('constant.FILESYSTEM_DISK'))->exists($book->book_cover)) {
+            Storage::disk(config('constant.FILESYSTEM_DISK'))->delete($book->book_cover);
+        }
+    }
+
+    /**
+    * Desciption : 
+    *
+    * @param :
+    * @return : 
+    */
+    private function deleteBookRecord($id)
+    {
+        if (null !== $id && $id > 0) {
+            DB::transaction(function () use ($id) {
+                $this->bookDetails->deleteBook($id);
+            });
+        }
+    }
+
 
 
     /**
@@ -267,7 +309,7 @@ class BookContoller extends Controller
                     $delete = route('delete.order', $detail->id);
 
                     $nestdata['id'] = $detail->id;
-                    $nestdata['customer_name'] = $detail['user']['first_name'] ; 
+                    $nestdata['customer_name'] = $detail['user']['first_name'];
                     $nestdata['orderid'] = $detail['id'];
                     $nestdata['book_total_price'] = $detail['book_total_price'];
                     $nestdata['book_total_quantity'] = $detail['book_total_quantity'];
