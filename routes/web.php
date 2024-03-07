@@ -5,7 +5,10 @@ use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\User\UserAuthController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\UserOrderController;
-use App\Http\Controllers\BookContoller;
+use App\Http\Controllers\Admin\BookDetailsController;
+use App\Http\Controllers\Admin\OrderDetailsController;
+use App\Http\Controllers\Admin\SendInvoiceController;
+use App\Http\Controllers\Admin\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -85,27 +88,32 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 
 
     //Bookcontroller
-    Route::prefix('book')->controller(BookContoller::class)->group(function () {
+    Route::prefix('book')->controller(BookDetailsController::class)->group(function () {
         Route::post('/save',  'bookAdd')->name('save.books');
         Route::get('/allbooks',  'showAllBookBook')->name('showAll.books');
         Route::get('/edit/{id}',  'bookEditShow')->name('edit.book');
         Route::post('/bookUpdate',  'bookUpdate')->name('update.book');
         Route::get('/delete/{id}',  'bookDelete')->name('delete.book');
 
-        Route::get('/orderview', 'orderBookview')->name('order.bookview');
-
-        Route::post('/order', 'orderBook')->name('order.book');
-
-        Route::post('/updateorderstatus', 'updateOrderStatus')->name('update.order.status');
-
-        Route::get('/orderdetails/{id?}', 'orderDetails')->name('orderdetails.book');
-        Route::Post('/rejectingorder', 'deleteOrder')->name('delete.order');
 
         Route::get('/sendingcsvtoadmin', 'sendorderlist')->name('sendingordercsvfile');
+    });
 
+    Route::prefix('book')->controller(OrderDetailsController::class)->group(function () {
+
+        Route::get('/orderview', 'orderBookview')->name('order.bookview');
+        Route::post('/order', 'orderBook')->name('order.book');
+        Route::post('/updateorderstatus', 'updateOrderStatus')->name('update.order.status');
+        Route::get('/orderdetails/{id?}', 'orderDetails')->name('orderdetails.book');
+        Route::Post('/rejectingorder', 'deleteOrder')->name('delete.order');
+    });
+
+    Route::prefix('sendmail')->controller(SendInvoiceController::class)->group(function () {
         Route::get('/sendingInvoiceToUser/{id}', 'sendingInvoiceToUser')->name('sendingInvoiceToUser');
+    });
 
+    Route::prefix('book')->controller(CategoryController::class)->group(function () {
         Route::get('categories', 'categories')->name('categories');
-        Route::post('category/store', 'categoryBookView')->name('category.store');
+        Route::get('category/store', 'categoryBookView')->name('category.store');
     });
 });

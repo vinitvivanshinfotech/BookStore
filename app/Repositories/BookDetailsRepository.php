@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\BookDetail;
 use App\Repositories\Interfaces\BookDetailsRepositoryInterface;
+use App\Services\UrlService;
 
 class BookDetailsRepository implements BookDetailsRepositoryInterface
 {
@@ -39,7 +40,8 @@ class BookDetailsRepository implements BookDetailsRepositoryInterface
      */
 
     public function findbook($id)
-    {
+    {   
+        // $id = UrlService::base64UrlEncode($id);
         $book = BookDetail::findOrFail($id);
         if ($book == null) {
             abort(404, 'book');

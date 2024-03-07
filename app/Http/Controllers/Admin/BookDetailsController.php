@@ -1,36 +1,22 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Models\BookDetail;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\saveBookRequest;
 use App\Http\Requests\updateBookRequest;
-use App\Jobs\SendOrderListToAdmin;
-use App\Mail\SendInvoiceToUser;
-use App\Models\OrderDetail;
-use App\Models\PaymentBook;
-use App\Models\ShippingDetail;
-use Illuminate\Support\Facades\Mail;
-use Exception;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\VarDumper\VarDumper;
-use Barryvdh\DomPDF\Facade\Pdf as PDF;
-// use BookDetailsRepositoryInterface;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Carbon;
-use Illuminate\Validation\Rules\Unique;
 use DB;
-use App\Services\UrlService;
+
 
 use App\Repositories\Interfaces\BookDetailsRepositoryInterface;
 // use App\Services\UrlService;
 
-class BookContoller extends Controller
+class BookDetailsController extends Controller
 {
     protected $bookDetails;
 
@@ -220,38 +206,4 @@ class BookContoller extends Controller
         }
     }
 
-
-    
-    /**
-     * Desciption : 
-     *
-     * @param :
-     * @return : 
-     */
-    public function categories(Request $request)
-    {
-        try {
-            return view('Admin.categories');
-        } catch (\Exception $e) {
-        }
-    }
-
-    /**
-     * Desciption : 
-     *
-     * @param :
-     * @return : 
-     */
-
-    public  function categoryBookView(Request $request)
-    {
-        try {
-
-            $book_types = BookDetail::where('book_type', $request->categories)->get();
-            return view('Admin.categories', ["book_types", $book_types]);
-        } catch (\Exception $e) {
-            Log::error('Attempt to Read the list of book type ' . $e->getMessage());
-            return response()->json(['message' => 'An error occurred while fet the order.'], 500);
-        }
-    }
 }

@@ -51,6 +51,7 @@
                 <td>{{$book->book_type}}</td>
                 <td>{{$book->book_price}}</td>
                 <td>
+
                     <a href="{{route('edit.book',$book->id)}}" class="btn btn-sm btn-dark">{{__('adminlabel.edit')}}</a>
                     <a href="{{route('delete.book',$book->id)}}" class="btn btn-sm btn-dark">{{__('adminlabel.delete')}}</a>
                 </td>
