@@ -5,28 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Models\BookDetail;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Requests\saveBookRequest;
-use App\Http\Requests\updateBookRequest;
-use App\Jobs\SendOrderListToAdmin;
-use App\Mail\SendInvoiceToUser;
 use App\Models\OrderDetail;
-use App\Models\PaymentBook;
 use App\Models\ShippingDetail;
-use Illuminate\Support\Facades\Mail;
 use Exception;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
-use Symfony\Component\VarDumper\VarDumper;
-use Barryvdh\DomPDF\Facade\Pdf as PDF;
-// use BookDetailsRepositoryInterface;
-use Illuminate\Support\Facades\View;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Carbon;
-use Illuminate\Validation\Rules\Unique;
 use DB;
-use App\Services\UrlService;
 
 class OrderDetailsController extends Controller
 {
