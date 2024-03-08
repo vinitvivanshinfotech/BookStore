@@ -131,7 +131,7 @@ class OrderDetailsController extends Controller
     public function orderDetails($id)
     {
         try {
-            \Log::info('this is id  ' . $id);
+            // \Log::info('this is id  ' . $id);
             $orderDetails = ShippingDetail::join('order_details', 'order_details.id', '=', 'shipping_details.order_id')
                 ->join('payment_books', 'payment_books.id', '=', 'order_details.payment_id')
                 ->join('order_descripitions', 'order_descripitions.order_id', '=', 'order_details.id')

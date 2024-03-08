@@ -65,6 +65,7 @@
                     "serverSide": true,
                     "destroy": true,
                     "stateSave": true,
+                    
                     "colums": [{
                             data: 'id'
                         },
