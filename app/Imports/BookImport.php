@@ -14,6 +14,11 @@ class BookImport implements ToModel
     */
     public function model(array $row)
     {
+        foreach ($row as &$cell) {
+            if ($cell === null) {
+                $cell = '';
+            }
+        }
         return new BookDetail([
             'book_name' => $row[0],
             'book_title' => $row[1],
