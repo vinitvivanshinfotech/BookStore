@@ -73,5 +73,6 @@
             <div class="go"><i class="fab fa-google"></i> Google</div>
             <div class="fb"><i class="fab fa-facebook"></i> Facebook</div>
         </div>
+
     </form>
 @endsection

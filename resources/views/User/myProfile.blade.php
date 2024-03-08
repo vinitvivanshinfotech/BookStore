@@ -44,16 +44,16 @@
                             @endif
                         </div>
                     </div>
-                   
-                    <button type="submit" class="btn btn-primary mt-3">Update</button>
 
-                    
-                  
+                    <input type="hidden" name="id" value="{{$user->id}}">
+                   
+                    <button type="submit" class="btn btn-primary mt-3">{{__('labels.update')}}</button>
+
                 </form>
 
                 <a href="{{route('user.showBooks')}}">
                     <div class="text-right mb-3">
-                        <button class="btn btn-lg btn-danger">Cancel</button>
+                        <button class="btn btn-lg btn-danger">{{__('labels.back')}}</button>
                     </div>
                 </a>
             </div>

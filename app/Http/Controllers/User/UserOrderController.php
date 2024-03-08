@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Imports\UserImport;
 use App\Exports\UserExport;
 use Excel;
+use Stripe\PaymentIntent;
+use Stripe\Stripe;
 
 
 // Model
@@ -89,16 +91,19 @@ class UserOrderController extends Controller
             $totalOrderedBookQty = $cart->total_ordered_book_qty;
             $totalOrderedBookDiscount = $cart->total_ordered_book_discount;
             $totalOrderedBookPrice = $cart->total_ordered_book_price;
+            $amountToBepay = $totalOrderedBookPrice-$totalOrderedBookDiscount;
 
             $orderDetails = OrderDetail::create([
                 'user_id' => $userId,
-                'book_total_price' => ($totalOrderedBookPrice - $totalOrderedBookDiscount),
+                'book_total_price' => $amountToBepay,
                 'book_total_quantity' =>  $totalOrderedBookQty,
                 'book_shipdate' => Carbon::now()->addDays(2),
                 'book_billdate' =>  Carbon::now(),
                 'payment_id' => $paymentId,
                 'order_status' => 'Placed Order'
             ]);
+
+
 
             if (empty($orderDetails)) {
                 Log::info('orderdetails addintion failed of = ' . $userId . " ");
@@ -167,8 +172,23 @@ class UserOrderController extends Controller
             $tempFilePath = tempnam(sys_get_temp_dir(), 'pdf_');
             file_put_contents($tempFilePath, $pdf->output());
 
-
             DB::commit();
+
+
+            // $book_total_price=$orderDetails->book_total_price;
+            // $book_total_quantity=$orderDetails->book_total_quantity;
+
+            // if($request->input('payment_mode')=='online'){
+            //     return view('User.payment')->with([
+            //         'orderId'=>$orderId,
+            //         'book_total_price'=>$book_total_price,
+            //         'book_total_quantity'=>$book_total_quantity,
+            //         'paymentId'=>$paymentId,
+            //         'data'=>$data,
+            //         'tempFilePath'=>$tempFilePath,
+            //         'invoiceName'=>$invoiceName
+            //     ]);
+            // }
 
             Mail::to(env('ORDER_PLACED_MAIL', 'keyur.s@vivanshinfotech.com'))
                 ->send(new OrderPlacedPdf([
@@ -177,14 +197,34 @@ class UserOrderController extends Controller
                     'invoiceName' => $invoiceName
                 ]));
 
-
-
             return redirect()->route('user.myOrders')->with('success', 'Order placed successfully');
         } catch (\Exception $th) {
             DB::rollBack();
             Log::error(__METHOD__ . 'line' . __LINE__ . " Error in making an order" . $th->getMessage());
             Session::flash("failure", 'Something went wrong!');
         }
+    }
+
+
+    public  function MakePayment(Request $request){
+        \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+
+        $paymentId = $request->paymentId;
+        $orderId = $request->orderId;
+
+
+        $paymentIntent = PaymentIntent::create([
+            'amount' => $request->book_total_price,
+            'currency' => 'usd',
+            'metadata' => [
+                'order_id' => $orderId,
+                'payment_id' => $paymentId,
+            ],
+            
+        ]);
+
+        dd($paymentIntent);
+
     }
 
     /**

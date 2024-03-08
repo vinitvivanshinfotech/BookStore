@@ -1,44 +1,7 @@
 @extends('User.userLayout.layout')
 
 @php
- $states = 
-        ["Andhra Pradesh",
-    "Arunachal Pradesh",
-    "Assam",
-    "Bihar",
-    "Chhattisgarh",
-    "Goa",
-    "Gujarat",
-    "Haryana",
-    "Himachal Pradesh",
-    "Jharkhand",
-    "Karnataka",
-    "Kerala",
-    "Madhya Pradesh",
-    "Maharashtra",
-    "Manipur",
-    "Meghalaya",
-    "Mizoram",
-    "Nagaland",
-    "Odisha",
-    "Punjab",
-    "Rajasthan",
-    "Sikkim",
-    "Tamil Nadu",
-    "Telangana",
-    "Tripura",
-    "Uttar Pradesh",
-    "Uttarakhand",
-    "West Bengal",
-    "Andaman Nicobar Islands",
-    "Chandigarh",
-    "Dadra and Nagar Haveli",
-    "Daman",
-    "Diu",
-    "Lakshadweep",
-    "Delhi",
-    "Puducherry"
-    ];   
+ 
 @endphp
 @section('content')
     <div class="container">
@@ -124,7 +87,7 @@
                             <label for="state">{{ __('labels.state') }}</label>
                             <select class="form-control" name="state" id="name">
                                 <option value="" selected disabled hidden>Select State</option>
-                                @foreach($states as $key)
+                                @foreach(config('constant.STATES') as $key)
                                     <option value="{{$key}}">{{$key}}</option>
                                 @endforeach
                             </select>

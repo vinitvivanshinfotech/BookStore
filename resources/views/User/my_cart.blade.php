@@ -156,7 +156,6 @@
 
     $('.addToWishlistButton').click(function() {
 
-
         // Get the value of the book ID
         var bookId = $(this).val();
         // Get the value of the authenticated user's ID

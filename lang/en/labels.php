@@ -56,6 +56,7 @@ return [
    'remove_from_list'=> 'Remove',
    'next'=>'Next',
    'amout_to_be_payable'=>"Amount To Be Payable",
+   'update'=>'Update',
    
 
    // Cart

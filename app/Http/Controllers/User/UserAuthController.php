@@ -15,8 +15,18 @@ use App\Http\Requests\LoginRequest;
 // model
 use App\Models\User;
 
+
+// Interface
+use App\Repositories\Interfaces\UserRepositoryInterface;
+
 class UserAuthController extends Controller
 {
+    public function __construct(
+        UserRepositoryInterface $user
+    ) {
+        $this->user = $user;
+    }
+
     public function showRegisterForm()
     {
         return view('Auth.User.register');
@@ -29,15 +39,14 @@ class UserAuthController extends Controller
 
     public function userRegistrationPost(RegisterRequest $request)
     {
-        $user = User::create([
-            'first_name' => $request->input('first_name'),
-            'last_name' => $request->input('last_name'),
-            'email' => $request->input('email'),
-            'phone_number' => $request->input('phone_number'),
-            'password' => $request->input('password'),
-        ]);
-
-        return redirect()->route('login')->with("Success", "Your account has been created successfully!");
+        try {
+            $attributes = $request->except(['_token', 'password_confirmation']);
+            $newUser = $this->user->getModel()->create($attributes);
+            Log::info('User created successfully with id: ' .$newUser->id);
+            return redirect()->route('login')->with("Success", "Your account has been created successfully!");
+        } catch (Exception $e) {
+            log::error(__METHOD__." line ".__LINE__." Error while creating user account");
+        };
     }
 
     public function userLoginPost(LoginRequest $request)
@@ -60,7 +69,11 @@ class UserAuthController extends Controller
      */
     public function userLogout()
     {
-        Auth::guard('user')->logout();
-        return redirect()->route('login');
+        try{
+            Auth::guard('user')->logout();
+            return redirect()->route('login'); 
+        }catch(Exception $e){
+            Log::error(__METHOD__." line ".__LINE__." Error while logging out user". auth()->user()->id);
+        }
     }
 }

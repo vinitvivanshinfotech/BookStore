@@ -21,7 +21,7 @@ use App\Http\Controllers\BookContoller;
 
 
 //GUEST ROTES
-Route::middleware(['guest'])->controller(UserAuthController::class)->group(function () {
+Route::middleware(['guest:user'])->controller(UserAuthController::class)->group(function () {
     Route::get('/', 'showLoginForm')->name('login');
     Route::get('/login', 'showLoginForm')->name('login');
     Route::post('/login', 'userLoginPost')->name('user.login');
@@ -36,19 +36,24 @@ Route::middleware(['auth:user'])->group(function () {
 
     //USER AUTHENTICATED ROUTES
     Route::controller(UserController::class)->prefix('dashboard')->name('user.')->group(function () {
+
         Route::get('/',  'dashboard')->name('dashboard');
+        
+        // PROFILE ROUTES
         Route::get('/profile',  'myProfile')->name('profile');
         Route::post('/profile',  'updateProfile')->name('updateProfile');
         
-        
+        // BOOKS
         Route::get('allBooks',  'displayAllBooks')->name('showBooks');
         Route::get('allBooks/bookDetails',  'bookDetails')->name('bookDetails');
+
+        // WATCHLIST & CART
         Route::get('myWatchlist',  'myWatchlist')->name('watchlist');
         Route::post('myWatchlist',  'myWatchlistAjax')->name('myWishlistAjax');
         Route::post('myWatchlist/removebook', 'removeFromWatchlist')->name('removeFromWatchlist');
         Route::post('myWatchlist/removebookFromcart', 'removeFromCart')->name('removeFromCart');
-        
         Route::get('myCart',  'myCart')->name('cart');
+        
         Route::post('quantityChange', 'quantityChange')->name('quantityChange');
     });
 
@@ -59,7 +64,12 @@ Route::middleware(['auth:user'])->group(function () {
         Route::post('orderMoreInfo', 'orderMoreInfo')->name('orderMoreInfo');
         Route::post('addBookReview', 'addBookReview')->name('addBookReview');
         Route::post('addBookReview', 'addBookReview')->name('addBookReview');
+        Route::post('/makePayment', 'MakePayment')->name('MakePayment');
+
     });
+
+    // Internal Server Error
+    Route::view('internal-serrver-error','internal-serrver-error')->name('user.internal-serrver-error');
 });
 
 
