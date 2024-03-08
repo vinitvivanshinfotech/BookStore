@@ -9,6 +9,7 @@
 
 <body>
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    @include('cdn')
 
     <div class="container-fluid">
       <a class="navbar-brand" href="#">{{__('adminview.navabar_title')}}</a>
@@ -39,7 +40,21 @@
           </li>
           <li class="nav-item">
             <a class="nav-link active" aria-current="page">{{__('adminview.admin')}}</a>
+            <ul></ul>
           </li>
+          <div>
+          <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="" id="navbarDropdownMenuLink" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href=""></a>
+                        <a class="dropdown-item" href=""></a>
+                    </div>
+                </li>
+            </ul>
+        </div>
         </ul>
       </div>
     </div>
