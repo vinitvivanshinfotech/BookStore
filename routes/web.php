@@ -105,7 +105,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
         Route::post('/order', 'orderBook')->name('order.book');
         Route::post('/updateorderstatus', 'updateOrderStatus')->name('update.order.status');
         Route::get('/orderdetails/{id?}', 'orderDetails')->name('orderdetails.book');
-        Route::Post('/rejectingorder', 'deleteOrder')->name('delete.order');
+        Route::post('/rejectingorder', 'deleteOrder')->name('delete.order');
     });
 
     Route::prefix('sendmail')->controller(SendInvoiceController::class)->group(function () {

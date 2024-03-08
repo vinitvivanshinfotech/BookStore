@@ -31,9 +31,6 @@
             <th>{{__('adminlabel.order_status')}}</th>
             <th>{{__('adminlabel.action')}}</th>
         </thead>
-        <!-- <tbody id="orders">
-
-        </tbody> -->
     </table>
     <script>
         $(document).ready(function() {
@@ -45,6 +42,7 @@
                     url: "{{route('order.book')}}",
                     dataType: "json",
                     type: "POST",
+                    order: [[0, 'desc']],
                     data: {
                         _token: '{{csrf_token()}}'
                     }
