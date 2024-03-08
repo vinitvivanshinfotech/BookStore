@@ -5,7 +5,7 @@
     <div class="card">
         <div class="card-header">
             <div class="text-right mb-3">
-                <button onclick="goBack()" class="btn btn-lg btn-danger">{{ __('labels.back') }}</button>
+                <a href="{{route('user.showBooks')}}"><button  class="btn btn-lg btn-danger">{{ __('labels.back') }}</button></a>
             </div>
 
             <b class="text-primary">

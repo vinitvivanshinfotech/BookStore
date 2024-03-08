@@ -252,7 +252,7 @@ class UserController extends Controller
     {
         $userId = auth()->id();
         $cartData = $this->cart->getModel()->where('user_id', $userId)->with(['bookDetails'])->get()->toArray();
-        return view('User.my_cart')->with('data', $cartData);
+        return view('User.my_cart')->with(['data'=>$cartData,'user'=>auth()->user()]);
     }
 
     /**

@@ -20,6 +20,16 @@ use Excel;
 use Stripe\PaymentIntent;
 use Stripe\Stripe;
 
+// Interface
+use App\Repositories\Interfaces\CartRepositoryInterface;
+use App\Repositories\Interfaces\WishlistBookRepositoryInterface;
+use App\Repositories\Interfaces\UserRepositoryInterface;
+use App\Repositories\Interfaces\BookDetailRepositoryInterface;
+use App\Repositories\Interfaces\PaymentBookRepositoryInterface;
+use App\Repositories\Interfaces\OrderDetailRepositoryInterface;
+use App\Repositories\Interfaces\OrderDescripitionRepositoryInterface;
+use App\Repositories\Interfaces\ShippingDetailRepositoryInterface;
+
 
 // Model
 use App\Models\User;
@@ -37,6 +47,25 @@ use PhpParser\Node\Expr\Cast\Bool_;
 
 class UserOrderController extends Controller
 {
+    public function __construct(
+        UserRepositoryInterface $user,
+        CartRepositoryInterface $cart,
+        WishlistBookRepositoryInterface $wishlistBook,
+        BookDetailRepositoryInterface $bookDetail,
+        PaymentBookRepositoryInterface $paymentBook,
+        OrderDetailRepositoryInterface $orderDetails,
+        OrderDescripitionRepositoryInterface $orderDescription,
+        ShippingDetailRepositoryInterface $shippingDetails,
+    ) {
+        $this->user = $user;
+        $this->cart = $cart;
+        $this->wishlistBook = $wishlistBook;
+        $this->bookDetail = $bookDetail;
+        $this->paymentBook = $paymentBook;
+        $this->orderDetails = $orderDetails;
+        $this->orderDescription = $orderDescription;
+        $this->shippingDetails = $shippingDetails;
+    }
 
     /**
      * Desciption : 
@@ -62,82 +91,53 @@ class UserOrderController extends Controller
 
         try {
             DB::beginTransaction();
-            $cartitems = Cart::where('user_id', $userId)->get()->toArray();
 
+            // Retrieve the cart details of user
+            $cartitems = $this->cart->getCartItemAllDetails($userId);
             if ($cartitems == null || count($cartitems) == 0) {
                 return redirect()->back()->with('failure', __('messages.empty_cart'));
             }
 
-            $paymentId = PaymentBook::create([
-                'user_id' => $userId,
-                'payment_mode' => $request->input('payment_mode'),
-            ])->id;
-
+            // Make Payment
+            $paymentId = $this->paymentBook->create($userId,$request->input('payment_mode'))->id;
             if (empty($paymentId)) {
                 Log::info('payment failed of user = ' . $userId . " ");
                 return redirect()->back()->with('failure', __('messages.payment_fail'));
             }
 
-            Log::info('user ' . $userId . " payment book id " . $paymentId . " created");
-
-            //Join the book_details and carts table and will return total discount, total sum of cart items , total cart value=sum(book_price * book_quantity) 
-            $cart = Cart::join('book_details', 'carts.book_id', '=', 'book_details.id')->where('user_id', $userId)
-                ->selectRaw('SUM(carts.book_quantity) as total_ordered_book_qty,
-                 SUM(carts.book_quantity * book_details.book_discount) as total_ordered_book_discount,
-                 SUM(carts.book_quantity * book_details.book_price) as total_ordered_book_price')
-                ->first();
-
+            // Details about Some Of Cart Items,total_price,total_discount,total_quantity
+            $cart = $this->cart->getCartTotalDetails($userId);
 
             $totalOrderedBookQty = $cart->total_ordered_book_qty;
             $totalOrderedBookDiscount = $cart->total_ordered_book_discount;
             $totalOrderedBookPrice = $cart->total_ordered_book_price;
-            $amountToBepay = $totalOrderedBookPrice-$totalOrderedBookDiscount;
+            $amountToBepay = $totalOrderedBookPrice - $totalOrderedBookDiscount;
 
-            $orderDetails = OrderDetail::create([
-                'user_id' => $userId,
-                'book_total_price' => $amountToBepay,
-                'book_total_quantity' =>  $totalOrderedBookQty,
-                'book_shipdate' => Carbon::now()->addDays(2),
-                'book_billdate' =>  Carbon::now(),
-                'payment_id' => $paymentId,
-                'order_status' => 'Placed Order'
-            ]);
-
-
-
+            // Create the order details
+            $orderDetails = $this->orderDetails->create($userId,$amountToBepay,$totalOrderedBookQty,$paymentId);
+            $orderId = $orderDetails->id;
             if (empty($orderDetails)) {
                 Log::info('orderdetails addintion failed of = ' . $userId . " ");
                 return redirect()->back()->with('failure', __('messages.order_fail'));
             }
 
-            Log::info('user ' . $userId . " order" . $orderDetails->id . " created");
-
-
-            foreach ($cartitems as $cartitem) {
-
-                OrderDescripition::create([
-                    'order_id' => $orderDetails->id,
-                    'book_id' => $cartitem['book_id'],
-                    'book_quantity' => $cartitem['book_quantity'],
-                ]);
-                Log::debug($cartitem['book_quantity']);
+            // Create the order description of $orderId
+            $orderDescriptioAdd = $this->orderDescription->create($userId,$orderId);
+            if (empty($orderDescriptioAdd)) {
+                Log::info('orderdescription addintion failed of = '. $userId. " ");
+                return redirect()->back()->with('failure', __('messages.order_fail'));
             }
 
-
-            $postData = $request->except('_token','payment_mode');
-
+            $postData = $request->except('_token', 'payment_mode');
             $postData['order_id'] = $orderDetails->id;
 
-            $shippingDetails = ShippingDetail::create($postData);
+            // Create shipping details information
+            $shippingDetails = $this->shippingDetails->create($postData);
 
             if (empty($shippingDetails)) {
                 Log::info('shippingDetails addintion failed of = ' . $userId . " ");
                 return redirect()->back()->with('failure', __('messages.shipping_details_add_fail'));
             }
-
-            Log::info('Order placed of Order id :' . $orderDetails->id);
-            Cart::where('user_id', $userId)->delete();
-
 
             // SEND THE ORDER DETAILS TO THE ADMIN
             $orderId =  $orderDetails->id;
@@ -206,7 +206,8 @@ class UserOrderController extends Controller
     }
 
 
-    public  function MakePayment(Request $request){
+    public  function MakePayment(Request $request)
+    {
         \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
 
         $paymentId = $request->paymentId;
@@ -220,11 +221,10 @@ class UserOrderController extends Controller
                 'order_id' => $orderId,
                 'payment_id' => $paymentId,
             ],
-            
+
         ]);
 
         dd($paymentIntent);
-
     }
 
     /**

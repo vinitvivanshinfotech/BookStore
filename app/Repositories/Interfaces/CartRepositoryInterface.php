@@ -24,4 +24,22 @@ interface CartRepositoryInterface{
      */ 
 
      public function getBookIdOfCartItems($userId);
+
+     /**
+      * Desciption : getCartTotalDetails() get the total of cart items-quantity, total-items-price, total-items-discount
+      * 
+      * @param : int $userId
+      * @return : 
+      */ 
+      public function getCartTotalDetails($userId);
+
+      /**
+     * Desciption : get Cart Item all details
+     * 
+     * @param : int $userId
+     * @return : 
+     */ 
+    public function getCartItemAllDetails($userId);
+
+     
 }
