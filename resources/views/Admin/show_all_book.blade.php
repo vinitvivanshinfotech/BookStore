@@ -45,8 +45,9 @@
                 <td>
                     <h6>Image Not Found</h6>
                 </td>
-                @endif
+                @else
                 <td><img src="{{ Storage::disk(config('constant.FILESYSTEM_DISK'))->url($book->book_cover) }}" width="120" height="50" /></td>
+                @endif
                 <td>{{$book->book_language}}</td>
                 <td>{{$book->book_type}}</td>
                 <td>{{$book->book_price}}</td>

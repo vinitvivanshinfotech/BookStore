@@ -35,9 +35,6 @@
         <a type="button" class="btn btn-secondary mb-2">{{__('adminview.siderbar_categories')}}</a>
       </div>
       <div>
-        <a type="button" class="btn btn-secondary mb-2">{{__('adminview.siderbar_best_seller')}}</a>
-      </div>
-      <div>
         <a type="button" class="btn btn-secondary mb-2" href="{{route('book.importBook')}}">{{__('adminview.siderbar_book_csv')}}</a>
       </div>
       <div>

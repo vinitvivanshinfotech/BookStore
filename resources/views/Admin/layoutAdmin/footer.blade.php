@@ -6,7 +6,7 @@
     <title>{{__('adminview.dashboardtitle')}}</title>
 </head>
 <body>
-<div class="container">
+<div class="container-xl">
   <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
     <p class="col-md-4 mb-0 text-muted">{{__('adminview.footer_companycorporation')}}</p>
 
@@ -22,7 +22,6 @@
       <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">{{__('adminview.footer_about')}}</a></li>
     </ul>
   </footer>
-</div>
 </div>
 </body>
 </html>
