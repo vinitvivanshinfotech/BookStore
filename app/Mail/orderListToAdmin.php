@@ -11,7 +11,7 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Attachment;
 
-class orderListToAdmin extends Mailable
+class orderListToAdmin extends ShouldQueue
 {
     use Queueable, SerializesModels;
 
