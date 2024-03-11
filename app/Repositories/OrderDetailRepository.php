@@ -6,6 +6,8 @@ use Carbon\Carbon;
 
 // Models
 use App\Models\OrderDetail;
+use App\Models\OrderDescripition;
+use App\Models\BookDetail;
 
 // Interface
 use App\Repositories\Interfaces\OrderDetailRepositoryInterface;
@@ -50,6 +52,40 @@ class OrderDetailRepository implements OrderDetailRepositoryInterface{
             'payment_id' => $paymentId,
             'order_status' => 'Placed Order'
         ]);
+    }
+
+    /**
+     * Desciption : get order all details
+     * 
+     * @param : int $userId
+     * @param : int $orderId
+     * @return : array
+     */ 
+    public function getOrderAllDetails($userId, $orderId){
+        return $this->getModel()->join('order_descripitions', 'order_details.id', '=', 'order_descripitions.order_id')
+                ->join('book_details', 'book_details.id', '=', 'order_descripitions.book_id')->join('shipping_details', 'shipping_details.order_id', '=', 'order_details.id')
+                ->selectRaw('order_details.*,
+                order_descripitions.book_quantity,
+                book_details.book_name,
+                book_details.book_title,
+                book_details.author_name,
+                book_details.book_edition,
+                book_details.description,
+                book_details.book_cover,
+                book_details.book_price,
+                book_details.book_language,
+                book_details.book_type,
+                book_details.book_discount,
+                shipping_details.first_name,
+                shipping_details.last_name,
+                shipping_details.email,
+                shipping_details.phone_number,
+                shipping_details.address,
+                shipping_details.pincode,
+                shipping_details.city,
+                shipping_details.state
+                ')
+                ->where('order_details.user_id', $userId)->where('order_details.id', $orderId)->distinct('order_descripitions.book_id')->get()->toArray();
     }
 
 

@@ -71,4 +71,14 @@ class CartRepository implements CartRepositoryInterface
     public function getCartItemAllDetails($userId){
         return $this->getModel()->where('user_id', $userId)->get();
     }
+
+    /**
+     * Desciption : delete all items present in cart of specified user
+     * 
+     * @param : int $userId
+     * @return : boolean
+     */ 
+    public function deleteCartAllItem($userId){
+        return $this->getModel()->where('user_id', $userId)->delete();
+    }
 }

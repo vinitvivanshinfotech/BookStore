@@ -1,9 +1,11 @@
 @extends('User.userLayout.layout')
 @section('content')
     <h1>{{ __('labels.my_orders') }}</h1>
-    <div class="text-right mb-3">
-        <button onclick="goBack()" class="btn btn-lg btn-danger">{{ __('labels.back') }}</button>
-    </div>
+    <a href="{{ route('user.showBooks') }}">
+        <div class="text-right mb-3">
+            <button onclick="" class="btn btn-lg btn-danger">{{ __('labels.back') }}</button>
+        </div>
+    </a>
     @foreach ($orders as $order)
         <div class="card">
             <b>

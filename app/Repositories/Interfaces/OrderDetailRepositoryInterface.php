@@ -25,4 +25,13 @@ interface OrderDetailRepositoryInterface{
      * @return : 
      */ 
     public function create($userId,$amountToBepay,$totalOrderedBookQty,$paymentId);
+
+    /**
+     * Desciption : get order all details
+     * 
+     * @param : int $userId
+     * @param : int $orderId
+     * @return : array
+     */ 
+    public function getOrderAllDetails($userId, $orderId);
 }

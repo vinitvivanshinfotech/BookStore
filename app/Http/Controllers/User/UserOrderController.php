@@ -141,31 +141,9 @@ class UserOrderController extends Controller
 
             // SEND THE ORDER DETAILS TO THE ADMIN
             $orderId =  $orderDetails->id;
-            $data = OrderDetail::join('order_descripitions', 'order_details.id', '=', 'order_descripitions.order_id')
-                ->join('book_details', 'book_details.id', '=', 'order_descripitions.book_id')->join('shipping_details', 'shipping_details.order_id', '=', 'order_details.id')
-                ->selectRaw('order_details.*,
-                order_descripitions.book_quantity,
-                book_details.book_name,
-                book_details.book_title,
-                book_details.author_name,
-                book_details.book_edition,
-                book_details.description,
-                book_details.book_cover,
-                book_details.book_price,
-                book_details.book_language,
-                book_details.book_type,
-                book_details.book_discount,
-                shipping_details.first_name,
-                shipping_details.last_name,
-                shipping_details.email,
-                shipping_details.phone_number,
-                shipping_details.address,
-                shipping_details.pincode,
-                shipping_details.city,
-                shipping_details.state
-                ')
-                ->where('order_details.user_id', $userId)->where('order_details.id', $orderId)->distinct('order_descripitions.book_id')->get()->toArray();
+            $data = $this->orderDetails->getOrderAllDetails($userId, $orderId);
 
+            // MAKE INVOICE PDF
             $pdf = PDF::loadView('User.userLayout.invoice_email', compact('data'));
             $invoiceName = "order-{$orderId}";
 
@@ -174,28 +152,15 @@ class UserOrderController extends Controller
 
             DB::commit();
 
-
-            // $book_total_price=$orderDetails->book_total_price;
-            // $book_total_quantity=$orderDetails->book_total_quantity;
-
-            // if($request->input('payment_mode')=='online'){
-            //     return view('User.payment')->with([
-            //         'orderId'=>$orderId,
-            //         'book_total_price'=>$book_total_price,
-            //         'book_total_quantity'=>$book_total_quantity,
-            //         'paymentId'=>$paymentId,
-            //         'data'=>$data,
-            //         'tempFilePath'=>$tempFilePath,
-            //         'invoiceName'=>$invoiceName
-            //     ]);
-            // }
-
             Mail::to(env('ORDER_PLACED_MAIL', 'keyur.s@vivanshinfotech.com'))
                 ->send(new OrderPlacedPdf([
                     'data' => $data,
                     'filePath' => $tempFilePath,
                     'invoiceName' => $invoiceName
                 ]));
+            
+            // Emptying Cart of User
+            $this->cart->deleteCartAllItem($userId);
 
             return redirect()->route('user.myOrders')->with('success', 'Order placed successfully');
         } catch (\Exception $th) {
@@ -221,10 +186,7 @@ class UserOrderController extends Controller
                 'order_id' => $orderId,
                 'payment_id' => $paymentId,
             ],
-
         ]);
-
-        dd($paymentIntent);
     }
 
     /**

@@ -41,5 +41,13 @@ interface CartRepositoryInterface{
      */ 
     public function getCartItemAllDetails($userId);
 
+    /**
+     * Desciption : delete all items present in cart of specified user
+     * 
+     * @param : int $userId
+     * @return : boolean
+     */ 
+    public function deleteCartAllItem($userId);
+
      
 }
