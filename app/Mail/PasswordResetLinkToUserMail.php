@@ -3,26 +3,24 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\Queue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Mail\Mailables\Attachment;
 
-class orderListToAdmin extends Mailable
+class PasswordResetLinkToUserMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public $tempFilePath;
+    protected $data;
+
     /**
      * Create a new message instance.
      */
-    public function __construct($tempFilePath)
+    public function __construct($data)
     {
-        //
-        $this->tempFilePath = $tempFilePath['tempFilePath'];
+        $this->data = $data;
     }
 
     /**
@@ -31,7 +29,7 @@ class orderListToAdmin extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Order List To Admin',
+            subject: 'Password Reset',
         );
     }
 
@@ -41,7 +39,8 @@ class orderListToAdmin extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'Admin.sending_order_list',
+            view: 'Auth.User.forget-password-link-mail',
+            with:['data'=>$this->data],
         );
     }
 
@@ -52,10 +51,6 @@ class orderListToAdmin extends Mailable
      */
     public function attachments(): array
     {
-        return [
-            Attachment::fromPath($this->tempFilePath)
-            ->as('order.csv')
-            ->withMime('application/csv'),
-        ];
+        return [];
     }
 }

@@ -50,5 +50,16 @@ class UserRepository implements UserRepositoryInterface{
         return $this->getModel()->where('id',$attributes['id'])->update($attributes);
     }
 
+    /**
+     * Desciption : find user by email
+     * 
+     * @param : string $email
+     * @return : \Illuminate\Database\Eloquent\Model 
+     */ 
+    public function findUserByEmail($email){
+        return $this->getModel()->where('email',$email)->first();
+    }
+
+
 
 }

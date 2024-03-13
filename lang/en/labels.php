@@ -16,6 +16,9 @@ return [
    'added'=>'Added',
    'profiel'=>'Profile',
    'logout'=>'Logout',
+   'forgotPassword'=>'Forgot Password',
+   'reserPassword'=>'Reset Password',
+   'newPassword'=>'New Password',
 
    // NavBar
    'see_books'=> 'Show Books',
@@ -57,6 +60,7 @@ return [
    'next'=>'Next',
    'amout_to_be_payable'=>"Amount To Be Payable",
    'update'=>'Update',
+   'Submit'=>'Submit',
    
 
    // Cart

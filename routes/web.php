@@ -27,6 +27,11 @@ Route::middleware(['guest:user'])->controller(UserAuthController::class)->group(
     Route::post('/login', 'userLoginPost')->name('user.login');
     Route::get('/register', 'showRegisterForm')->name('register');
     Route::post('/register', 'userRegistrationPost')->name('user.register');
+    Route::get('/forgot-password', 'forgotPasswordView')->name('user.forgot-password-view');
+    Route::post('/forgot-password', 'forgotPasswordPost')->name('user.forgot-password-view');
+    Route::get('/reset-password', 'enterNewPasswordView')->name('user.enter-new-password-view');
+    Route::post('/update-password', 'updatePassword')->name('user.update-password');
+    
 });
 
 
